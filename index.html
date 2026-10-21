@@ -145,11 +145,11 @@
 
 <div class="container">
   <div class="nav-tabs">
-    <button class="nav-btn active" onclick="navigate('bonus')">30대 그룹 성과급 & 채용 (150개사)</button>
-    <button class="nav-btn" onclick="navigate('scale')">기업규모 6단계 직무·직급 연봉</button>
-    <button class="nav-btn" onclick="navigate('region')">전국 17개 시도 TOP 10 (420개사)</button>
-    <button class="nav-btn" onclick="navigate('netpay')">연봉 실수령액 계산기</button>
-    <button class="nav-btn" onclick="navigate('tax')">연말정산 1분 환급 시뮬레이터</button>
+    <button class="nav-btn active" onclick="navigate(this, 'bonus')">30대 그룹 성과급 & 채용 (150개사)</button>
+    <button class="nav-btn" onclick="navigate(this, 'scale')">기업규모 6단계 직무·직급 연봉</button>
+    <button class="nav-btn" onclick="navigate(this, 'region')">전국 17개 시도 TOP 10 (420개사)</button>
+    <button class="nav-btn" onclick="navigate(this, 'netpay')">연봉 실수령액 계산기</button>
+    <button class="nav-btn" onclick="navigate(this, 'tax')">연말정산 1분 환급 시뮬레이터</button>
   </div>
 
   <!-- 1. 30대 그룹사별 성과급 디렉토리 -->
@@ -380,11 +380,18 @@
 </div>
 
 <script>
-  function navigate(viewKey) {
+  // 탭 전환 오류 해결: 호출한 버튼 객체(btn)를 직접 전달받아 active 클래스 적용
+  function navigate(btn, viewKey) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    document.getElementById('view-' + viewKey).classList.add('active');
+    
+    if (btn) {
+      btn.classList.add('active');
+    }
+    const target = document.getElementById('view-' + viewKey);
+    if (target) {
+      target.classList.add('active');
+    }
   }
 
   // 1. 공정위 자산총액 기준 1위~30위 대기업 그룹 및 계열사 150개사
@@ -989,4 +996,452 @@
           { rank: 3, name: "HD현대일렉트릭", biz: "초고압 변압기 전력기기", sal: "1억 1,000만 원", note: "동구 일산동 본사" },
           { rank: 4, name: "현대모비스 울산공장", biz: "샤시/운전석 전동화모듈", sal: "1억 800만 원", note: "북구 매곡/이화산단" },
           { rank: 5, name: "현대글로비스 울산지사", biz: "완성차 해상 선적/물류", sal: "9,600만 원", note: "북구 염포부두" },
-          { rank: 6, name: "오토밸리 부품사 협의체", biz: "
+          { rank: 6, name: "오토밸리 부품사 협의체", biz: "차체 섀시 프레스 가공", sal: "7,800만 원", note: "북구 매곡산단" },
+          { rank: 7, name: "현대종합금속 울산", biz: "용접 와이어/장비", sal: "8,100만 원", note: "북구 효문공단" },
+          { rank: 8, name: "동남정밀", biz: "엔진 변속기 다이캐스팅", sal: "7,200만 원", note: "북구 효문동" },
+          { rank: 9, name: "대원강업 울산공장", biz: "차량용 시트 스프링", sal: "7,600만 원", note: "북구 매곡산단" },
+          { rank: 10, name: "울산항만예선협의체", biz: "선박 접안 예인 서비스", sal: "7,400만 원", note: "동구 방어동" }
+        ]},
+        nam_ulju: { title: "남구 & 울주군 (온산석유화학·비철금속)", list: [
+          { rank: 1, name: "에쓰오일 온산공장", biz: "정유/석유화학 복합단지", sal: "1억 5,800만 원", note: "울주군 온산읍 샤힌프로젝트" },
+          { rank: 2, name: "SK에너지 울산CLX", biz: "원유 정제/석유화학", sal: "1억 5,200만 원", note: "남구 고사동 250만평 부지" },
+          { rank: 3, name: "고려아연 온산제련소", biz: "아연/은 비철금속 제련", sal: "1억 1,600만 원", note: "울주군 온산국가산단" },
+          { rank: 4, name: "대한유화 울산공장", biz: "에틸렌/프로필렌 기초화학", sal: "1억 1,200만 원", note: "온산공단 본사/공장" },
+          { rank: 5, name: "롯데케미칼 울산공장", biz: "고순도 테레프탈산 PIA", sal: "1억 400만 원", note: "남구 여천동 석유화학단지" },
+          { rank: 6, name: "한화솔루션 울산공장", biz: "CA/PVC 특수 화학소재", sal: "9,800만 원", note: "남구 상개동" },
+          { rank: 7, name: "한국동서발전 본사", biz: "발전 에너지 공기업", sal: "9,400만 원", note: "우정혁신도시 본사" },
+          { rank: 8, name: "풍산 울산사업장", biz: "신동 동판 및 탄약방산", sal: "9,200만 원", note: "울주군 온산읍" },
+          { rank: 9, name: "울산항만공사(UPA)", biz: "액체물류 허브 공기업", sal: "8,700만 원", note: "남구 매암동 본사" },
+          { rank: 10, name: "KPX케미칼 울산", biz: "우레탄 원료 폴리올", sal: "9,600만 원", note: "남구 용연공단" }
+        ]}
+      }
+    },
+    sejong: {
+      name: "세종특별자치시",
+      sub: {
+        central: { title: "세종 도심(정부청사·국책연구단지) & 전의산단", list: [
+          { rank: 1, name: "한국콜마 세종공장/연구소", biz: "화장품 ODM/OBM 1위", sal: "9,400만 원", note: "전의면 일반산단" },
+          { rank: 2, name: "한국개발연구원 (KDI)", biz: "국가 경제정책 싱크탱크", sal: "1억 200만 원", note: "반곡동 연구단지" },
+          { rank: 3, name: "한화첨단소재 세종본사", biz: "차량용 경량 복합소재", sal: "9,200만 원", note: "부강면 본사/공장" },
+          { rank: 4, name: "남양유업 세종공장", biz: "조제분유/발효유 주력공장", sal: "7,800만 원", note: "장군면 메가팩토리" },
+          { rank: 5, name: "콘티넨탈오토모티브 세종", biz: "차량 전자제어 모듈", sal: "8,800만 원", note: "연기면 세종공장" },
+          { rank: 6, name: "일진제강 세종공장", biz: "정밀 인발 탄소강관", sal: "8,200만 원", note: "전의일반산단" },
+          { rank: 7, name: "SK트리켐", biz: "반도체 프리커서 전구체", sal: "8,600만 원", note: "명학일반산업단지" },
+          { rank: 8, name: "축산물품질평가원 본원", biz: "축산유통 공공기관", sal: "8,400만 원", note: "아름동 본원" },
+          { rank: 9, name: "세종도시교통공사", biz: "BRT 대중교통 공기업", sal: "7,200만 원", note: "대평동 본사" },
+          { rank: 10, name: "미래생활 본사", biz: "잘풀리는집 화장지 제조", sal: "6,600만 원", note: "부강면 본사" }
+        ]}
+      }
+    },
+    chungnam: {
+      name: "충청남도",
+      sub: {
+        cheonan_asan: { title: "천안시 & 아산시 (디스플레이·반도체·완성차)", list: [
+          { rank: 1, name: "삼성전자 천안사업장", biz: "HBM 첨단 패키징(AVP)", sal: "1억 3,500만 원", note: "천안시 백석동 팹" },
+          { rank: 2, name: "삼성디스플레이 아산캠퍼스", biz: "OLED 디스플레이 패널", sal: "1억 1,500만 원", note: "탕정면 디스플레이시티" },
+          { rank: 3, name: "현대자동차 아산공장", biz: "쏘나타/그랜저/아이오닉6", sal: "1억 2,800만 원", note: "아산시 인주면 공장" },
+          { rank: 4, name: "삼성SDI 천안사업장", biz: "소형 전지 및 전자재료", sal: "1억 1,000만 원", note: "천안시 성성동 공장" },
+          { rank: 5, name: "세메스 (SEMES 본사)", biz: "반도체 세정장비 국내 1위", sal: "9,800만 원", note: "천안시 직산읍 본사" },
+          { rank: 6, name: "코닝정밀소재 아산", biz: "디스플레이 정밀유리 기판", sal: "1억 200만 원", note: "탕정면 코닝캠퍼스" },
+          { rank: 7, name: "현대모비스 아산공장", biz: "완성차 모듈 조립", sal: "1억 800만 원", note: "아산 인주공단" },
+          { rank: 8, name: "하나마이크론 아산본사", biz: "반도체 패키징 및 테스트", sal: "8,400만 원", note: "아산시 음봉면" },
+          { rank: 9, name: "SFA반도체", biz: "후공정 OSAT 조립/테스트", sal: "7,800만 원", note: "천안시 백석산단" },
+          { rank: 10, name: "한국기술교육대학교", biz: "국책 4년제 공학교육", sal: "8,600만 원", note: "천안 동남구 병천" }
+        ]},
+        seosan_dangjin: { title: "서산시 & 당진시 (대산석유화학 & 제철)", list: [
+          { rank: 1, name: "한화토탈에너지스 대산", biz: "에틸렌/합성수지/항공유", sal: "1억 4,200만 원", note: "서산시 대산석유화학단지" },
+          { rank: 2, name: "현대오일뱅크 대산공장", biz: "원유 정제 및 중질유 분해", sal: "1억 2,000만 원", note: "서산시 대산읍 공장" },
+          { rank: 3, name: "현대제철 당진제철소", biz: "일관제철 고로 열연/냉연", sal: "1억 600만 원", note: "당진시 송악읍 일관제철소" },
+          { rank: 4, name: "LG화학 대산공장", biz: "NCC 나프타분해/고기능수지", sal: "1억 1,000만 원", note: "서산시 대산읍" },
+          { rank: 5, name: "롯데케미칼 대산공장", biz: "기초유분 및 폴리머", sal: "1억 200만 원", note: "서산 대산단지" },
+          { rank: 6, name: "동국제강 당진공장", biz: "고급 열처리 후판 압연", sal: "9,200만 원", note: "당진시 송악읍" },
+          { rank: 7, name: "KCC 대산공장", biz: "유기 실리콘 및 실란트", sal: "8,900만 원", note: "서산 대산읍" },
+          { rank: 8, name: "현대글로비스 당진지사", biz: "철강 슬래브 및 코일 물류", sal: "8,800만 원", note: "당진항 철강부두" },
+          { rank: 9, name: "당진화력발전소", biz: "기저 화력발전 (동서발전)", sal: "9,300만 원", note: "당진시 석문면" },
+          { rank: 10, name: "삼우 당진공장", biz: "자동차 휠/철강 포장재", sal: "7,400만 원", note: "당진 송악공단" }
+        ]}
+      }
+    },
+    chungbuk: {
+      name: "충청북도",
+      sub: {
+        cheongju: { title: "청주시 (오창 이차전지 & 오송 바이오클러스터)", list: [
+          { rank: 1, name: "SK하이닉스 청주캠퍼스", biz: "NAND 낸드플래시 M15팹", sal: "1억 6,500만 원", note: "흥덕구 직지대로 M15" },
+          { rank: 2, name: "LG에너지솔루션 오창플랜트", biz: "원통형/파우치 마더팩토리", sal: "1억 500만 원", note: "청원구 오창과학단지" },
+          { rank: 3, name: "에코프로비엠 오창본사", biz: "하이니켈 양극재 소재", sal: "9,800만 원", note: "오창산단 본사" },
+          { rank: 4, name: "셀트리온제약 오송본사", biz: "케미컬 개량신약/생산", sal: "8,600만 원", note: "흥덕구 오송생명과학단지" },
+          { rank: 5, name: "유한양행 오창공장", biz: "정밀 합성의약품 생산", sal: "9,400만 원", note: "오창과학산업단지" },
+          { rank: 6, name: "대웅제약 오송공장", biz: "스마트 cGMP 바이오공장", sal: "8,800만 원", note: "오송생명산단" },
+          { rank: 7, name: "GC녹십자 오창공장", biz: "혈액분획제제/면역글로불린", sal: "8,900만 원", note: "오창읍 과학단지" },
+          { rank: 8, name: "네패스 오창캠퍼스", biz: "반도체 WLP/PLP 패키징", sal: "8,200만 원", note: "청원구 오창산단" },
+          { rank: 9, name: "에코프로에이치엔", biz: "온실가스 감축 친환경소재", sal: "8,400만 원", note: "오창 본사" },
+          { rank: 10, name: "식품의약품안전처/질병청", biz: "보건의료 국책행정기관", sal: "8,700만 원", note: "오송 보건의료행정타운" }
+        ]},
+        chungju_eumseong: { title: "충주시 & 음성군 (수소모빌리티 & 반도체)", list: [
+          { rank: 1, name: "DB하이텍 상우공장", biz: "8인치 아날로그 파운드리", sal: "9,800만 원", note: "음성군 감곡면 상우팹" },
+          { rank: 2, name: "현대모비스 충주공장", biz: "수소연료전지 및 하이브리드팩", sal: "1억 800만 원", note: "충주시 대소원면" },
+          { rank: 3, name: "현대엘리베이터 충주본사", biz: "초고속 스마트 승강기", sal: "8,800만 원", note: "충주 제5일반산단 본사" },
+          { rank: 4, name: "유한킴벌리 충주공장", biz: "기저귀/위생용품 주력공장", sal: "8,600만 원", note: "충주시 대소원면" },
+          { rank: 5, name: "코스모신소재 충주본사", biz: "이차전지 양극재 분말", sal: "8,100만 원", note: "충주시 목행동 본사" },
+          { rank: 6, name: "한화솔루션 음성공장", biz: "태양광 셀/모듈 생산라인", sal: "9,100만 원", note: "음성군 맹동면" },
+          { rank: 7, name: "롯데칠성 충주메가팩토리", biz: "클라우드 맥주 및 음료", sal: "7,400만 원", note: "충주시 대소원면" },
+          { rank: 8, name: "동화약품 충주공장", biz: "까스활명수/후시딘 cGMP", sal: "7,600만 원", note: "충주 첨단산단" },
+          { rank: 9, name: "풀무원 음성두부물류", biz: "신선식품 제조 및 풀필먼트", sal: "6,900만 원", note: "음성군 대소면" },
+          { rank: 10, name: "포스코퓨처엠 충주공장", biz: "실리콘 복합음극재 소재", sal: "8,500만 원", note: "충주 기업도시" }
+        ]}
+      }
+    },
+    gyeongbuk: {
+      name: "경상북도",
+      sub: {
+        pohang: { title: "포항시 (철강 본원 & 영일만 이차전지)", list: [
+          { rank: 1, name: "포스코 (POSCO 본사)", biz: "제철 제강 및 글로벌 본사", sal: "1억 500만 원", note: "포항시 남구 괴동동 본사" },
+          { rank: 2, name: "에코프로비엠 포항캠퍼스", biz: "하이니켈 양극재 대량양산", sal: "9,800만 원", note: "영일만 일반산단" },
+          { rank: 3, name: "포스코퓨처엠 본사", biz: "양·음극재 종합 배터리소재", sal: "9,200만 원", note: "남구 청암로 본사" },
+          { rank: 4, name: "현대제철 포항공장", biz: "철도레일/대형 H형강 압연", sal: "1억 200만 원", note: "남구 괴동동 제철소" },
+          { rank: 5, name: "포항공과대학교(POSTECH)", biz: "국내 1위 연구중심 공대", sal: "9,600만 원", note: "남구 효자동 지곡단지" },
+          { rank: 6, name: "포항산업과학연구원(RIST)", biz: "소재/에너지 국책연구원", sal: "9,400만 원", note: "효자동 RIST연구원" },
+          { rank: 7, name: "동국제강 포항공장", biz: "봉강/형강 전기로 제강", sal: "9,100만 원", note: "포항 철강공단" },
+          { rank: 8, name: "세아제강 포항공장", biz: "해상풍력 하부구조용 강관", sal: "8,600만 원", note: "남구 괴동공단" },
+          { rank: 9, name: "포스코플랜텍", biz: "제철 플랜트 엔지니어링", sal: "8,500만 원", note: "송도동 본사" },
+          { rank: 10, name: "조선내화 본사", biz: "제철소 고온 내화벽돌", sal: "8,200만 원", note: "형산강로 본사" }
+        ]},
+        gumi: { title: "구미시 (국가산단 1~5단지 방산·전자소재)", list: [
+          { rank: 1, name: "SK실트론 본사", biz: "반도체 12인치 실리콘웨이퍼", sal: "1억 400만 원", note: "구미 임수동 국가3산단" },
+          { rank: 2, name: "삼성전자 구미스마트시티", biz: "갤럭시 폴더블폰 마더팹", sal: "1억 3,500만 원", note: "구미시 공단동 2캠퍼스" },
+          { rank: 3, name: "한화시스템 구미사업장", biz: "AESA 레이다/통신체계", sal: "1억 600만 원", note: "구미 국가1산단" },
+          { rank: 4, name: "LIG넥스원 구미하우스", biz: "천궁-II 유도미사일 양산", sal: "1억 200만 원", note: "구미 임수동 방산팹" },
+          { rank: 5, name: "LG이노텍 구미사업장", biz: "스마트폰 카메라/반도체기판", sal: "9,800만 원", note: "구미 국가4산단 본원" },
+          { rank: 6, name: "도레이첨단소재 구미", biz: "탄소섬유/고기능 IT필름", sal: "9,200만 원", note: "국가3산단 본사" },
+          { rank: 7, name: "LG디스플레이 구미공장", biz: "차량용 OLED 패널 생산", sal: "9,600만 원", note: "구미 국가2산단" },
+          { rank: 8, name: "피엔티 (PNT 본사)", biz: "2차전지 전극 코팅 롤투롤", sal: "8,500만 원", note: "하이테크밸리 5산단" },
+          { rank: 9, name: "원익QnC 구미본사", biz: "반도체 쿼츠 석영유리", sal: "8,100만 원", note: "구미 옥계동" },
+          { rank: 10, name: "아주스틸 구미본사", biz: "프리미엄 컬러강판", sal: "7,400만 원", note: "구미 국가4산단" }
+        ]}
+      }
+    },
+    gyeongnam: {
+      name: "경상남도",
+      sub: {
+        changwon: { title: "창원시 (원자력·방위산업·공작기계 산단)", list: [
+          { rank: 1, name: "한화에어로스페이스 창원", biz: "K9 자주포/항공 가스터빈", sal: "1억 2,000만 원", note: "성산구 외동 1~3사업장" },
+          { rank: 2, name: "두산에너빌리티 본사", biz: "원전 주기기/대형 가스터빈", sal: "1억 1,200만 원", note: "성산구 귀곡동 대형 부지" },
+          { rank: 3, name: "현대로템 창원공장", biz: "KTX 고속철/K2 흑표전차", sal: "1억 800만 원", note: "대원동 50만평 생산공장" },
+          { rank: 4, name: "LG전자 창원스마트파크", biz: "LG 가전 글로벌 모공장", sal: "1억 1,200만 원", note: "성산구 성산동 1/2캠퍼스" },
+          { rank: 5, name: "효성중공업 창원공장", biz: "초고압 변압기 및 차단기", sal: "1억 200만 원", note: "성산구 내동 공장" },
+          { rank: 6, name: "현대위아 본사", biz: "차량 구동샤시/방산 함포", sal: "1억 400만 원", note: "성산구 가음정동 본사" },
+          { rank: 7, name: "DN솔루션즈 (구 두산공작)", biz: "글로벌 3위 머시닝센터", sal: "9,600만 원", note: "성산구 남서로 본사" },
+          { rank: 8, name: "세아창원특수강", biz: "원전/방산용 스테인리스봉강", sal: "9,400만 원", note: "성산구 적현동" },
+          { rank: 9, name: "한국GM 창원공장", biz: "트랙스 크로스오버 조립", sal: "8,800만 원", note: "성산구 성주동 공장" },
+          { rank: 10, name: "한국재료연구원(KIMS)", biz: "첨단소재 국책연구원", sal: "9,600만 원", note: "성산구 상남동 본원" }
+        ]},
+        geoje: { title: "거제시 & 통영시 (조선해양 클러스터)", list: [
+          { rank: 1, name: "한화오션 (구 대우조선)", biz: "LNG선/잠수함/해양플랜트", sal: "9,800만 원", note: "거제시 아주동 옥포조선소" },
+          { rank: 2, name: "삼성중공업 거제조선소", biz: "FLNG/초대형 컨테이너선", sal: "9,500만 원", note: "거제시 장평동 거제조선소" },
+          { rank: 3, name: "선박해양플랜트연구소(KRISO)", biz: "해양공학 심해시험수조", sal: "8,900만 원", note: "거제 장목면 해양연구센터" },
+          { rank: 4, name: "한화오션 협력연합", biz: "선체 대형블록 조립/의장", sal: "7,400만 원", note: "옥포국가산업단지" },
+          { rank: 5, name: "삼성중공업 사내기술단", biz: "자동화 로봇용접/특수도장", sal: "7,200만 원", note: "장평동 조선단지" },
+          { rank: 6, name: "삼녹 (SAMNOK)", biz: "선박 배관 파이프스풀 도금", sal: "6,900만 원", note: "연초면 한내공단" },
+          { rank: 7, name: "대성산업 거제사업소", biz: "조선소 고압가스/산소 공급", sal: "6,800만 원", note: "사등면 사곡" },
+          { rank: 8, name: "거제수협 본점", biz: "수산 금융/유통", sal: "6,700만 원", note: "고현동 본점" },
+          { rank: 9, name: "HSG성동조선 통영", biz: "해상풍력 하부구조물 건조", sal: "7,500만 원", note: "통영시 광도면 안정공단" },
+          { rank: 10, name: "거제해양개발공사", biz: "지방공기업", sal: "6,500만 원", note: "고현동 본사" }
+        ]}
+      }
+    },
+    jeonnam: {
+      name: "전라남도",
+      sub: {
+        yeosu_gwangyang: { title: "여수시(석유화학) & 광양시(광양제철소)", list: [
+          { rank: 1, name: "GS칼텍스 여수공장", biz: "정유/석유화학 컴플렉스", sal: "1억 5,300만 원", note: "여수시 월내동 여수산단" },
+          { rank: 2, name: "포스코 광양제철소", biz: "세계 최대 단일 제철소", sal: "1억 500만 원", note: "광양시 금호동 일관제철소" },
+          { rank: 3, name: "여천NCC", biz: "에틸렌 기초유분 전문", sal: "1억 2,000만 원", note: "여수산단로 에틸렌공장" },
+          { rank: 4, name: "LG화학 여수공장", biz: "기초소재 나프타분해 NCC", sal: "1억 1,000만 원", note: "여수국가산업단지" },
+          { rank: 5, name: "한화솔루션 여수공장", biz: "가성소다/폴리우레탄 원료", sal: "1억 500만 원", note: "여수시 화치동" },
+          { rank: 6, name: "롯데케미칼 여수공장", biz: "PP/폴리프로필렌 수지", sal: "1억 200만 원", note: "여수시 중흥동" },
+          { rank: 7, name: "포스코인터 광양LNG", biz: "민간 최초 대형 LNG터미널", sal: "1억 1,800만 원", note: "광양시 금호동 터미널" },
+          { rank: 8, name: "남해화학 본사/여수", biz: "국내 1위 농업 비료 제조", sal: "9,400만 원", note: "여수시 낙포동 본사" },
+          { rank: 9, name: "포스코퓨처엠 광양공장", biz: "단일 최대 하이니켈 양극재", sal: "9,200만 원", note: "광양시 율촌산단" },
+          { rank: 10, name: "여수광양항만공사(YGPA)", biz: "컨테이너 항만 공기업", sal: "8,900만 원", note: "광양시 황금동 사옥" }
+        ]},
+        naju: { title: "나주시 (빛가람 혁신도시 전력에너지밸리)", list: [
+          { rank: 1, name: "한국전력공사 (KEPCO 본사)", biz: "국가 전력망 총괄 공기업", sal: "9,800만 원", note: "빛가람동 한전본사" },
+          { rank: 2, name: "한전KPS 본사", biz: "발전/송변전 정밀정비", sal: "9,500만 원", note: "혁신도시 본사" },
+          { rank: 3, name: "전력거래소 (KPX 본원)", biz: "전력 도매시장 계통운영", sal: "9,600만 원", note: "빛가람동 사옥" },
+          { rank: 4, name: "한전KDN 본사", biz: "에너지 ICT 공기업", sal: "8,900만 원", note: "혁신도시 사옥" },
+          { rank: 5, name: "한국농어촌공사 본사", biz: "농업생산기반 정비", sal: "8,800만 원", note: "빛가람동 본사" },
+          { rank: 6, name: "한국인터넷진흥원(KISA)", biz: "정보보호/인터넷 공공기관", sal: "8,600만 원", note: "나주 청사" },
+          { rank: 7, name: "한국콘텐츠진흥원 본원", biz: "K-콘텐츠 진흥 공공기관", sal: "8,400만 원", note: "빛가람동 본원" },
+          { rank: 8, name: "사립학교교직원연금공단", biz: "사학연금 자산운용", sal: "9,200만 원", note: "나주 본부" },
+          { rank: 9, name: "우정사업정보센터", biz: "우체국 금융/물류 IT", sal: "8,100만 원", note: "혁신도시 정보센터" },
+          { rank: 10, name: "남양유업 나주공장", biz: "우유/커피믹스 대형공장", sal: "7,500만 원", note: "나주시 금천면" }
+        ]}
+      }
+    },
+    jeonbuk: {
+      name: "전라북도",
+      sub: {
+        jeonju_wanju: { title: "전주시 & 완주군 (수소·상용차 & 탄소소재)", list: [
+          { rank: 1, name: "현대자동차 전주공장", biz: "상용 버스/수소 트럭 거점", sal: "1억 2,000만 원", note: "완주군 봉동산단" },
+          { rank: 2, name: "효성첨단소재 전주공장", biz: "우주항공용 탄소섬유 1위", sal: "9,400만 원", note: "전주시 팔복동 탄소산단" },
+          { rank: 3, name: "KCC 전주공장", biz: "도료/실리콘 건축자재", sal: "9,200만 원", note: "완주군 봉동읍" },
+          { rank: 4, name: "국민연금공단 (NPS 본부)", biz: "기금운용본부 1,000조 운용", sal: "9,600만 원", note: "전주시 만성동 혁신도시" },
+          { rank: 5, name: "LS엠트론 전주공장", biz: "스마트 트랙터 주력공장", sal: "8,600만 원", note: "완주 봉동공단" },
+          { rank: 6, name: "한국국토정보공사(LX)", biz: "지적측량/공간정보 공기업", sal: "8,800만 원", note: "혁신도시 본사" },
+          { rank: 7, name: "농촌진흥청 본청", biz: "농업과학 국책행정기관", sal: "8,600만 원", note: "전주 농생명로 본청" },
+          { rank: 8, name: "휴비스 전주공장", biz: "차별화 폴리에스터 단섬유", sal: "8,100만 원", note: "전주시 팔복동" },
+          { rank: 9, name: "하림홀딩스 익산/전주", biz: "종합 축산식품 지주", sal: "8,500만 원", note: "익산 함열/전주" },
+          { rank: 10, name: "한국식품연구원", biz: "식품바이오 국책연구원", sal: "9,100만 원", note: "완주군 이서면" }
+        ]},
+        gunsan: { title: "군산시 (새만금 이차전지 & 항만산업단지)", list: [
+          { rank: 1, name: "HD현대중공업 군산조선소", biz: "대형 선박 블록 제작", sal: "9,800만 원", note: "군산국가산업단지" },
+          { rank: 2, name: "타타대우상용차 본사", biz: "대형 상용 트럭 완성차", sal: "8,900만 원", note: "군산시 소룡동 본사" },
+          { rank: 3, name: "세아베스틸 군산공장", biz: "특수강 봉강/원전 단조품", sal: "9,400만 원", note: "군산 외항로 제강소" },
+          { rank: 4, name: "천보BLS 새만금공장", biz: "이차전지 전해질 F전해질", sal: "8,600만 원", note: "새만금 국가산단 1공구" },
+          { rank: 5, name: "성일하이텍 군산본사", biz: "폐배터리 리사이클링 1위", sal: "8,400만 원", note: "군산2국가산단" },
+          { rank: 6, name: "OCI 군산공장", biz: "반도체용 폴리실리콘/과산화수소", sal: "8,800만 원", note: "군산시 소룡동" },
+          { rank: 7, name: "HD현대인프라코어 군산", biz: "대형 굴착기/엔진 제조", sal: "9,200만 원", note: "군산국가산단" },
+          { rank: 8, name: "대상 군산전분당공장", biz: "식품 당류 전분 가공", sal: "7,600만 원", note: "군산 조촌동 공장" },
+          { rank: 9, name: "대주전자재료 새만금", biz: "실리콘 복합음극재 기지", sal: "8,200만 원", note: "새만금 산단" },
+          { rank: 10, name: "군산항만물류운영사", biz: "사료곡물/자동차 복합하역", sal: "7,100만 원", note: "군산항 자유무역지역" }
+        ]}
+      }
+    },
+    gangwon: {
+      name: "강원특별자치도",
+      sub: {
+        wonju: { title: "원주시 (공공기관 혁신도시 & 디지털헬스)", list: [
+          { rank: 1, name: "국민건강보험공단 본부", biz: "전국민 건강보험 공공기관", sal: "9,400만 원", note: "혁신로 건보본부" },
+          { rank: 2, name: "건강보험심사평가원 본원", biz: "진료비 심사/적정성 평가", sal: "9,200만 원", note: "반곡동 심평원" },
+          { rank: 3, name: "한국관광공사 본사", biz: "글로벌 관광 진흥 공기업", sal: "8,900만 원", note: "원주 혁신도시 본사" },
+          { rank: 4, name: "한국광해광업공단", biz: "핵심 광물자원 안보 공기업", sal: "9,200만 원", note: "반곡동 사옥" },
+          { rank: 5, name: "도로교통공단 본부", biz: "교통안전/운전면허 공기업", sal: "8,600만 원", note: "혁신도시 본부" },
+          { rank: 6, name: "삼양식품 원주공장", biz: "불닭볶음면 글로벌 수출기지", sal: "7,600만 원", note: "우산일반산업단지" },
+          { rank: 7, name: "HL만도 원주공장", biz: "차량용 브레이크/자율주행", sal: "9,500만 원", note: "문막읍 문막산단" },
+          { rank: 8, name: "바디텍메드 원주R&D", biz: "체외진단 면역진단키트", sal: "7,800만 원", note: "원주 동화첨단의료산단" },
+          { rank: 9, name: "인성정보 원주센터", biz: "원격의료 헬스케어 IT", sal: "6,900만 원", note: "의료기기 테크노밸리" },
+          { rank: 10, name: "한국가스공사 강원지역본부", biz: "천연가스 배관망 공급", sal: "9,500만 원", note: "원주시 봉산동" }
+        ]},
+        chuncheon_gangneung: { title: "춘천시 & 강릉시 (바이오·데이터·신소재)", list: [
+          { rank: 1, name: "더존비즈온 (본사)", biz: "기업용 ERP/클라우드 플랫폼", sal: "8,800만 원", note: "춘천시 남산면 강촌캠퍼스" },
+          { rank: 2, name: "네이버 춘천데이터센터 '각'", biz: "자연냉각 친환경 메가IDC", sal: "1억 2,000만 원", note: "춘천시 동면 구봉산" },
+          { rank: 3, name: "휴젤 (HUGEL 본사)", biz: "보툴리눔 톡신 보톡스 1위", sal: "8,600만 원", note: "춘천시 신북읍 본사" },
+          { rank: 4, name: "바디텍메드 춘천본사", biz: "POCT 현장진단 바이오", sal: "7,800만 원", note: "춘천시 동내면 거두산단" },
+          { rank: 5, name: "일동후디스 춘천공장", biz: "하이뮨 프로틴 단백질 음료", sal: "6,900만 원", note: "춘천 동산면 공장" },
+          { rank: 6, name: "파마리서치 강릉본사", biz: "리쥬란 PDRN 스킨부스터", sal: "8,400만 원", note: "강릉시 과학단지로 본사" },
+          { rank: 7, name: "강릉에코파워", biz: "안인 화력 민자발전소", sal: "9,800만 원", note: "강릉시 강동면 안인리" },
+          { rank: 8, name: "한국과학기술연구원(KIST)", biz: "천연물 바이오 국책연구소", sal: "9,500만 원", note: "강릉 대전동 강릉분원" },
+          { rank: 9, name: "포스코마그네슘 강릉공장", biz: "초경량 마그네슘 판재", sal: "8,900만 원", note: "강릉시 옥계일반산단" },
+          { rank: 10, name: "한라시멘트 옥계공장", biz: "포틀랜드 시멘트 소성공장", sal: "8,200만 원", note: "강릉시 옥계면" }
+        ]}
+      }
+    },
+    jeju: {
+      name: "제주특별자치도",
+      sub: {
+        jeju_all: { title: "제주시(첨단과학단지) & 서귀포(혁신도시)", list: [
+          { rank: 1, name: "카카오 (Kakao 제주 본사)", biz: "모바일 플랫폼 본사", sal: "1억 1,100만 원", note: "제주시 첨단로 스페이스닷원" },
+          { rank: 2, name: "네오플 (Neople 본사)", biz: "던전앤파이터 넥슨 자회사", sal: "1억 2,500만 원", note: "제주시 노형동/스페이스" },
+          { rank: 3, name: "제주특별자치도개발공사", biz: "제주삼다수 제조/유통 공기업", sal: "8,200만 원", note: "제주시 첨단로 본사/조천공장" },
+          { rank: 4, name: "공무원연금공단 본사", biz: "공무원연금 기금운용", sal: "9,200만 원", note: "서귀포시 서호중로 혁신도시" },
+          { rank: 5, name: "제주항공 정비기지", biz: "국내 1위 LCC 정비/운항", sal: "8,400만 원", note: "제주국제공항 정비격납고" },
+          { rank: 6, name: "쏘카 (SOCAR 제주지사)", biz: "모빌리티 카셰어링 허브", sal: "8,200만 원", note: "제주시 오라동 거점" },
+          { rank: 7, name: "국립기상과학원", biz: "국가 기상연구 국책기관", sal: "8,600만 원", note: "서귀포시 서호동" },
+          { rank: 8, name: "제주은행 본점", biz: "신한금융계열 지방은행", sal: "8,800만 원", note: "제주시 이도일동 본점" },
+          { rank: 9, name: "한국국제교류재단(KF)", biz: "공공외교 공공기관", sal: "8,100만 원", note: "서귀포시 혁신도시 본부" },
+          { rank: 10, name: "넥슨컴퓨터박물관", biz: "IT 문화/전시 기획", sal: "6,800만 원", note: "제주시 1100로" }
+        ]}
+      }
+    }
+  };
+
+  function handleMetroChange() {
+    const m = document.getElementById('sel-metro').value;
+    const subSel = document.getElementById('sel-sub');
+    const subs = nationwideAtlas[m].sub;
+    subSel.innerHTML = Object.keys(subs).map(k => `
+      <option value="${k}">${subs[k].title}</option>
+    `).join('');
+    renderRegionRanking();
+  }
+
+  function renderRegionRanking() {
+    const m = document.getElementById('sel-metro').value;
+    const s = document.getElementById('sel-sub').value;
+    const tbody = document.getElementById('region-ranking-body');
+    const items = nationwideAtlas[m].sub[s].list;
+
+    tbody.innerHTML = items.map(item => `
+      <tr>
+        <td class="rank-td">${item.rank}</td>
+        <td style="font-weight:800; color:var(--text);">${item.name}</td>
+        <td><span class="badge-industry">${item.biz}</span></td>
+        <td style="font-weight:900; color:var(--accent); font-size:15px;">${item.sal}</td>
+        <td style="color:var(--muted); font-size:13px;">${item.note}</td>
+      </tr>
+    `).join('');
+  }
+
+  // 4. 연봉 실수령액 계산 로직
+  function calculateNetPay() {
+    const salary = (parseFloat(document.getElementById('inp-salary').value) || 0) * 10000;
+    const taxFree = (parseFloat(document.getElementById('inp-taxfree').value) || 0) * 10000;
+    const dependents = Math.max(1, parseInt(document.getElementById('inp-dependents').value) || 1);
+
+    const monthlyGross = salary / 12;
+    const monthlyTaxable = Math.max(0, monthlyGross - (taxFree / 12));
+
+    const pension = Math.min(monthlyTaxable * 0.045, 265500);
+    const health = monthlyTaxable * 0.03545;
+    const care = health * 0.1295;
+    const employ = monthlyTaxable * 0.009;
+
+    let baseIncomeTax = 0;
+    if (monthlyTaxable > 7000000) baseIncomeTax = monthlyTaxable * 0.18;
+    else if (monthlyTaxable > 4000000) baseIncomeTax = monthlyTaxable * 0.10;
+    else if (monthlyTaxable > 2000000) baseIncomeTax = monthlyTaxable * 0.04;
+    else baseIncomeTax = monthlyTaxable * 0.01;
+
+    // 부양가족 감면
+    if (dependents > 1) {
+      baseIncomeTax = Math.max(0, baseIncomeTax - ((dependents - 1) * 20000));
+    }
+    const localTax = baseIncomeTax * 0.1;
+
+    const totalDeduct = pension + health + care + employ + baseIncomeTax + localTax;
+    const monthlyNet = monthlyGross - totalDeduct;
+
+    document.getElementById('res-month-net').innerText = Math.round(monthlyNet).toLocaleString() + ' 원';
+    document.getElementById('res-year-net').innerText = Math.round(monthlyNet * 12).toLocaleString() + ' 원';
+    document.getElementById('res-month-gross').innerText = Math.round(monthlyGross).toLocaleString() + ' 원';
+    document.getElementById('res-pension').innerText = '-' + Math.round(pension).toLocaleString() + ' 원';
+    document.getElementById('res-health').innerText = '-' + Math.round(health).toLocaleString() + ' 원';
+    document.getElementById('res-care').innerText = '-' + Math.round(care).toLocaleString() + ' 원';
+    document.getElementById('res-employ').innerText = '-' + Math.round(employ).toLocaleString() + ' 원';
+    document.getElementById('res-incometax').innerText = '-' + Math.round(baseIncomeTax).toLocaleString() + ' 원';
+    document.getElementById('res-localtax').innerText = '-' + Math.round(localTax).toLocaleString() + ' 원';
+
+    document.getElementById('netpay-result-panel').style.display = 'block';
+  }
+
+  // 5. 연말정산 정밀 환급금 시뮬레이션
+  function calculateYearEndTax() {
+    const gross = (parseFloat(document.getElementById('tax-gross').value) || 0) * 10000;
+    const people = Math.max(1, parseInt(document.getElementById('tax-people').value) || 1);
+    const prepIncome = (parseFloat(document.getElementById('tax-prep-income').value) || 0) * 10000;
+    const prepLocal = (parseFloat(document.getElementById('tax-prep-local').value) || 0) * 10000;
+    const totalPrepaid = prepIncome + prepLocal;
+
+    const cc = (parseFloat(document.getElementById('tax-card-credit').value) || 0) * 10000;
+    const dc = (parseFloat(document.getElementById('tax-card-debit').value) || 0) * 10000;
+    const mk = (parseFloat(document.getElementById('tax-card-market').value) || 0) * 10000;
+
+    const rent = (parseFloat(document.getElementById('tax-rent-inp').value) || 0) * 10000;
+    const irp = Math.min((parseFloat(document.getElementById('tax-irp-inp').value) || 0) * 10000, 9000000);
+    const ins = Math.min((parseFloat(document.getElementById('tax-ins-inp').value) || 0) * 10000, 1000000);
+    const med = (parseFloat(document.getElementById('tax-med-inp').value) || 0) * 10000;
+
+    // 근로소득공제
+    let earnDed = 0;
+    if (gross <= 5000000) earnDed = gross * 0.7;
+    else if (gross <= 15000000) earnDed = 3500000 + (gross - 5000000) * 0.4;
+    else if (gross <= 45000000) earnDed = 7500000 + (gross - 15000000) * 0.15;
+    else if (gross <= 100000000) earnDed = 12000000 + (gross - 45000000) * 0.05;
+    else earnDed = 14750000 + (gross - 100000000) * 0.02;
+
+    const earnedIncome = gross - earnDed;
+
+    // 국민연금 & 건강/고용보험 소득공제 (연간 자동 추정)
+    const pensionDed = Math.min(gross * 0.045, 3186000);
+    const healthDed = gross * 0.03545;
+    const careDed = healthDed * 0.1295;
+    const employDed = gross * 0.009;
+    const socialInsDed = pensionDed + healthDed + careDed + employDed;
+
+    // 인적공제
+    const personalDed = people * 1500000;
+
+    // 신용카드 등 소득공제
+    const threshold = gross * 0.25;
+    const cardSpent = cc + dc + mk;
+    let cardDed = 0;
+    if (cardSpent > threshold) {
+      cardDed = Math.min((dc * 0.3) + (mk * 0.4) + (cc * 0.15), gross <= 70000000 ? 3000000 : 2500000);
+    }
+
+    // 과세표준
+    const taxBase = Math.max(0, earnedIncome - personalDed - socialInsDed - cardDed);
+
+    // 산출세액 (2026 소득세 기본세율)
+    let calcTax = 0;
+    if (taxBase <= 14000000) calcTax = taxBase * 0.06;
+    else if (taxBase <= 50000000) calcTax = 840000 + (taxBase - 14000000) * 0.15;
+    else if (taxBase <= 88000000) calcTax = 6240000 + (taxBase - 50000000) * 0.24;
+    else if (taxBase <= 150000000) calcTax = 15360000 + (taxBase - 88000000) * 0.35;
+    else if (taxBase <= 300000000) calcTax = 37060000 + (taxBase - 150000000) * 0.38;
+    else calcTax = 94060000 + (taxBase - 300000000) * 0.40;
+
+    // 세액공제
+    let earnCredit = 0;
+    if (calcTax <= 1300000) earnCredit = calcTax * 0.55;
+    else earnCredit = 715000 + (calcTax - 1300000) * 0.3;
+    const maxEarnCredit = gross <= 33000000 ? 740000 : (gross <= 70000000 ? 660000 : 500000);
+    earnCredit = Math.min(earnCredit, maxEarnCredit);
+
+    // 월세액 세액공제 (총급여 8,000만원 이하, 한도 1,000만원)
+    let rentCredit = 0;
+    if (gross <= 80000000) {
+      const rentCap = Math.min(rent, 10000000);
+      rentCredit = rentCap * (gross <= 55000000 ? 0.17 : 0.15);
+    }
+
+    const irpCredit = irp * (gross <= 55000000 ? 0.165 : 0.132);
+    const insCredit = ins * 0.12;
+
+    const medThreshold = gross * 0.03;
+    const medCredit = Math.max(0, med - medThreshold) * 0.15;
+
+    const totalCredits = earnCredit + rentCredit + irpCredit + insCredit + medCredit;
+    const finalIncomeTax = Math.max(0, calcTax - totalCredits);
+    const finalLocalTax = finalIncomeTax * 0.1;
+    const finalTotalTax = finalIncomeTax + finalLocalTax;
+
+    const diff = totalPrepaid - finalTotalTax;
+
+    const board = document.getElementById('refund-billboard');
+    const bStatus = document.getElementById('tax-board-status');
+    const bAmount = document.getElementById('tax-board-amount');
+    const bSumm = document.getElementById('tax-board-summary');
+
+    board.style.display = 'block';
+    if (diff >= 0) {
+      board.className = 'refund-board get';
+      bStatus.innerText = '🎉 13월의 보너스 환급 확정';
+      bAmount.innerText = '+' + Math.round(diff).toLocaleString() + ' 원';
+      bSumm.innerText = '미리 납부한 세금이 결정세액보다 많아 통장으로 돌려받습니다.';
+    } else {
+      board.className = 'refund-board pay';
+      bStatus.innerText = '🚨 세금 추가 납부 대상 (토해내기)';
+      bAmount.innerText = '-' + Math.round(Math.abs(diff)).toLocaleString() + ' 원';
+      bSumm.innerText = '소득 대비 지출 공제가 부족하여 연말정산 시 추가 납부가 발생합니다.';
+    }
+
+    document.getElementById('tr-sum-prepaid').innerText = Math.round(totalPrepaid).toLocaleString() + ' 원';
+    document.getElementById('tr-sum-final').innerText = Math.round(finalTotalTax).toLocaleString() + ' 원';
+    document.getElementById('tr-sum-ins-ded').innerText = Math.round(socialInsDed).toLocaleString() + ' 원 (전액 공제)';
+    document.getElementById('tr-sum-card-ded').innerText = Math.round(cardDed).toLocaleString() + ' 원 인정';
+    document.getElementById('tr-sum-credit-ded').innerText = Math.round(totalCredits * 1.1).toLocaleString() + ' 원 (지방세 포함 실감면)';
+    document.getElementById('tax-breakdown-panel').style.display = 'block';
+  }
+
+  // 초기 기동
+  window.onload = function() {
+    initGroupDropdown();
+    renderBonusCards(fullAffiliates);
+    renderScaleGrid();
+    handleMetroChange();
+  };
+</script>
+
+</body>
+</html>
