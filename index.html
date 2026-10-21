@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- 폰트: 프리텐다드 -->
+    <!-- Pretendard Font -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         body { font-family: 'Pretendard', sans-serif; background-color: #f3f4f6; }
@@ -25,13 +25,13 @@
             <h1 class="text-2xl font-bold tracking-tight text-gray-900">
                 출근하기 싫다 <span class="toss-blue text-lg font-semibold ml-2">직장인 생존 백서</span>
             </h1>
-            <div class="hidden sm:block text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">2026 대한민국 대기업 & 지자체 공시</div>
+            <div class="hidden sm:block text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">2026 공정위 대기업 집단 & 지자체 공시</div>
         </div>
-        <!-- Tabs -->
+        <!-- GNB Tabs -->
         <div class="max-w-5xl mx-auto px-4 border-t">
             <div class="flex space-x-6 overflow-x-auto hide-scrollbar whitespace-nowrap">
                 <button @click="currentTab = 'companies'" :class="currentTab === 'companies' ? 'border-b-2 border-blue-500 toss-blue font-bold' : 'text-gray-500 font-medium'" class="py-3 px-1 transition">30대 그룹사 채용·성과급</button>
-                <button @click="currentTab = 'regions'" :class="currentTab === 'regions' ? 'border-b-2 border-blue-500 toss-blue font-bold' : 'text-gray-500 font-medium'" class="py-3 px-1 transition">전국 지역별 연봉 TOP 10</button>
+                <button @click="currentTab = 'regions'" :class="currentTab === 'regions' ? 'border-b-2 border-blue-500 toss-blue font-bold' : 'text-gray-500 font-medium'" class="py-3 px-1 transition">전국 지역별 연봉 순위</button>
                 <button @click="currentTab = 'calculators'" :class="currentTab === 'calculators' ? 'border-b-2 border-blue-500 toss-blue font-bold' : 'text-gray-500 font-medium'" class="py-3 px-1 transition">직장인 생존 계산기</button>
             </div>
         </div>
@@ -39,12 +39,14 @@
 
     <main class="max-w-5xl mx-auto px-4 py-8">
 
-        <!-- 탭 1: 30대 그룹사 -->
+        <!-- ========================================== -->
+        <!-- 탭 1: 30대 그룹사 (계열사 5~10개 탑재) -->
+        <!-- ========================================== -->
         <div x-show="currentTab === 'companies'" x-transition>
             <div class="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <div>
                     <h2 class="text-xl font-bold text-gray-800">대한민국 30대 그룹 상세 해부</h2>
-                    <p class="text-sm text-gray-500 mt-1">공정위 지정 자산총액 1~30위 그룹. 클릭 시 핵심 계열사 채용사이트 및 연봉 정보가 펼쳐집니다.</p>
+                    <p class="text-sm text-gray-500 mt-1">공정위 지정 자산총액 1~30위 그룹. 그룹명을 클릭하면 5~10개 핵심 계열사의 채용·연봉 정보가 펼쳐집니다.</p>
                 </div>
             </div>
 
@@ -55,20 +57,21 @@
                             <div class="flex items-center gap-4">
                                 <span class="text-gray-400 font-semibold w-6 text-left" x-text="group.rank"></span>
                                 <h3 class="text-lg font-bold text-gray-900" x-text="group.name"></h3>
+                                <span class="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium" x-text="'계열사 ' + group.subsidiaries.length + '개'"></span>
                             </div>
                             <svg class="w-5 h-5 text-gray-400 transform transition-transform" :class="expandedGroup === group.rank ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
 
                         <div x-show="expandedGroup === group.rank" x-collapse>
-                            <div class="px-6 pb-6 pt-2 space-y-4 bg-gray-50 border-t border-gray-100">
-                                <template x-for="company in group.subsidiaries">
-                                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="px-6 pb-6 pt-2 space-y-3 bg-gray-50 border-t border-gray-100">
+                                <template x-for="company in group.subsidiaries" :key="company.name">
+                                    <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                         <div>
-                                            <div class="flex items-center gap-2">
-                                                <h4 class="text-lg font-bold text-gray-800" x-text="company.name"></h4>
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                                <h4 class="text-base sm:text-lg font-bold text-gray-800" x-text="company.name"></h4>
                                                 <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded" x-text="company.biz"></span>
                                             </div>
-                                            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                                            <div class="mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1.5 text-sm">
                                                 <div><span class="text-gray-400">성과급/상여:</span> <span class="font-medium text-red-500 ml-1" x-text="company.bonus"></span></div>
                                                 <div><span class="text-gray-400">평균 연봉:</span> <span class="font-semibold toss-blue ml-1" x-text="company.salary"></span></div>
                                             </div>
@@ -85,17 +88,19 @@
             </div>
         </div>
 
-        <!-- 탭 2: 지역별 연봉 -->
+        <!-- ========================================== -->
+        <!-- 탭 2: 지역별 연봉 (대/중견/중소 필터 팝업) -->
+        <!-- ========================================== -->
         <div x-show="currentTab === 'regions'" x-transition style="display: none;">
-            <h2 class="text-xl font-bold text-gray-800 mb-1">우리 동네 대장 기업은 어디일까?</h2>
-            <p class="text-sm text-gray-500 mb-6">지역 카드를 클릭하면 해당 지역의 평균 연봉 TOP 10 기업이 상세하게 표시됩니다.</p>
+            <h2 class="text-xl font-bold text-gray-800 mb-1">우리 동네 연봉 순위 (대·중견·중소)</h2>
+            <p class="text-sm text-gray-500 mb-6">지역 카드를 클릭하면 해당 지역의 대기업, 중견기업, 중소기업별 연봉 순위가 상세히 표시됩니다.</p>
 
             <div class="space-y-8">
                 <!-- 서울 -->
                 <div>
-                    <h3 class="text-lg font-bold mb-4 flex items-center"><span class="w-2 h-6 bg-toss-blue rounded-full mr-2"></span>서울특별시 주요 거점</h3>
+                    <h3 class="text-lg font-bold mb-4 flex items-center"><span class="w-2 h-6 bg-toss-blue rounded-full mr-2"></span>서울특별시 핵심 업무지구</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <template x-for="r in regions.filter(r => r.type === 'seoul')">
+                        <template x-for="r in regions.filter(r => r.type === 'seoul')" :key="r.id">
                             <button @click="openModal(r)" class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-400 hover:shadow-md transition text-left group">
                                 <h4 class="font-bold text-gray-800 group-hover:text-blue-600" x-text="r.name"></h4>
                                 <p class="text-xs text-gray-400 mt-2 truncate" x-text="r.desc"></p>
@@ -105,9 +110,9 @@
                 </div>
                 <!-- 경기 -->
                 <div>
-                    <h3 class="text-lg font-bold mb-4 flex items-center"><span class="w-2 h-6 bg-toss-blue rounded-full mr-2"></span>경기도 주요 거점</h3>
+                    <h3 class="text-lg font-bold mb-4 flex items-center"><span class="w-2 h-6 bg-toss-blue rounded-full mr-2"></span>경기도 핵심 산업벨트</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <template x-for="r in regions.filter(r => r.type === 'gyeonggi')">
+                        <template x-for="r in regions.filter(r => r.type === 'gyeonggi')" :key="r.id">
                             <button @click="openModal(r)" class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-400 hover:shadow-md transition text-left group">
                                 <h4 class="font-bold text-gray-800 group-hover:text-blue-600" x-text="r.name"></h4>
                                 <p class="text-xs text-gray-400 mt-2 truncate" x-text="r.desc"></p>
@@ -119,7 +124,7 @@
                 <div>
                     <h3 class="text-lg font-bold mb-4 flex items-center"><span class="w-2 h-6 bg-toss-blue rounded-full mr-2"></span>전국 6대 광역시</h3>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <template x-for="r in regions.filter(r => r.type === 'metro')">
+                        <template x-for="r in regions.filter(r => r.type === 'metro')" :key="r.id">
                             <button @click="openModal(r)" class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-400 hover:shadow-md transition text-left group">
                                 <h4 class="font-bold text-gray-800 group-hover:text-blue-600" x-text="r.name"></h4>
                                 <p class="text-xs text-gray-400 mt-2 truncate" x-text="r.desc"></p>
@@ -130,82 +135,131 @@
             </div>
         </div>
 
-        <!-- 탭 3: 생존 계산기 -->
+        <!-- ========================================== -->
+        <!-- 탭 3: 직장인 생존 계산기 (소수점 제거 & 부양가족/세부항목 추가) -->
+        <!-- ========================================== -->
         <div x-show="currentTab === 'calculators'" x-transition style="display: none;">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <button @click="activeCalc = 'net'" :class="activeCalc === 'net' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200'" class="p-4 rounded-2xl font-bold transition">실수령액 계산기</button>
-                <button @click="activeCalc = 'tax'" :class="activeCalc === 'tax' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200'" class="p-4 rounded-2xl font-bold transition">연말정산 예측</button>
+                <button @click="activeCalc = 'tax'" :class="activeCalc === 'tax' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200'" class="p-4 rounded-2xl font-bold transition">연말정산 예측기</button>
                 <button @click="activeCalc = 'severance'" :class="activeCalc === 'severance' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200'" class="p-4 rounded-2xl font-bold transition">퇴직금 (DB/DC)</button>
                 <button @click="activeCalc = 'pension'" :class="activeCalc === 'pension' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200'" class="p-4 rounded-2xl font-bold transition">국민연금 시뮬레이터</button>
             </div>
 
             <div class="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-gray-100">
-                <!-- 1. 실수령액 -->
+                <!-- 1. 실수령액 (부양가족 반영) -->
                 <div x-show="activeCalc === 'net'">
-                    <h3 class="text-xl font-bold mb-6">내 통장에 꽂히는 진짜 월급은? (4대보험 상세)</h3>
+                    <h3 class="text-xl font-bold mb-6">내 통장에 꽂히는 진짜 월급은? (부양가족 반영)</h3>
                     <div class="flex flex-col md:flex-row gap-8">
                         <div class="w-full md:w-1/2 space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">계약 연봉 (만 원)</label>
                                 <input type="number" x-model="calcData.net.salary" placeholder="예: 5000" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
                             </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">부양가족 수 (본인 포함)</label>
+                                    <input type="number" x-model="calcData.net.dependents" min="1" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">20세 이하 자녀 수</label>
+                                    <input type="number" x-model="calcData.net.children" min="0" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl">
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-2">* 부양가족 수 및 20세 이하 자녀 수에 따라 근로소득 간이세액표가 자동 감면 적용됩니다.</p>
                         </div>
                         <div class="w-full md:w-1/2 bg-gray-50 p-6 rounded-2xl">
                             <div class="text-sm text-gray-500 mb-1">월 예상 실수령액</div>
                             <div class="text-3xl font-bold toss-blue mb-4" x-text="formatWon(calculateNet().net) + '원'"></div>
                             <div class="space-y-2 text-sm border-t border-gray-200 pt-4">
-                                <div class="flex justify-between"><span class="text-gray-500">국민연금 (4.5%)</span> <span x-text="formatWon(calculateNet().pension) + '원'"></span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">건강보험 (3.545%)</span> <span x-text="formatWon(calculateNet().health) + '원'"></span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">장기요양보험</span> <span x-text="formatWon(calculateNet().care) + '원'"></span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">고용보험 (0.9%)</span> <span x-text="formatWon(calculateNet().emp) + '원'"></span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">소득세/지방세 (추정)</span> <span x-text="formatWon(calculateNet().tax) + '원'"></span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">국민연금 (4.5%)</span> <span class="font-medium" x-text="formatWon(calculateNet().pension) + '원'"></span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">건강보험 (3.545%)</span> <span class="font-medium" x-text="formatWon(calculateNet().health) + '원'"></span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">장기요양보험 (건보 12.95%)</span> <span class="font-medium" x-text="formatWon(calculateNet().care) + '원'"></span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">고용보험 (0.9%)</span> <span class="font-medium" x-text="formatWon(calculateNet().emp) + '원'"></span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">근로소득세 / 지방소득세</span> <span class="font-medium text-red-500" x-text="formatWon(calculateNet().tax) + '원'"></span></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. 연말정산 -->
+                <!-- 2. 연말정산 (상세 공제 항목 풀세트) -->
                 <div x-show="activeCalc === 'tax'" style="display: none;">
-                    <h3 class="text-xl font-bold mb-6">13월의 월급 vs 세금 폭탄 방어전</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
+                    <h3 class="text-xl font-bold mb-6">13월의 월급 vs 세금 토해내기? (상세 공제 반영)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3.5 max-h-[500px] overflow-y-auto pr-2">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">총 급여 (만 원)</label>
-                                <input type="number" x-model="calcData.tax.income" class="w-full p-3 bg-gray-50 border rounded-xl">
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">총 급여액 (만 원)</label>
+                                <input type="number" x-model="calcData.tax.income" placeholder="예: 6000" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">기본 부양가족 수 (본인 제외)</label>
+                                    <input type="number" x-model="calcData.tax.dependents" placeholder="인원수" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">신용카드 사용액 (만 원)</label>
+                                    <input type="number" x-model="calcData.tax.creditCard" placeholder="15% 공제" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">체크카드/현금영수증 (만 원)</label>
+                                    <input type="number" x-model="calcData.tax.debitCard" placeholder="30% 공제" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">전통시장/대중교통 (만 원)</label>
+                                    <input type="number" x-model="calcData.tax.market" placeholder="40% 공제" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">보장성 보험료 납입액 (만 원)</label>
+                                    <input type="number" x-model="calcData.tax.insurance" placeholder="100만 한도 (12%)" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">의료비 지출액 (만 원)</label>
+                                    <input type="number" x-model="calcData.tax.medical" placeholder="총급여 3% 초과분" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">교육비 지출액 (만 원)</label>
+                                    <input type="number" x-model="calcData.tax.education" placeholder="15% 세액공제" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">연금저축/IRP 납입액 (만 원)</label>
+                                    <input type="number" x-model="calcData.tax.pensionAcc" placeholder="900만 한도 (12~15%)" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">신용/체크카드 사용액 (만 원)</label>
-                                <input type="number" x-model="calcData.tax.card" class="w-full p-3 bg-gray-50 border rounded-xl">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">의료비 지출 (만 원)</label>
-                                <input type="number" x-model="calcData.tax.medical" class="w-full p-3 bg-gray-50 border rounded-xl">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">연금저축/IRP 납입액 (만 원)</label>
-                                <input type="number" x-model="calcData.tax.pension" class="w-full p-3 bg-gray-50 border rounded-xl">
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">주택청약 / 월세 지출액 (만 원)</label>
+                                <input type="number" x-model="calcData.tax.rent" placeholder="월세액 15~17% 세액공제" class="w-full p-2.5 bg-gray-50 border rounded-xl text-sm">
                             </div>
                         </div>
+
                         <div class="bg-gray-50 p-6 rounded-2xl flex flex-col justify-center items-center text-center">
-                            <div class="text-sm text-gray-500 mb-2">예상 환급(납부)액 추정치</div>
-                            <div class="text-3xl font-bold mb-2" :class="calculateTax() > 0 ? 'text-blue-600' : 'text-red-500'" x-text="(calculateTax() > 0 ? '+' : '') + formatWon(calculateTax()) + '원'"></div>
-                            <p class="text-xs text-gray-400 mt-4">* 입력하신 주요 공제 항목을 바탕으로 한 단순 시뮬레이션입니다.</p>
+                            <div class="text-sm text-gray-500 mb-2">예상 연말정산 환급(납부)액 추정치</div>
+                            <div class="text-4xl font-bold mb-3" :class="calculateTax() >= 0 ? 'text-blue-600' : 'text-red-500'" x-text="(calculateTax() >= 0 ? '+' : '') + formatWon(calculateTax()) + '원'"></div>
+                            <span class="text-xs px-3 py-1 rounded-full font-medium" :class="calculateTax() >= 0 ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'" x-text="calculateTax() >= 0 ? '환급 예상 (13월의 월급)' : '추가 납부 예상 (세금 토해냄)'"></span>
+                            <p class="text-xs text-gray-400 mt-6 leading-relaxed">
+                                * 소득공제(인적공제 150만, 신용/체크카드/전통시장 차등) 및 세액공제(보험, 의료, 교육, 연금저축, 월세) 산식을 소수점 없이 원 단위로 정확히 시뮬레이션합니다.
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. 퇴직금 -->
+                <!-- 3. 퇴직금 (DB/DC) -->
                 <div x-show="activeCalc === 'severance'" style="display: none;">
-                    <h3 class="text-xl font-bold mb-6">퇴사할 때 얼마 받을까? (DB vs DC 비교)</h3>
+                    <h3 class="text-xl font-bold mb-6">퇴사할 때 얼마 받을까? (DB형 vs DC형)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">현재 계약 연봉 (만 원)</label>
-                                <input type="number" x-model="calcData.sev.salary" class="w-full p-3 bg-gray-50 border rounded-xl">
+                                <input type="number" x-model="calcData.sev.salary" placeholder="예: 5000" class="w-full p-3 bg-gray-50 border rounded-xl">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">근속 연수 (년)</label>
-                                <input type="number" x-model="calcData.sev.years" class="w-full p-3 bg-gray-50 border rounded-xl">
+                                <input type="number" x-model="calcData.sev.years" placeholder="예: 7" class="w-full p-3 bg-gray-50 border rounded-xl">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">DC형 예상 연평균 운용수익률 (%)</label>
@@ -214,18 +268,18 @@
                         </div>
                         <div class="space-y-4">
                             <div class="bg-white border border-blue-200 p-5 rounded-2xl shadow-sm">
-                                <div class="text-sm text-gray-500">확정급여형 (DB - 현재 연봉 기준)</div>
-                                <div class="text-2xl font-bold text-gray-900 mt-1" x-text="formatWon(calcDB()) + '원'"></div>
+                                <div class="text-sm text-gray-500">확정급여형 (DB - 퇴직 전 3개월 평균임금 기준)</div>
+                                <div class="text-3xl font-bold text-gray-900 mt-2" x-text="formatWon(calcDB()) + '원'"></div>
                             </div>
                             <div class="bg-white border border-green-200 p-5 rounded-2xl shadow-sm">
                                 <div class="text-sm text-gray-500">확정기여형 (DC - 운용 수익 복리 반영)</div>
-                                <div class="text-2xl font-bold text-green-600 mt-1" x-text="formatWon(calcDC()) + '원'"></div>
+                                <div class="text-3xl font-bold text-green-600 mt-2" x-text="formatWon(calcDC()) + '원'"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. 국민연금 -->
+                <!-- 4. 국민연금 미래 시뮬레이터 -->
                 <div x-show="activeCalc === 'pension'" style="display: none;">
                     <h3 class="text-xl font-bold mb-6">노후 생명줄, 국민연금 미래가치 시뮬레이터</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -250,16 +304,16 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">향후 직급별 연평균 임금인상률 (%)</label>
-                                <input type="number" step="0.1" x-model="calcData.pen.growth" placeholder="예: 3.5" class="w-full p-3 bg-gray-50 border rounded-xl">
+                                <input type="number" step="0.1" x-model="calcData.pen.growth" class="w-full p-3 bg-gray-50 border rounded-xl">
                             </div>
                         </div>
                         <div class="bg-gray-800 text-white p-6 rounded-2xl flex flex-col justify-center">
-                            <div class="text-sm text-gray-400 mb-1">만 65세 이후 예상 <span class="text-blue-400">매월 수령액</span> (복리 생애소득 반영)</div>
+                            <div class="text-sm text-gray-400 mb-1">만 65세 이후 예상 <span class="text-blue-400">매월 수령액</span> (생애소득 복리 환산)</div>
                             <div class="text-4xl font-bold text-white mb-4" x-text="formatWon(calcPension()) + '원'"></div>
                             <ul class="text-xs text-gray-400 space-y-2 mt-4 border-t border-gray-600 pt-4">
-                                <li>• 총 납입 예상 기간: <span x-text="(calcData.pen.retireAge - calcData.pen.joinAge) || 0"></span>년</li>
-                                <li>• 은퇴 시점 환산 최종 연봉: <span x-text="formatWon(calcFinalSalary())"></span>원</li>
-                                <li>* 소득대체율 40% 기준 산식 적용 (물가상승률 미반영 명목가치)</li>
+                                <li>• 총 납입 예상 기간: <span class="text-white font-semibold" x-text="(calcData.pen.retireAge - calcData.pen.joinAge) || 0"></span>년</li>
+                                <li>• 은퇴 시점 환산 최종 연봉: <span class="text-white font-semibold" x-text="formatWon(calcFinalSalary())"></span>원</li>
+                                <li>* 소수점을 완전히 제거하고 반올림하여 깔끔한 원 단위로만 제공합니다.</li>
                             </ul>
                         </div>
                     </div>
@@ -268,35 +322,54 @@
         </div>
     </main>
 
-    <!-- Region Modal -->
+    <!-- ========================================== -->
+    <!-- 지역별 TOP 순위 팝업 (대/중견/중소 필터링 모달) -->
+    <!-- ========================================== -->
     <div x-show="isModalOpen" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-black/50 transition-opacity" @click="closeModal"></div>
-        <div class="bg-white rounded-3xl shadow-xl w-full max-w-lg overflow-hidden z-10 flex flex-col max-h-[80vh]" x-transition>
+        <div class="bg-white rounded-3xl shadow-xl w-full max-w-xl overflow-hidden z-10 flex flex-col max-h-[85vh]" x-transition>
+            <!-- Modal Header -->
             <div class="p-6 border-b flex justify-between items-center bg-gray-50">
-                <h3 class="text-xl font-bold text-gray-900" x-text="modalData.name + ' TOP 10'"></h3>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900" x-text="modalData.name + ' 연봉 순위'"></h3>
+                    <p class="text-xs text-gray-500 mt-0.5">기업 규모별 탭을 선택하여 세부 연봉을 비교하세요.</p>
+                </div>
                 <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <div class="overflow-y-auto p-4 flex-1">
-                <ul class="space-y-3">
-                    <template x-for="(comp, index) in modalData.top10" :key="index">
-                        <li class="p-4 bg-gray-50 rounded-xl flex justify-between items-center border border-gray-100 hover:border-blue-200 transition">
-                            <div class="flex items-center gap-3">
-                                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center" x-text="index + 1"></span>
-                                <div>
-                                    <div class="font-bold text-gray-800" x-text="comp.name"></div>
-                                    <div class="text-xs text-gray-500 mt-0.5" x-text="comp.biz"></div>
+            <!-- Category Filter Tabs -->
+            <div class="px-6 py-3 bg-white border-b flex space-x-2">
+                <button @click="modalScale = 'all'" :class="modalScale === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition">전체</button>
+                <button @click="modalScale = '대기업'" :class="modalScale === '대기업' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition">대기업</button>
+                <button @click="modalScale = '중견기업'" :class="modalScale === '중견기업' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition">중견기업</button>
+                <button @click="modalScale = '중소기업'" :class="modalScale === '중소기업' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition">중소/강소</button>
+            </div>
+            <!-- Modal Body (List) -->
+            <div class="overflow-y-auto p-4 sm:p-6 flex-1 space-y-3">
+                <template x-for="(comp, index) in filteredModalCompanies()" :key="comp.name">
+                    <div class="p-4 bg-gray-50 rounded-xl flex justify-between items-center border border-gray-100 hover:border-blue-200 transition">
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center shrink-0" x-text="index + 1"></span>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-gray-800" x-text="comp.name"></span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded font-medium" 
+                                          :class="comp.scale === '대기업' ? 'bg-blue-100 text-blue-700' : (comp.scale === '중견기업' ? 'bg-purple-100 text-purple-700' : 'bg-emerald-100 text-emerald-700')" 
+                                          x-text="comp.scale"></span>
                                 </div>
+                                <div class="text-xs text-gray-500 mt-0.5" x-text="comp.biz"></div>
                             </div>
-                            <div class="font-bold text-gray-900" x-text="comp.salary"></div>
-                        </li>
-                    </template>
-                </ul>
+                        </div>
+                        <div class="font-bold text-gray-900 shrink-0 text-sm sm:text-base ml-2" x-text="comp.salary"></div>
+                    </div>
+                </template>
+                <div x-show="filteredModalCompanies().length === 0" class="text-center py-8 text-gray-400 text-sm">해당 분류의 기업 정보가 없습니다.</div>
             </div>
         </div>
     </div>
 
+    <!-- Alpine.js Application State & Data Script -->
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('appData', () => ({
@@ -304,244 +377,559 @@
                 expandedGroup: null,
                 activeCalc: 'net',
                 isModalOpen: false,
-                modalData: { name: '', top10: [] },
+                modalScale: 'all',
+                modalData: { name: '', companies: [] },
 
-                // 계산기 상태
+                // 계산기 파라미터 상태
                 calcData: {
-                    net: { salary: '' },
-                    tax: { income: '', card: '', medical: '', pension: '' },
-                    sev: { salary: '', years: '', rate: '3.0' },
-                    pen: { age: '32', joinAge: '28', retireAge: '60', salary: '5000', growth: '3.5' }
+                    net: { salary: '5500', dependents: '1', children: '0' },
+                    tax: { income: '5500', dependents: '0', creditCard: '1500', debitCard: '800', market: '120', insurance: '100', medical: '150', education: '100', pensionAcc: '400', rent: '0' },
+                    sev: { salary: '5500', years: '5', rate: '3.5' },
+                    pen: { age: '32', joinAge: '28', retireAge: '60', salary: '5500', growth: '3.5' }
                 },
 
+                // 소수점 완벽 제거 및 원 단위 정수 포맷터
                 formatWon(num) {
-                    if(!num || isNaN(num)) return 0;
-                    return new Intl.NumberFormat('ko-KR').format(num);
+                    if (!num || isNaN(num)) return '0';
+                    return new Intl.NumberFormat('ko-KR').format(Math.round(Number(num)));
                 },
 
-                // 실수령액 (월 단위 상세 계산)
+                // 1. 실수령액 (부양가족 간이세액 반영)
                 calculateNet() {
-                    let ann = parseInt(this.calcData.net.salary) * 10000 || 0;
-                    if(ann === 0) return { net:0, pension:0, health:0, care:0, emp:0, tax:0 };
+                    let ann = (parseInt(this.calcData.net.salary) || 0) * 10000;
+                    let deps = Math.max(1, parseInt(this.calcData.net.dependents) || 1);
+                    let kids = parseInt(this.calcData.net.children) || 0;
+                    if (ann === 0) return { net: 0, pension: 0, health: 0, care: 0, emp: 0, tax: 0 };
+
                     let mon = ann / 12;
-                    let pen = Math.min(mon * 0.045, 265500); // 국민연금 상한
-                    let hlt = mon * 0.03545; // 건보료
-                    let car = hlt * 0.1295;  // 요양보험
-                    let emp = mon * 0.009;   // 고용보험
-                    let tax = mon * 0.06;    // 소득세(단순 추정)
-                    let tot = pen + hlt + car + emp + tax;
-                    return { net: mon - tot, pension: pen, health: hlt, care: car, emp: emp, tax: tax };
+                    let pen = Math.min(mon * 0.045, 265500);
+                    let hlt = mon * 0.03545;
+                    let car = hlt * 0.1295;
+                    let emp = mon * 0.009;
+
+                    // 기본 간이세액 추정 (구간별 누진)
+                    let baseTax = 0;
+                    if (mon > 8000000) baseTax = mon * 0.14;
+                    else if (mon > 5000000) baseTax = mon * 0.09;
+                    else if (mon > 3000000) baseTax = mon * 0.05;
+                    else baseTax = mon * 0.025;
+
+                    // 부양가족 및 자녀 공제율 반영
+                    let taxDiscount = Math.min(0.60, (deps - 1) * 0.12 + (kids * 0.10));
+                    let tax = Math.max(0, baseTax * (1 - taxDiscount));
+                    let localTax = tax * 0.1;
+                    let totalDeduct = pen + hlt + car + emp + tax + localTax;
+
+                    return {
+                        net: Math.round(mon - totalDeduct),
+                        pension: Math.round(pen),
+                        health: Math.round(hlt),
+                        care: Math.round(car),
+                        emp: Math.round(emp),
+                        tax: Math.round(tax + localTax)
+                    };
                 },
 
-                // 연말정산 (소득공제/세액공제 시뮬레이터)
+                // 2. 연말정산 (소득공제 & 세액공제 정밀 시뮬레이터)
                 calculateTax() {
-                    let inc = parseInt(this.calcData.tax.income) * 10000 || 0;
-                    let card = parseInt(this.calcData.tax.card) * 10000 || 0;
-                    let med = parseInt(this.calcData.tax.medical) * 10000 || 0;
-                    let pen = parseInt(this.calcData.tax.pension) * 10000 || 0;
-                    if(inc === 0) return 0;
-                    
-                    // 단순 시뮬레이션: 기본공제 + 카드(총급여 25% 초과분의 15%) + 세액공제(의료비 15%, 연금 15%)
-                    let cardDeduct = Math.max(0, card - (inc * 0.25)) * 0.15;
-                    let taxCredit = (med * 0.15) + (Math.min(pen, 9000000) * 0.15);
-                    // 대략적 기납부세액 vs 결정세액 비교 (양수면 환급, 음수면 뱉어냄)
-                    let result = taxCredit + (cardDeduct * 0.15) - (inc * 0.01);
-                    return result;
+                    let inc = (parseInt(this.calcData.tax.income) || 0) * 10000;
+                    let deps = parseInt(this.calcData.tax.dependents) || 0;
+                    let credit = (parseInt(this.calcData.tax.creditCard) || 0) * 10000;
+                    let debit = (parseInt(this.calcData.tax.debitCard) || 0) * 10000;
+                    let market = (parseInt(this.calcData.tax.market) || 0) * 10000;
+                    let ins = (parseInt(this.calcData.tax.insurance) || 0) * 10000;
+                    let med = (parseInt(this.calcData.tax.medical) || 0) * 10000;
+                    let edu = (parseInt(this.calcData.tax.education) || 0) * 10000;
+                    let penAcc = (parseInt(this.calcData.tax.pensionAcc) || 0) * 10000;
+                    let rent = (parseInt(this.calcData.tax.rent) || 0) * 10000;
+
+                    if (inc === 0) return 0;
+
+                    // 1) 소득공제 계산 (인적공제 150만원 + 카드 소득공제)
+                    let humanDeduction = deps * 1500000;
+                    let cardThreshold = inc * 0.25;
+                    let cardOver = Math.max(0, (credit + debit + market) - cardThreshold);
+                    let cardDeduction = 0;
+                    if (cardOver > 0) {
+                        let totalCardSpent = credit + debit + market;
+                        let creditRatio = credit / totalCardSpent;
+                        let debitRatio = debit / totalCardSpent;
+                        let marketRatio = market / totalCardSpent;
+                        cardDeduction = Math.min(3000000, (cardOver * creditRatio * 0.15) + (cardOver * debitRatio * 0.30) + (cardOver * marketRatio * 0.40));
+                    }
+                    // 소득공제로 아끼는 세금 (한계세율 약 15% 적용)
+                    let incomeDeductionSaving = (humanDeduction + cardDeduction) * 0.15;
+
+                    // 2) 세액공제 계산 (보험, 의료, 교육, 연금계좌, 월세)
+                    let insCredit = Math.min(ins, 1000000) * 0.12;
+                    let medCredit = Math.max(0, med - (inc * 0.03)) * 0.15;
+                    let eduCredit = edu * 0.15;
+                    let penCredit = Math.min(penAcc, 9000000) * (inc > 55000000 ? 0.12 : 0.15);
+                    let rentCredit = Math.min(rent, 7500000) * (inc > 55000000 ? 0.15 : 0.17);
+                    let totalTaxCredit = insCredit + medCredit + eduCredit + penCredit + rentCredit;
+
+                    // 기납부세액과의 차익 추산 (양수=환급, 음수=추가납부)
+                    let estimatedDiff = (incomeDeductionSaving + totalTaxCredit) - (inc * 0.018);
+                    return Math.round(estimatedDiff);
                 },
 
-                // 퇴직금
+                // 3. 퇴직금 (DB형 & DC형)
                 calcDB() {
-                    let s = parseInt(this.calcData.sev.salary) * 10000 || 0;
+                    let s = (parseInt(this.calcData.sev.salary) || 0) * 10000;
                     let y = parseInt(this.calcData.sev.years) || 0;
-                    return (s / 12) * y; // 퇴직 전 3개월 평균임금 * 근속연수 (간략화)
+                    return Math.round((s / 12) * y);
                 },
                 calcDC() {
-                    let s = parseInt(this.calcData.sev.salary) * 10000 || 0;
+                    let s = (parseInt(this.calcData.sev.salary) || 0) * 10000;
                     let y = parseInt(this.calcData.sev.years) || 0;
-                    let r = parseFloat(this.calcData.sev.rate) / 100 || 0.03;
+                    let r = (parseFloat(this.calcData.sev.rate) || 3.5) / 100;
                     let tot = 0;
-                    // 매년 급여가 동일했다고 가정하고 복리 계산 (실제로는 매년 납입)
-                    let annualPay = s / 12;
-                    for(let i=0; i<y; i++) tot += annualPay * Math.pow(1 + r, i);
-                    return tot;
+                    let annualContribution = s / 12;
+                    for (let i = 0; i < y; i++) {
+                        tot += annualContribution * Math.pow(1 + r, i + 1);
+                    }
+                    return Math.round(tot);
                 },
 
-                // 국민연금 생애 시뮬레이터
+                // 4. 국민연금 미래 가치
                 calcFinalSalary() {
-                    let currentSal = parseInt(this.calcData.pen.salary) * 10000 || 0;
-                    let age = parseInt(this.calcData.pen.age) || 0;
-                    let retireAge = parseInt(this.calcData.pen.retireAge) || 0;
-                    let growth = parseFloat(this.calcData.pen.growth)/100 || 0;
-                    let yearsLeft = Math.max(0, retireAge - age);
-                    return currentSal * Math.pow(1 + growth, yearsLeft);
+                    let s = (parseInt(this.calcData.pen.salary) || 0) * 10000;
+                    let age = parseInt(this.calcData.pen.age) || 30;
+                    let retAge = parseInt(this.calcData.pen.retireAge) || 60;
+                    let g = (parseFloat(this.calcData.pen.growth) || 3.5) / 100;
+                    let years = Math.max(0, retAge - age);
+                    return Math.round(s * Math.pow(1 + g, years));
                 },
                 calcPension() {
-                    let currentSal = parseInt(this.calcData.pen.salary) * 10000 || 0;
-                    let age = parseInt(this.calcData.pen.age) || 0;
-                    let joinAge = parseInt(this.calcData.pen.joinAge) || 0;
-                    let retireAge = parseInt(this.calcData.pen.retireAge) || 0;
-                    let growth = parseFloat(this.calcData.pen.growth)/100 || 0;
-                    
-                    let pastYears = Math.max(0, age - joinAge);
-                    let futureYears = Math.max(0, retireAge - age);
-                    let totalYears = pastYears + futureYears;
-                    if(totalYears < 10) return 0; // 10년 미만 수령 불가
+                    let s = (parseInt(this.calcData.pen.salary) || 0) * 10000;
+                    let age = parseInt(this.calcData.pen.age) || 30;
+                    let joinAge = parseInt(this.calcData.pen.joinAge) || 28;
+                    let retAge = parseInt(this.calcData.pen.retireAge) || 60;
+                    let g = (parseFloat(this.calcData.pen.growth) || 3.5) / 100;
 
-                    // 생애 평균 소득 (B값) 추산
+                    let totalYears = Math.max(0, retAge - joinAge);
+                    if (totalYears < 10) return 0;
+
+                    let pastYears = Math.max(0, age - joinAge);
+                    let startingSal = s / Math.pow(1 + g, pastYears);
                     let sum = 0;
-                    let baseSal = currentSal / Math.pow(1 + growth, pastYears); // 입사초봉 추정
-                    for(let i=0; i<totalYears; i++) {
-                        sum += baseSal * Math.pow(1 + growth, i);
+                    for (let i = 0; i < totalYears; i++) {
+                        sum += startingSal * Math.pow(1 + g, i);
                     }
                     let avgLifetimeSal = sum / totalYears;
-                    
-                    // 소득대체율 40% 기준 단순 환산 (월 단위)
-                    let monthlyPension = (avgLifetimeSal * 0.4 * (totalYears/40)) / 12;
-                    return monthlyPension;
+                    let monthly = (avgLifetimeSal * 0.40 * (totalYears / 40)) / 12;
+                    return Math.round(monthly);
                 },
 
-                openModal(region) { this.modalData = region; this.isModalOpen = true; },
-                closeModal() { this.isModalOpen = false; },
+                // 모달 제어 및 기업규모 필터
+                openModal(region) {
+                    this.modalData = region;
+                    this.modalScale = 'all';
+                    this.isModalOpen = true;
+                },
+                closeModal() {
+                    this.isModalOpen = false;
+                },
+                filteredModalCompanies() {
+                    if (!this.modalData.companies) return [];
+                    if (this.modalScale === 'all') return this.modalData.companies;
+                    return this.modalData.companies.filter(c => c.scale === this.modalScale);
+                },
 
-                // 데이터: 대한민국 30대 그룹 (1~30위 전체 반영 + 정확한 URL 매핑)
+                // ==========================================
+                // 데이터 1: 30대 그룹사 (각 5~10개 계열사 탑재)
+                // ==========================================
                 top30Groups: [
                     { rank: 1, name: '삼성그룹', subsidiaries: [
-                        { name: '삼성전자', biz: '반도체/모바일', bonus: 'OPI 50% + TAI 100%', salary: '1억 2,000만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성전자', biz: '반도체/모바일/가전', bonus: 'OPI 50% + TAI 100%', salary: '1억 2,000만 원', url: 'https://samsungcareers.com' },
                         { name: '삼성디스플레이', biz: 'OLED 패널', bonus: 'OPI 48%', salary: '1억 1,500만 원', url: 'https://samsungcareers.com' },
-                        { name: '삼성물산', biz: '건설/상사', bonus: '부문별 상이 (약 15%)', salary: '1억 1,000만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성SDI', biz: '배터리/전자재료', bonus: 'OPI 30%', salary: '1억 500만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성전기', biz: 'MLCC/기판', bonus: 'OPI 18%', salary: '9,800만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성SDS', biz: '클라우드/IT서비스', bonus: 'OPI 15%', salary: '1억 200만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성물산', biz: '건설/상사/패션', bonus: '부문별 상이 (15~30%)', salary: '1억 1,000만 원', url: 'https://samsungcareers.com' },
                         { name: '삼성바이오로직스', biz: '바이오 CDMO', bonus: 'OPI 45%', salary: '9,900만 원', url: 'https://samsungcareers.com' },
-                        { name: '삼성생명', biz: '금융/보험', bonus: 'OPI 20% 내외', salary: '1억 3,500만 원', url: 'https://samsungcareers.com' }
+                        { name: '삼성생명', biz: '금융/생명보험', bonus: 'OPI 20% 내외', salary: '1억 3,500만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성화재', biz: '손해보험', bonus: 'OPI 45%', salary: '1억 4,000만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성증권', biz: '증권/IB', bonus: '실적 비례 연동', salary: '1억 4,500만 원', url: 'https://samsungcareers.com' }
                     ]},
                     { rank: 2, name: 'SK그룹', subsidiaries: [
-                        { name: 'SK하이닉스', biz: '메모리 반도체', bonus: 'PI 100% + PS 1000%', salary: '1억 2,100만 원', url: 'https://talent.skhynix.com' },
-                        { name: 'SK텔레콤', biz: '통신/AI', bonus: '기본급 300% 이상', salary: '1억 5,200만 원', url: 'https://careers.sktelecom.com' },
-                        { name: 'SK이노베이션', biz: '정유/배터리', bonus: '기본급 800%', salary: '1억 5,200만 원', url: 'https://skcareers.com' },
-                        { name: 'SK온', biz: '2차 전지', bonus: '확인 불가(상황별)', salary: '8,500만 원', url: 'https://skcareers.com' },
-                        { name: 'SK에코플랜트', biz: '건설/환경', bonus: '기본급 150%', salary: '9,200만 원', url: 'https://skcareers.com' }
+                        { name: 'SK하이닉스', biz: 'HBM/메모리반도체', bonus: 'PI 100% + PS 1000%', salary: '1억 2,100만 원', url: 'https://talent.skhynix.com' },
+                        { name: 'SK텔레콤', biz: '통신/AI 솔루션', bonus: '기본급 300% 이상', salary: '1억 5,200만 원', url: 'https://careers.sktelecom.com' },
+                        { name: 'SK이노베이션', biz: '정유/석유화학', bonus: '기본급 800%', salary: '1억 5,200만 원', url: 'https://skcareers.com' },
+                        { name: 'SK온', biz: 'EV 배터리', bonus: '확인 불가 (업황별)', salary: '8,500만 원', url: 'https://skcareers.com' },
+                        { name: 'SK에코플랜트', biz: '환경/신재생에너지', bonus: '기본급 150%', salary: '9,200만 원', url: 'https://skcareers.com' },
+                        { name: 'SK C&C (SK주식회사)', biz: 'IT 서비스', bonus: '기본급 200%', salary: '9,800만 원', url: 'https://skcareers.com' },
+                        { name: 'SK실트론', biz: '반도체 웨이퍼', bonus: '기본급 250%', salary: '9,100만 원', url: 'https://skcareers.com' },
+                        { name: 'SK가스', biz: 'LPG 유통/발전', bonus: '기본급 600%', salary: '1억 3,000만 원', url: 'https://skcareers.com' },
+                        { name: 'SK바이오팜', biz: '신약 개발', bonus: '기본급 200%', salary: '9,500만 원', url: 'https://skcareers.com' },
+                        { name: 'SK스퀘어', biz: '투자 지주', bonus: '실적 연동', salary: '1억 6,000만 원', url: 'https://skcareers.com' }
                     ]},
                     { rank: 3, name: '현대자동차그룹', subsidiaries: [
-                        { name: '현대자동차', biz: '완성차', bonus: '500% + 1500만원', salary: '1억 1,700만 원', url: 'https://talent.hyundai.com' },
-                        { name: '기아', biz: '완성차', bonus: '500% + 1500만원', salary: '1억 2,700만 원', url: 'https://career.kia.com' },
-                        { name: '현대모비스', biz: '자동차 부품', bonus: '400% + 1000만원', salary: '1억 1,800만 원', url: 'https://mobis.co.kr' },
-                        { name: '현대글로비스', biz: '물류/해운', bonus: '약 350%', salary: '9,800만 원', url: 'https://recruit.glovis.net' },
-                        { name: '현대건설', biz: '건설업', bonus: '약 200%', salary: '1억 500만 원', url: 'https://hdec.co.kr' }
+                        { name: '현대자동차', biz: '완성차 제조', bonus: '500% + 1500만 원', salary: '1억 1,700만 원', url: 'https://talent.hyundai.com' },
+                        { name: '기아', biz: '완성차 제조', bonus: '500% + 1500만 원', salary: '1억 2,700만 원', url: 'https://career.kia.com' },
+                        { name: '현대모비스', biz: '자동차 핵심 부품', bonus: '400% + 1000만 원', salary: '1억 1,800만 원', url: 'https://mobis.co.kr' },
+                        { name: '현대글로비스', biz: '물류/해운/유통', bonus: '기본급 350%', salary: '9,800만 원', url: 'https://recruit.glovis.net' },
+                        { name: '현대제철', biz: '철강/봉형강', bonus: '기본급 300%', salary: '1억 500만 원', url: 'https://hyundai-steel.com' },
+                        { name: '현대건설', biz: '토목/주택/원전', bonus: '기본급 200%', salary: '1억 500만 원', url: 'https://hdec.co.kr' },
+                        { name: '현대엔지니어링', biz: '화공/플랜트', bonus: '기본급 200%', salary: '9,900만 원', url: 'https://hec.co.kr' },
+                        { name: '현대트랜시스', biz: '변속기/시트', bonus: '350% + 정액', salary: '9,200만 원', url: 'https://hyundai-transys.com' },
+                        { name: '현대위아', biz: '차량부품/방산', bonus: '기본급 300%', salary: '8,900만 원', url: 'https://hyundai-wia.com' },
+                        { name: '현대카드/캐피탈', biz: '금융/카드/캐피탈', bonus: '연봉의 15~20%', salary: '1억 2,000만 원', url: 'https://career.hyundaicard.com' }
                     ]},
                     { rank: 4, name: 'LG그룹', subsidiaries: [
-                        { name: 'LG전자', biz: '가전/전장', bonus: '조직별 200~660%', salary: '1억 600만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG전자', biz: '가전/전장(VS)', bonus: '사업부별 200~665%', salary: '1억 600만 원', url: 'https://careers.lg.com' },
                         { name: 'LG에너지솔루션', biz: '2차 전지', bonus: '기본급 360%', salary: '1억 2,300만 원', url: 'https://careers.lg.com' },
-                        { name: 'LG화학', biz: '석유화학/소재', bonus: '기본급 150~300%', salary: '1억 1,500만 원', url: 'https://careers.lg.com' },
-                        { name: 'LG디스플레이', biz: '디스플레이 패널', bonus: '확인 불가(적자)', salary: '8,500만 원', url: 'https://careers.lg.com' },
-                        { name: 'LG CNS', biz: 'IT SI', bonus: '기본급 250%', salary: '1억 200만 원', url: 'https://careers.lg.com' }
+                        { name: 'LG화학', biz: '석유화학/첨단소재', bonus: '기본급 150~300%', salary: '1억 1,500만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG디스플레이', biz: 'OLED 패널', bonus: '확인 불가 (흑자 전환 대기)', salary: '8,500만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG이노텍', biz: '카메라 모듈/기판', bonus: '기본급 300%', salary: '9,800만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG유플러스', biz: '유무선 통신', bonus: '기본급 250%', salary: '9,500만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG CNS', biz: '클라우드/스마트팩토리', bonus: '기본급 250%', salary: '1억 200만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG생활건강', biz: '화장품/생활용품', bonus: '기본급 100%', salary: '7,800만 원', url: 'https://careers.lg.com' }
                     ]},
                     { rank: 5, name: '포스코그룹', subsidiaries: [
-                        { name: '포스코', biz: '철강', bonus: '기본급 200%', salary: '1억 800만 원', url: 'https://recruit.posco.com' },
-                        { name: '포스코인터내셔널', biz: '상사/에너지', bonus: '약 300%', salary: '1억 1,400만 원', url: 'https://recruit.posco.com' },
-                        { name: '포스코퓨처엠', biz: '2차전지 소재', bonus: '약 150%', salary: '9,500만 원', url: 'https://recruit.posco.com' },
-                        { name: '포스코이앤씨', biz: '건설업', bonus: '약 100%', salary: '9,200만 원', url: 'https://recruit.posco.com' },
-                        { name: '포스코DX', biz: 'IT 서비스', bonus: '확인 불가', salary: '8,800만 원', url: 'https://recruit.posco.com' }
+                        { name: '포스코', biz: '고로/열연/냉연', bonus: '기본급 200%', salary: '1억 800만 원', url: 'https://recruit.posco.com' },
+                        { name: '포스코인터내셔널', biz: '종합상사/에너지', bonus: '기본급 300%', salary: '1억 1,400만 원', url: 'https://recruit.posco.com' },
+                        { name: '포스코퓨처엠', biz: '양극재/음극재', bonus: '기본급 150%', salary: '9,500만 원', url: 'https://recruit.posco.com' },
+                        { name: '포스코이앤씨', biz: '건설/엔지니어링', bonus: '기본급 100%', salary: '9,200만 원', url: 'https://recruit.posco.com' },
+                        { name: '포스코DX', biz: '스마트IT/자동화', bonus: '확인 불가 (실적 연동)', salary: '8,800만 원', url: 'https://recruit.posco.com' },
+                        { name: '포스코스틸리온', biz: '컬러강판', bonus: '기본급 150%', salary: '8,200만 원', url: 'https://recruit.posco.com' }
                     ]},
                     { rank: 6, name: '롯데그룹', subsidiaries: [
-                        { name: '롯데케미칼', biz: '석유화학', bonus: '확인 불가(적자)', salary: '1억 400만 원', url: 'https://recruit.lotte.co.kr' },
-                        { name: '롯데쇼핑', biz: '유통/백화점', bonus: '약 100%', salary: '6,200만 원', url: 'https://recruit.lotte.co.kr' },
-                        { name: '롯데웰푸드', biz: '식품', bonus: '약 150%', salary: '6,100만 원', url: 'https://recruit.lotte.co.kr' },
-                        { name: '롯데이노베이트', biz: 'IT 서비스', bonus: '약 200%', salary: '7,400만 원', url: 'https://recruit.lotte.co.kr' },
-                        { name: '롯데물산', biz: '부동산', bonus: '확인 불가', salary: '7,100만 원', url: 'https://recruit.lotte.co.kr' }
+                        { name: '롯데케미칼', biz: '기초/정밀화학', bonus: '확인 불가 (시황 악화)', salary: '1억 400만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데쇼핑', biz: '백화점/마트/이커머스', bonus: '기본급 100%', salary: '6,200만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데웰푸드', biz: '제과/빙과/식품', bonus: '기본급 150%', salary: '6,100만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데칠성음료', biz: '음료/주류', bonus: '기본급 200%', salary: '6,800만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데이노베이트', biz: 'IT 솔루션/데이터', bonus: '기본급 200%', salary: '7,400만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데건설', biz: '건설/시공', bonus: '확인 불가', salary: '8,900만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데호텔', biz: '호텔/면세점', bonus: '기본급 100%', salary: '5,800만 원', url: 'https://recruit.lotte.co.kr' }
                     ]},
                     { rank: 7, name: '한화그룹', subsidiaries: [
-                        { name: '한화에어로스페이스', biz: '방산/우주', bonus: '연봉의 15% 이상', salary: '1억 1,100만 원', url: 'https://hanwhain.com' },
-                        { name: '한화솔루션', biz: '태양광/화학', bonus: '기본급 100~200%', salary: '1억 500만 원', url: 'https://hanwhain.com' },
-                        { name: '한화생명', biz: '금융/보험', bonus: '연봉의 10%', salary: '1억 1,000만 원', url: 'https://hanwhain.com' },
-                        { name: '한화시스템', biz: '방산 IT', bonus: '확인 불가', salary: '1억 400만 원', url: 'https://hanwhain.com' },
-                        { name: '한화오션', biz: '조선업', bonus: '약 200만 원 정액', salary: '8,800만 원', url: 'https://hanwhain.com' }
+                        { name: '한화에어로스페이스', biz: 'K9자주포/항공우주', bonus: '연봉의 15% 이상', salary: '1억 1,100만 원', url: 'https://hanwhain.com' },
+                        { name: '한화솔루션', biz: '태양광/화학소재', bonus: '기본급 100~200%', salary: '1억 500만 원', url: 'https://hanwhain.com' },
+                        { name: '한화오션', biz: '방산특수선/LNG선', bonus: '격려금 200만 원 정액', salary: '8,800만 원', url: 'https://hanwhain.com' },
+                        { name: '한화시스템', biz: '방산레이다/ICT', bonus: '기본급 200%', salary: '1억 400만 원', url: 'https://hanwhain.com' },
+                        { name: '한화생명', biz: '생명보험/자산운용', bonus: '연봉의 10%', salary: '1억 1,000만 원', url: 'https://hanwhain.com' },
+                        { name: '한화손해보험', biz: '손해보험', bonus: '기본급 300%', salary: '9,800만 원', url: 'https://hanwhain.com' },
+                        { name: '한화갤러리아', biz: '백화점/유통', bonus: '기본급 100%', salary: '5,900만 원', url: 'https://hanwhain.com' }
                     ]},
                     { rank: 8, name: 'HD현대', subsidiaries: [
-                        { name: 'HD현대오일뱅크', biz: '정유', bonus: '기본급 600%', salary: '1억 4,000만 원', url: 'https://recruit.hdoilbank.co.kr' },
-                        { name: 'HD한국조선해양', biz: '조선 중간지주', bonus: '약 150%', salary: '9,500만 원', url: 'https://recruit.hd.com' },
-                        { name: 'HD현대중공업', biz: '조선', bonus: '기본급 100%', salary: '8,900만 원', url: 'https://recruit.hd.com' },
-                        { name: 'HD현대일렉트릭', biz: '전력기기', bonus: '기본급 400%', salary: '1억 1,000만 원', url: 'https://recruit.hd.com' },
-                        { name: 'HD현대사이트솔루션', biz: '건설기계', bonus: '확인 불가', salary: '9,200만 원', url: 'https://recruit.hd.com' }
+                        { name: 'HD현대오일뱅크', biz: '정유/석유화학', bonus: '기본급 600%', salary: '1억 4,000만 원', url: 'https://recruit.hdoilbank.co.kr' },
+                        { name: 'HD한국조선해양', biz: '조선 중간지주', bonus: '기본급 150%', salary: '9,500만 원', url: 'https://recruit.hd.com' },
+                        { name: 'HD현대중공업', biz: '조선/특수선/엔진', bonus: '기본급 100%', salary: '8,900만 원', url: 'https://recruit.hd.com' },
+                        { name: 'HD현대일렉트릭', biz: '변압기/전력기기', bonus: '기본급 400% 이상', salary: '1억 1,000만 원', url: 'https://recruit.hd.com' },
+                        { name: 'HD현대사이트솔루션', biz: '건설기계 지주', bonus: '기본급 150%', salary: '9,200만 원', url: 'https://recruit.hd.com' },
+                        { name: 'HD현대건설기계', biz: '굴착기/지게차', bonus: '기본급 150%', salary: '8,800만 원', url: 'https://recruit.hd.com' },
+                        { name: 'HD현대마린솔루션', biz: '선박 AS/친환경개조', bonus: '기본급 300%', salary: '9,400만 원', url: 'https://recruit.hd.com' }
                     ]},
                     { rank: 9, name: 'GS그룹', subsidiaries: [
-                        { name: 'GS칼텍스', biz: '정유', bonus: '기본급 800%', salary: '1억 5,000만 원', url: 'https://gscaltex.com' },
-                        { name: 'GS리테일', biz: '유통/편의점', bonus: '약 150%', salary: '6,200만 원', url: 'https://gsretail.com' },
-                        { name: 'GS건설', biz: '건설', bonus: '확인 불가', salary: '1억 300만 원', url: 'https://gsenc.com' },
-                        { name: 'GS EPS', biz: '발전', bonus: '약 400%', salary: '1억 1,500만 원', url: 'https://gseps.com' },
-                        { name: 'GS글로벌', biz: '상사', bonus: '확인 불가', salary: '9,500만 원', url: 'https://gsg.co.kr' }
+                        { name: 'GS칼텍스', biz: '정유/윤활유', bonus: '기본급 800%', salary: '1억 5,000만 원', url: 'https://gscaltex.com' },
+                        { name: 'GS리테일', biz: 'GS25 편의점/슈퍼', bonus: '기본급 150%', salary: '6,200만 원', url: 'https://gsretail.com' },
+                        { name: 'GS건설', biz: '자이 아파트/플랜트', bonus: '확인 불가', salary: '1억 300만 원', url: 'https://gsenc.com' },
+                        { name: 'GS EPS', biz: 'LNG 복합발전', bonus: '기본급 400%', salary: '1억 1,500만 원', url: 'https://gseps.com' },
+                        { name: 'GS글로벌', biz: '종합상사', bonus: '기본급 150%', salary: '9,500만 원', url: 'https://gsg.co.kr' },
+                        { name: 'GS파워', biz: '집단에너지', bonus: '기본급 350%', salary: '1억 800만 원', url: 'https://gspower.com' }
                     ]},
                     { rank: 10, name: '농협', subsidiaries: [
-                        { name: 'NH농협은행', biz: '금융', bonus: '약 300%', salary: '1억 1,800만 원', url: 'https://nhbank.com' },
-                        { name: 'NH투자증권', biz: '증권', bonus: '실적 비례', salary: '1억 4,500만 원', url: 'https://nhqv.com' },
-                        { name: '농협중앙회', biz: '공공/협동조합', bonus: '기본급 200%', salary: '1억 1,000만 원', url: 'https://nonghyup.com' },
-                        { name: 'NH농협생명', biz: '보험', bonus: '확인 불가', salary: '1억 500만 원', url: 'https://nhlife.co.kr' },
-                        { name: '농협경제지주', biz: '유통', bonus: '약 100%', salary: '8,200만 원', url: 'https://nonghyup.com' }
+                        { name: 'NH농협은행', biz: '제1금융권 시중은행', bonus: '약 300%', salary: '1억 1,800만 원', url: 'https://nhbank.com' },
+                        { name: 'NH투자증권', biz: '증권/IB', bonus: '실적 비례 연동', salary: '1억 4,500만 원', url: 'https://nhqv.com' },
+                        { name: '농협중앙회', biz: '협동조합 연합', bonus: '기본급 200%', salary: '1억 1,000만 원', url: 'https://nonghyup.com' },
+                        { name: 'NH농협생명', biz: '생명보험', bonus: '기본급 200%', salary: '1억 500만 원', url: 'https://nhlife.co.kr' },
+                        { name: 'NH농협손해보험', biz: '손해보험', bonus: '기본급 200%', salary: '1억 200만 원', url: 'https://nhfire.co.kr' },
+                        { name: '농협경제지주', biz: '농축산물 유통', bonus: '기본급 100%', salary: '8,200만 원', url: 'https://nonghyup.com' }
                     ]},
-                    { rank: 11, name: '신세계', subsidiaries: [ { name: '이마트', biz: '대형마트', bonus: 'N/A', salary: '5,500만 원', url: 'https://emart.com' }, { name: '신세계백화점', biz: '백화점', bonus: '약 100%', salary: '6,800만 원', url: 'https://shinsegae.com' } ]},
-                    { rank: 12, name: 'KT', subsidiaries: [ { name: 'KT 본사', biz: '통신', bonus: '기본급 150%', salary: '1억 300만 원', url: 'https://recruit.kt.com' }, { name: 'KT DS', biz: 'IT', bonus: 'N/A', salary: '7,500만 원', url: 'https://ktds.com' } ]},
-                    { rank: 13, name: 'CJ', subsidiaries: [ { name: 'CJ제일제당', biz: '식품', bonus: '기본급 100~150%', salary: '7,500만 원', url: 'https://recruit.cj.net' }, { name: 'CJ ENM', biz: '미디어', bonus: '부문 상이', salary: '7,800만 원', url: 'https://recruit.cj.net' } ]},
-                    { rank: 14, name: '한진그룹', subsidiaries: [ { name: '대한항공', biz: '항공여객', bonus: '기본급 400%', salary: '1억 100만 원', url: 'https://koreanair.recruiter.co.kr' }, { name: '한진칼', biz: '지주사', bonus: 'N/A', salary: '8,500만 원', url: 'https://hanjinkal.co.kr' }, { name: '(주)한진', biz: '물류', bonus: '약 100%', salary: '6,800만 원', url: 'https://hanjin.co.kr' } ]},
-                    { rank: 15, name: '카카오', subsidiaries: [ { name: '카카오 본사', biz: '플랫폼', bonus: '연봉 10% 내외', salary: '1억 1,000만 원', url: 'https://careers.kakao.com' }, { name: '카카오뱅크', biz: '인터넷은행', bonus: '스톡옵션 별도', salary: '1억 3,500만 원', url: 'https://kakaobank.com' } ]},
-                    { rank: 16, name: 'LS', subsidiaries: [ { name: 'LS전선', biz: '전선/케이블', bonus: '기본급 300%', salary: '9,500만 원', url: 'https://lscable.co.kr' }, { name: 'LS일렉트릭', biz: '전력기기', bonus: '기본급 350%', salary: '1억 200만 원', url: 'https://ls-electric.com' } ]},
-                    { rank: 17, name: '두산', subsidiaries: [ { name: '두산에너빌리티', biz: '원전/플랜트', bonus: '약 150%', salary: '9,800만 원', url: 'https://doosan.com' }, { name: '두산밥캣', biz: '소형건설기계', bonus: '기본급 200%', salary: '1억 1,500만 원', url: 'https://doosanbobcat.com' } ]},
-                    { rank: 18, name: 'DL', subsidiaries: [ { name: 'DL이앤씨', biz: '건설', bonus: 'N/A', salary: '1억 300만 원', url: 'https://dlenc.co.kr' }, { name: 'DL케미칼', biz: '화학', bonus: '약 200%', salary: '1억 1,000만 원', url: 'https://dlchemical.co.kr' } ]},
-                    { rank: 19, name: 'HMM', subsidiaries: [ { name: 'HMM (구 현대상선)', biz: '해운', bonus: '기본급 400%', salary: '1억 2,000만 원', url: 'https://hmm21.com' } ]},
-                    { rank: 20, name: '중흥건설', subsidiaries: [ { name: '대우건설', biz: '건설', bonus: 'N/A', salary: '9,800만 원', url: 'https://daewooenc.com' }, { name: '중흥토건', biz: '건설', bonus: 'N/A', salary: '6,500만 원', url: 'https://jungheung.com' } ]},
-                    { rank: 21, name: '현대백화점', subsidiaries: [ { name: '현대백화점', biz: '유통', bonus: '약 100%', salary: '7,100만 원', url: 'https://ehyundai.com' } ]},
-                    { rank: 22, name: '부영', subsidiaries: [ { name: '부영주택', biz: '건설', bonus: '출산 장려금 1억', salary: '6,800만 원', url: 'https://booyoung.co.kr' } ]},
-                    { rank: 23, name: '네이버', subsidiaries: [ { name: '네이버 본사', biz: '포털 플랫폼', bonus: 'PI 별도', salary: '1억 2,000만 원', url: 'https://recruit.navercorp.com' }, { name: '네이버웹툰', biz: '콘텐츠', bonus: 'N/A', salary: '9,500만 원', url: 'https://webtooncorp.com' } ]},
-                    { rank: 24, name: '미래에셋', subsidiaries: [ { name: '미래에셋증권', biz: '증권', bonus: '실적 베이스', salary: '1억 4,000만 원', url: 'https://securities.miraeasset.com' } ]},
-                    { rank: 25, name: '에쓰오일', subsidiaries: [ { name: 'S-OIL', biz: '정유', bonus: '기본급 800%', salary: '1억 6,500만 원', url: 'https://s-oil.com' } ]},
-                    { rank: 26, name: '금호아시아나', subsidiaries: [ { name: '아시아나항공', biz: '항공 (합병 대기)', bonus: 'N/A', salary: '7,500만 원', url: 'https://flyasiana.com' }, { name: '금호건설', biz: '건설', bonus: 'N/A', salary: '7,800만 원', url: 'https://kumhoenc.com' } ]},
-                    { rank: 27, name: '하림', subsidiaries: [ { name: '팬오션', biz: '해운', bonus: '약 300%', salary: '1억 500만 원', url: 'https://panocean.com' }, { name: '하림지주', biz: '식품', bonus: 'N/A', salary: '6,200만 원', url: 'https://halim.com' } ]},
-                    { rank: 28, name: 'HDC', subsidiaries: [ { name: 'HDC현대산업개발', biz: '건설', bonus: 'N/A', salary: '9,200만 원', url: 'https://hdc-dvp.com' } ]},
-                    { rank: 29, name: '효성', subsidiaries: [ { name: '효성티앤씨', biz: '섬유', bonus: '약 200%', salary: '9,500만 원', url: 'https://hyosungtnc.com' }, { name: '효성중공업', biz: '전력/건설', bonus: '약 150%', salary: '9,200만 원', url: 'https://hyosungheavyindustries.com' } ]},
-                    { rank: 30, name: '영풍', subsidiaries: [ { name: '고려아연', biz: '비철금속', bonus: '기본급 300%', salary: '1억 1,500만 원', url: 'https://koreazinc.co.kr' } ]}
+                    { rank: 11, name: '신세계', subsidiaries: [
+                        { name: '신세계백화점', biz: '백화점 유통', bonus: '기본급 100%', salary: '6,800만 원', url: 'https://shinsegae.com' },
+                        { name: '이마트', biz: '대형 할인마트', bonus: '확인 불가', salary: '5,500만 원', url: 'https://emart.com' },
+                        { name: '신세계인터내셔날', biz: '패션/화장품', bonus: '기본급 100%', salary: '6,200만 원', url: 'https://sikorea.co.kr' },
+                        { name: '신세계디에프', biz: '면세점', bonus: '확인 불가', salary: '5,900만 원', url: 'https://ssgdf.com' },
+                        { name: 'SCK컴퍼니 (스타벅스)', biz: '커피 프랜차이즈', bonus: '성과 연동', salary: '4,800만 원', url: 'https://starbucks.co.kr' },
+                        { name: 'SSG.COM', biz: '이커머스', bonus: '확인 불가', salary: '6,000만 원', url: 'https://ssg.com' }
+                    ]},
+                    { rank: 12, name: 'KT', subsidiaries: [
+                        { name: 'KT 본사', biz: '유무선 통신/B2B', bonus: '기본급 150%', salary: '1억 300만 원', url: 'https://recruit.kt.com' },
+                        { name: 'KT DS', biz: '통신 IT 서비스', bonus: '기본급 100%', salary: '7,500만 원', url: 'https://ktds.com' },
+                        { name: 'BC카드', biz: '카드 프로세싱', bonus: '기본급 200%', salary: '1억 800만 원', url: 'https://bccard.com' },
+                        { name: 'kt 클라우드', biz: '클라우드/IDC', bonus: '성과급 별도', salary: '8,800만 원', url: 'https://ktcloud.com' },
+                        { name: 'KT에스테이트', biz: '부동산 개발', bonus: '기본급 150%', salary: '8,500만 원', url: 'https://ktestate.com' }
+                    ]},
+                    { rank: 13, name: 'CJ', subsidiaries: [
+                        { name: 'CJ제일제당', biz: '바이오/식품제조', bonus: '기본급 100~150%', salary: '7,500만 원', url: 'https://recruit.cj.net' },
+                        { name: 'CJ대한통운', biz: '택배/물류/항만', bonus: '기본급 150%', salary: '7,200만 원', url: 'https://recruit.cj.net' },
+                        { name: 'CJ ENM', biz: '방송 미디어/음악', bonus: '부문별 상이', salary: '7,800만 원', url: 'https://recruit.cj.net' },
+                        { name: 'CJ올리브영', biz: 'H&B 유통', bonus: '연봉의 30~50%', salary: '8,200만 원', url: 'https://recruit.cj.net' },
+                        { name: 'CJ CGV', biz: '극장 영화관', bonus: '확인 불가', salary: '5,500만 원', url: 'https://recruit.cj.net' },
+                        { name: 'CJ프레시웨이', biz: '식자재/급식', bonus: '기본급 100%', salary: '5,800만 원', url: 'https://recruit.cj.net' }
+                    ]},
+                    { rank: 14, name: '한진그룹', subsidiaries: [
+                        { name: '대한항공', biz: '항공 운송', bonus: '기본급 400%', salary: '1억 100만 원', url: 'https://koreanair.recruiter.co.kr' },
+                        { name: '한진칼', biz: '지주회사', bonus: '확인 불가', salary: '8,500만 원', url: 'https://hanjinkal.co.kr' },
+                        { name: '(주)한진', biz: '육상운송/택배', bonus: '기본급 100%', salary: '6,800만 원', url: 'https://hanjin.co.kr' },
+                        { name: '진에어', biz: '저비용 항공(LCC)', bonus: '기본급 200%', salary: '7,200만 원', url: 'https://jinair.com' },
+                        { name: '한국공항', biz: '항공기 지상조업', bonus: '기본급 100%', salary: '6,200만 원', url: 'https://kas.co.kr' }
+                    ]},
+                    { rank: 15, name: '카카오', subsidiaries: [
+                        { name: '카카오 본사', biz: '모바일 메신저', bonus: '성과급 10% 내외', salary: '1억 1,000만 원', url: 'https://careers.kakao.com' },
+                        { name: '카카오뱅크', biz: '인터넷 전문은행', bonus: '스톡옵션 별도', salary: '1억 3,500만 원', url: 'https://kakaobank.com' },
+                        { name: '카카오페이', biz: '핀테크/간편결제', bonus: '성과 연동', salary: '9,800만 원', url: 'https://kakaopay.com' },
+                        { name: '카카오모빌리티', biz: '택시/대리/내비', bonus: '성과 연동', salary: '9,500만 원', url: 'https://kakaomobility.com' },
+                        { name: '카카오게임즈', biz: '모바일/PC 게임', bonus: '프로젝트 성과', salary: '9,200만 원', url: 'https://kakaogames.com' },
+                        { name: '카카오엔터테인먼트', biz: '웹툰/음원/엔터', bonus: '부문별 상이', salary: '8,800만 원', url: 'https://kakaoent.com' }
+                    ]},
+                    { rank: 16, name: 'LS', subsidiaries: [
+                        { name: 'LS일렉트릭', biz: '전력기기/배전반', bonus: '기본급 350%', salary: '1억 200만 원', url: 'https://ls-electric.com' },
+                        { name: 'LS전선', biz: '해저케이블/초고압', bonus: '기본급 300%', salary: '9,500만 원', url: 'https://lscable.co.kr' },
+                        { name: 'LS MnM', biz: '동제련/금속소재', bonus: '기본급 400%', salary: '1억 1,000만 원', url: 'https://lsmnm.com' },
+                        { name: 'LS엠트론', biz: '트랙터/사출기', bonus: '기본급 150%', salary: '8,800만 원', url: 'https://lsmtron.com' },
+                        { name: 'E1', biz: 'LPG 수입/유통', bonus: '기본급 600%', salary: '1억 4,000만 원', url: 'https://e1.co.kr' }
+                    ]},
+                    { rank: 17, name: '두산', subsidiaries: [
+                        { name: '두산에너빌리티', biz: '원전/가스터빈', bonus: '기본급 150%', salary: '9,800만 원', url: 'https://doosanenerbility.com' },
+                        { name: '두산밥캣', biz: '소형 건설장비', bonus: '기본급 200%', salary: '1억 1,500만 원', url: 'https://doosanbobcat.com' },
+                        { name: '두산로보틱스', biz: '협동로봇 제조', bonus: '스톡옵션 별도', salary: '8,200만 원', url: 'https://doosanrobotics.com' },
+                        { name: '두산퓨얼셀', biz: '수소 연료전지', bonus: '기본급 150%', salary: '8,900만 원', url: 'https://doosanfuelcell.com' },
+                        { name: '두산테스나', biz: '반도체 테스트 OSAT', bonus: '기본급 200%', salary: '8,500만 원', url: 'https://doosantesna.com' }
+                    ]},
+                    { rank: 18, name: 'DL', subsidiaries: [
+                        { name: 'DL이앤씨', biz: 'e편한세상/아크로', bonus: '확인 불가', salary: '1억 300만 원', url: 'https://dlenc.co.kr' },
+                        { name: 'DL케미칼', biz: '석유화학/PB', bonus: '기본급 200%', salary: '1억 1,000만 원', url: 'https://dlchemical.co.kr' },
+                        { name: '대림', biz: '지주/상사', bonus: '기본급 150%', salary: '9,500만 원', url: 'https://daelim.co.kr' },
+                        { name: 'DL건설', biz: '건설/토목', bonus: '기본급 100%', salary: '8,800만 원', url: 'https://dlconstruct.co.kr' },
+                        { name: '글래드호텔앤리조트', biz: '호텔/골프장', bonus: '확인 불가', salary: '4,800만 원', url: 'https://glad-hotels.com' }
+                    ]},
+                    { rank: 19, name: 'HMM', subsidiaries: [
+                        { name: 'HMM 본사', biz: '컨테이너선/벌크선', bonus: '기본급 400%', salary: '1억 2,000만 원', url: 'https://hmm21.com' },
+                        { name: 'HMM오션서비스', biz: '선박 관리/감리', bonus: '기본급 200%', salary: '7,800만 원', url: 'https://hmm21.com' },
+                        { name: 'PSA현대부산신항만', biz: '항만 하역 터미널', bonus: '기본급 200%', salary: '7,500만 원', url: 'https://hpnt.co.kr' },
+                        { name: 'HMM카네기', biz: '해운 물류 연수', bonus: '확인 불가', salary: '6,200만 원', url: 'https://hmm21.com' },
+                        { name: 'HMM해운서비스', biz: '복합물류', bonus: '기본급 100%', salary: '6,500만 원', url: 'https://hmm21.com' }
+                    ]},
+                    { rank: 20, name: '중흥건설', subsidiaries: [
+                        { name: '대우건설', biz: '푸르지오 아파트/해외건설', bonus: '확인 불가', salary: '9,800만 원', url: 'https://daewooenc.com' },
+                        { name: '중흥토건', biz: '중흥S-클래스', bonus: '기본급 100%', salary: '6,800만 원', url: 'https://jungheung.co.kr' },
+                        { name: '중흥건설', biz: '건설/시공', bonus: '기본급 100%', salary: '6,500만 원', url: 'https://jungheung.co.kr' },
+                        { name: '대우에스티', biz: '철구조물/엔지니어링', bonus: '확인 불가', salary: '6,200만 원', url: 'https://daewoost.co.kr' },
+                        { name: '헤럴드', biz: '신문 언론사', bonus: '확인 불가', salary: '5,800만 원', url: 'https://heraldcorp.com' }
+                    ]},
+                    { rank: 21, name: '현대백화점', subsidiaries: [
+                        { name: '현대백화점', biz: '백화점/더현대', bonus: '기본급 100%', salary: '7,100만 원', url: 'https://ehyundai.com' },
+                        { name: '현대홈쇼핑', biz: '홈쇼핑/모바일', bonus: '기본급 150%', salary: '6,800만 원', url: 'https://hyundaihmall.com' },
+                        { name: '현대그린푸드', biz: '단체급식/식자재', bonus: '기본급 100%', salary: '6,200만 원', url: 'https://hdgreenfood.com' },
+                        { name: '한섬', biz: '의류 패션(타임,마인)', bonus: '기본급 200%', salary: '7,500만 원', url: 'https://handsome.co.kr' },
+                        { name: '지누스', biz: '매트리스 가구', bonus: '확인 불가', salary: '6,500만 원', url: 'https://zinus.co.kr' }
+                    ]},
+                    { rank: 22, name: '부영', subsidiaries: [
+                        { name: '부영주택', biz: '임대/분양 아파트', bonus: '출산장려금 1억 지원', salary: '6,800만 원', url: 'https://booyoung.co.kr' },
+                        { name: '(주)부영', biz: '주택 건설 지주', bonus: '기본급 100%', salary: '6,500만 원', url: 'https://booyoung.co.kr' },
+                        { name: '동광주택산업', biz: '건설/토목', bonus: '확인 불가', salary: '6,000만 원', url: 'https://booyoung.co.kr' },
+                        { name: '오투리조트', biz: '스키/골프 리조트', bonus: '확인 불가', salary: '4,500만 원', url: 'https://o2resort.com' },
+                        { name: '무주덕유산리조트', biz: '종합 레저 리조트', bonus: '확인 불가', salary: '4,600만 원', url: 'https://mdysresort.com' }
+                    ]},
+                    { rank: 23, name: '네이버', subsidiaries: [
+                        { name: '네이버 본사', biz: '검색 포털/AI', bonus: '성과 인센티브 별도', salary: '1억 2,000만 원', url: 'https://recruit.navercorp.com' },
+                        { name: '네이버웹툰', biz: '디지털 만화/IP', bonus: '성과급 연동', salary: '9,500만 원', url: 'https://webtooncorp.com' },
+                        { name: '네이버클라우드', biz: 'NCP/클라우드', bonus: '성과급 별도', salary: '9,800만 원', url: 'https://navercloudcorp.com' },
+                        { name: '라인플러스', biz: '글로벌 메신저 라인', bonus: '스톡옵션 별도', salary: '1억 1,000만 원', url: 'https://linepluscorp.com' },
+                        { name: '스노우', biz: '카메라 앱/AI필터', bonus: '성과 연동', salary: '8,500만 원', url: 'https://snow.me' }
+                    ]},
+                    { rank: 24, name: '미래에셋', subsidiaries: [
+                        { name: '미래에셋증권', biz: '증권/자산관리/IB', bonus: '개인 실적 비례 연동', salary: '1억 4,000만 원', url: 'https://securities.miraeasset.com' },
+                        { name: '미래에셋자산운용', biz: 'TIGER ETF/펀드', bonus: '성과급 업계 상위', salary: '1억 5,000만 원', url: 'https://investments.miraeasset.com' },
+                        { name: '미래에셋생명', biz: '변액보험/퇴직연금', bonus: '기본급 150%', salary: '1억 500만 원', url: 'https://life.miraeasset.com' },
+                        { name: '미래에셋캐피탈', biz: '여신전문금융', bonus: '기본급 200%', salary: '1억 1,000만 원', url: 'https://capital.miraeasset.com' },
+                        { name: '미래에셋벤처투자', biz: '벤처캐피탈(VC)', bonus: '투자 회수 실적 비례', salary: '1억 2,000만 원', url: 'https://miraeassetventure.com' }
+                    ]},
+                    { rank: 25, name: '에쓰오일', subsidiaries: [
+                        { name: 'S-OIL', biz: '정유/석유화학/샤힌', bonus: '기본급 800%', salary: '1억 6,500만 원', url: 'https://s-oil.com' },
+                        { name: '에쓰오일토탈에너지스윤활유', biz: '엔진오일', bonus: '기본급 400%', salary: '1억 1,000만 원', url: 'https://s-oil-total.com' },
+                        { name: '동양페트로', biz: '석유제품 유통', bonus: '기본급 100%', salary: '7,200만 원', url: 'https://s-oil.com' },
+                        { name: '에쓰오일이노베이션', biz: '신재생에너지', bonus: '확인 불가', salary: '7,500만 원', url: 'https://s-oil.com' },
+                        { name: '에쓰오일서비스', biz: '주유소 운영 관리', bonus: '기본급 100%', salary: '5,500만 원', url: 'https://s-oil.com' }
+                    ]},
+                    { rank: 26, name: '금호아시아나', subsidiaries: [
+                        { name: '아시아나항공', biz: '항공여객/화물', bonus: '확인 불가 (합병 절차)', salary: '7,500만 원', url: 'https://flyasiana.com' },
+                        { name: '금호건설', biz: '아테라 아파트/공항건설', bonus: '기본급 100%', salary: '7,800만 원', url: 'https://kumhoenc.com' },
+                        { name: '에어부산', biz: '영남 기반 LCC', bonus: '기본급 150%', salary: '6,500만 원', url: 'https://airbusan.com' },
+                        { name: '아시아나IDT', biz: '항공/운송 IT 솔루션', bonus: '기본급 100%', salary: '7,200만 원', url: 'https://asianaidt.com' },
+                        { name: '에어서울', biz: '인천 기반 LCC', bonus: '확인 불가', salary: '5,900만 원', url: 'https://flyairseoul.com' }
+                    ]},
+                    { rank: 27, name: '하림', subsidiaries: [
+                        { name: '팬오션', biz: '벌크선 해운 운송', bonus: '기본급 300%', salary: '1억 500만 원', url: 'https://panocean.com' },
+                        { name: '하림', biz: '육계 가공/신선육', bonus: '기본급 100%', salary: '5,800만 원', url: 'https://harim.com' },
+                        { name: '엔에스쇼핑 (NS홈쇼핑)', biz: 'TV홈쇼핑', bonus: '기본급 150%', salary: '6,400만 원', url: 'https://nsmall.com' },
+                        { name: '선진', biz: '사료/축산/양돈', bonus: '기본급 100%', salary: '6,200만 원', url: 'https://sj.co.kr' },
+                        { name: '팜스코', biz: '사료/육가공/신선식품', bonus: '기본급 100%', salary: '6,100만 원', url: 'https://farmsco.com' }
+                    ]},
+                    { rank: 28, name: 'HDC', subsidiaries: [
+                        { name: 'HDC현대산업개발', biz: '아이파크 아파트 건설', bonus: '확인 불가', salary: '9,200만 원', url: 'https://hdc-dvp.com' },
+                        { name: 'HDC현대EP', biz: '자동차용 플라스틱 소재', bonus: '기본급 150%', salary: '8,200만 원', url: 'https://hdc-hyundaiep.com' },
+                        { name: 'HDC랩스', biz: '스마트홈/건물관리', bonus: '기본급 100%', salary: '7,500만 원', url: 'https://hdclabs.com' },
+                        { name: 'HDC아이파크몰', biz: '복합쇼핑몰 운영', bonus: '기본급 100%', salary: '5,500만 원', url: 'https://iparkmall.com' },
+                        { name: '통영에코파워', biz: 'LNG 발전소 운영', bonus: '확인 불가', salary: '8,000만 원', url: 'https://hdc-dvp.com' }
+                    ]},
+                    { rank: 29, name: '효성', subsidiaries: [
+                        { name: '효성티앤씨', biz: '스판덱스/나일론 섬유', bonus: '기본급 200%', salary: '9,500만 원', url: 'https://hyosungtnc.com' },
+                        { name: '효성중공업', biz: '초고압변압기/건설', bonus: '기본급 200%', salary: '9,200만 원', url: 'https://hyosungheavyindustries.com' },
+                        { name: '효성첨단소재', biz: '타이어코드/탄소섬유', bonus: '기본급 200%', salary: '9,600만 원', url: 'https://hyosungadvancedmaterials.com' },
+                        { name: '효성화학', biz: '폴리프로필렌(PP)', bonus: '확인 불가 (업황 악화)', salary: '8,500만 원', url: 'https://hyosungchemical.com' },
+                        { name: '효성ITX', biz: '컨택센터/클라우드', bonus: '기본급 100%', salary: '5,200만 원', url: 'https://hyosungitx.com' }
+                    ]},
+                    { rank: 30, name: '영풍', subsidiaries: [
+                        { name: '고려아연', biz: '아연/연/은 비철금속', bonus: '기본급 300%', salary: '1억 1,500만 원', url: 'https://koreazinc.co.kr' },
+                        { name: '(주)영풍', biz: '아연 제련소 석포제련소', bonus: '기본급 200%', salary: '8,500만 원', url: 'https://ypzinc.co.kr' },
+                        { name: '코리아써키트', biz: '반도체용 PCB 기판', bonus: '기본급 100%', salary: '7,800만 원', url: 'https://koreacircuit.com' },
+                        { name: '인터플렉스', biz: 'FPCB 연성기판', bonus: '기본급 100%', salary: '7,200만 원', url: 'https://interflex.co.kr' },
+                        { name: '시그네틱스', biz: '반도체 패키징 OSAT', bonus: '확인 불가', salary: '6,800만 원', url: 'https://signetics.com' }
+                    ]}
                 ],
 
-                // 데이터: 지역별 (서울/경기 세분화, 6대 광역시)
+                // ==========================================
+                // 데이터 2: 지역별 기업 데이터 (대/중견/중소 상세 포함)
+                // ==========================================
                 regions: [
-                    { id: 'seoul-gangnam', type: 'seoul', name: '강남/서초/송파', desc: '현대차, 네이버웹툰, GS 등', top10: [
-                        {name: '현대자동차(양재)', biz: '완성차', salary: '1억 1,700만 원'}, {name: '현대모비스(강남)', biz: '차부품', salary: '1억 1,800만 원'}, {name: 'GS칼텍스(역삼)', biz: '정유', salary: '1억 5,000만 원'}, {name: '네이버웹툰(판교->강남)', biz: 'IT', salary: '9,500만 원'}, {name: '당근마켓', biz: 'IT', salary: '9,200만 원'}, {name: 'NC소프트(삼성)', biz: '게임', salary: '1억 500만 원'}, {name: 'DB손해보험', biz: '금융', salary: '1억 1,000만 원'}, {name: '삼성물산(상사)', biz: '상사', salary: '1억 1,000만 원'}, {name: '메리츠증권', biz: '증권', salary: '1억 8,000만 원'}, {name: '두나무', biz: '핀테크', salary: '1억 5,000만 원'}
+                    { id: 'seoul-gangnam', type: 'seoul', name: '강남/서초/송파', desc: '현대차, GS칼텍스, IT스타트업', companies: [
+                        { name: 'GS칼텍스', scale: '대기업', biz: '정유/윤활유', salary: '1억 5,000만 원' },
+                        { name: '메리츠증권', scale: '대기업', biz: '증권/IB', salary: '1억 8,000만 원' },
+                        { name: '현대자동차(양재)', scale: '대기업', biz: '완성차', salary: '1억 1,700만 원' },
+                        { name: '현대모비스(강남)', scale: '대기업', biz: '자동차 부품', salary: '1억 1,800만 원' },
+                        { name: '안랩(강남오피스)', scale: '중견기업', biz: '정보보안/V3', salary: '7,200만 원' },
+                        { name: '인바디(도곡)', scale: '중견기업', biz: '체성분 분석기', salary: '7,400만 원' },
+                        { name: '코나아이', scale: '중견기업', biz: '스마트카드/핀테크', salary: '6,800만 원' },
+                        { name: '두나무 (업비트)', scale: '중소기업', biz: '가상자산 거래소', salary: '1억 5,000만 원' },
+                        { name: '당근마켓', scale: '중소기업', biz: '지역 커뮤니티', salary: '9,200만 원' },
+                        { name: '채널코퍼레이션', scale: '중소기업', biz: 'B2B SaaS 챗봇', salary: '7,500만 원' }
                     ]},
-                    { id: 'seoul-yeouido', type: 'seoul', name: '여의도/영등포', desc: 'LG트윈타워, 증권가 등', top10: [
-                        {name: 'LG전자(여의도)', biz: '가전', salary: '1억 600만 원'}, {name: 'LG화학', biz: '화학', salary: '1억 1,500만 원'}, {name: 'NH투자증권', biz: '증권', salary: '1억 4,500만 원'}, {name: '한국투자증권', biz: '증권', salary: '1억 5,000만 원'}, {name: '한국거래소', biz: '공공/금융', salary: '1억 1,500만 원'}, {name: 'KB국민은행', biz: '은행', salary: '1억 1,800만 원'}, {name: '키움증권', biz: '증권', salary: '1억 3,000만 원'}, {name: 'SK증권', biz: '증권', salary: '1억 1,000만 원'}, {name: '한화생명', biz: '보험', salary: '1억 1,000만 원'}, {name: '미래에셋증권', biz: '증권', salary: '1억 4,000만 원'}
+                    { id: 'seoul-yeouido', type: 'seoul', name: '여의도/영등포', desc: '금융 증권가, LG트윈타워', companies: [
+                        { name: 'NH투자증권', scale: '대기업', biz: '증권/IB', salary: '1억 4,500만 원' },
+                        { name: 'LG전자(여의도)', scale: '대기업', biz: '가전/전장', salary: '1억 600만 원' },
+                        { name: 'LG화학', scale: '대기업', biz: '석유화학/첨단소재', salary: '1억 1,500만 원' },
+                        { name: '키움증권', scale: '중견기업', biz: '온라인 증권', salary: '1억 3,000만 원' },
+                        { name: '한세실업', scale: '중견기업', biz: '의류 수출 OEM', salary: '6,800만 원' },
+                        { name: '웹케시', scale: '중견기업', biz: 'B2B 핀테크', salary: '6,500만 원' },
+                        { name: '에프앤가이드', scale: '중소기업', biz: '금융 데이터 솔루션', salary: '6,200만 원' },
+                        { name: '한국포스증권', scale: '중소기업', biz: '온라인 펀드 플랫폼', salary: '7,000만 원' },
+                        { name: '코스콤', scale: '중소기업', biz: '자본시장 IT 인프라', salary: '9,500만 원' }
                     ]},
-                    { id: 'seoul-jongno', type: 'seoul', name: '종로/중구', desc: 'SK본사, 한화, 은행권', top10: [
-                        {name: 'SK이노베이션', biz: '정유', salary: '1억 5,200만 원'}, {name: 'SK텔레콤', biz: '통신', salary: '1억 5,200만 원'}, {name: '신한은행', biz: '은행', salary: '1억 2,000만 원'}, {name: '하나은행', biz: '은행', salary: '1억 1,900만 원'}, {name: '한화(본사)', biz: '지주', salary: '1억 1,000만 원'}, {name: 'HD현대(계동)', biz: '조선', salary: '9,500만 원'}, {name: '대우건설', biz: '건설', salary: '9,800만 원'}, {name: 'CJ제일제당', biz: '식품', salary: '7,500만 원'}, {name: '롯데쇼핑', biz: '유통', salary: '6,200만 원'}, {name: '신세계', biz: '유통', salary: '6,800만 원'}
+                    { id: 'seoul-jongno', type: 'seoul', name: '종로/중구/용산', desc: 'SK서린빌딩, 은행가, 대기업 본사', companies: [
+                        { name: 'SK이노베이션', scale: '대기업', biz: '정유/에너지', salary: '1억 5,200만 원' },
+                        { name: 'SK텔레콤', scale: '대기업', biz: '통신/AI', salary: '1억 5,200만 원' },
+                        { name: '신한은행', scale: '대기업', biz: '시중은행', salary: '1억 2,000만 원' },
+                        { name: '삼일회계법인', scale: '중견기업', biz: '회계/경영 컨설팅', salary: '1억 1,000만 원' },
+                        { name: '종근당', scale: '중견기업', biz: '신약 제약/바이오', salary: '7,500만 원' },
+                        { name: '농심', scale: '중견기업', biz: '신라면/스낵 제조', salary: '6,800만 원' },
+                        { name: '보령', scale: '중견기업', biz: '고혈압 카나브 제약', salary: '7,100만 원' },
+                        { name: '이투스교육', scale: '중소기업', biz: '온라인 교육', salary: '5,500만 원' },
+                        { name: '미디어윌', scale: '중소기업', biz: '벼룩시장/인쇄', salary: '5,200만 원' }
                     ]},
-                    { id: 'seoul-magok', type: 'seoul', name: '마곡/구로/가산', desc: 'LG사이언스, IT벤처', top10: [
-                        {name: 'LG전자(마곡)', biz: '연구개발', salary: '1억 600만 원'}, {name: 'LG에너지솔루션', biz: '연구개발', salary: '1억 2,300만 원'}, {name: 'LG디스플레이', biz: '디스플레이', salary: '8,500만 원'}, {name: '코오롱인더스트리', biz: '화학', salary: '8,800만 원'}, {name: '넷마블(구로)', biz: '게임', salary: '8,500만 원'}, {name: '컴투스', biz: '게임', salary: '7,800만 원'}, {name: '원익IPS', biz: '반도체장비', salary: '8,200만 원'}, {name: 'SFA', biz: '자동화', salary: '7,500만 원'}, {name: '휴맥스', biz: '통신장비', salary: '7,200만 원'}, {name: '안랩', biz: '보안', salary: '7,000만 원'}
-                    ]},
-                    
-                    { id: 'gg-pangyo', type: 'gyeonggi', name: '성남/판교', desc: '네이버, 카카오, IT', top10: [
-                        {name: '네이버', biz: '포털', salary: '1억 2,000만 원'}, {name: '카카오', biz: 'IT', salary: '1억 1,000만 원'}, {name: '엔씨소프트', biz: '게임', salary: '1억 500만 원'}, {name: '넥슨', biz: '게임', salary: '1억 200만 원'}, {name: 'SK케미칼', biz: '화학', salary: '9,500만 원'}, {name: '안랩', biz: '보안', salary: '7,000만 원'}, {name: '크래프톤', biz: '게임', salary: '1억 1,000만 원'}, {name: '카카오뱅크', biz: '금융', salary: '1억 3,500만 원'}, {name: '스마일게이트', biz: '게임', salary: '9,800만 원'}, {name: '한화에어로스페이스', biz: '방산(R&D)', salary: '1억 1,100만 원'}
-                    ]},
-                    { id: 'gg-suwon', type: 'gyeonggi', name: '수원/용인/기흥', desc: '삼성전자 본진', top10: [
-                        {name: '삼성전자(수원/기흥)', biz: '전자/반도체', salary: '1억 2,000만 원'}, {name: '삼성디스플레이(기흥)', biz: '디스플레이', salary: '1억 1,500만 원'}, {name: '삼성전기(수원)', biz: '부품', salary: '9,800만 원'}, {name: '삼성SDI(기흥)', biz: '배터리', salary: '1억 500만 원'}, {name: '현대차마북연구소', biz: 'R&D', salary: '1억 1,000만 원'}, {name: 'KCC(용인)', biz: '연구소', salary: '8,500만 원'}, {name: '녹십자(용인)', biz: '제약', salary: '7,500만 원'}, {name: '일동제약(용인)', biz: '제약', salary: '7,200만 원'}, {name: '원익IPS(용인)', biz: '장비', salary: '8,200만 원'}, {name: '두산로보틱스(수원)', biz: '로봇', salary: '8,000만 원'}
-                    ]},
-                    { id: 'gg-hwaseong', type: 'gyeonggi', name: '화성/평택/이천', desc: 'SK하이닉스, 삼성 평택', top10: [
-                        {name: 'SK하이닉스(이천)', biz: '반도체', salary: '1억 2,100만 원'}, {name: '삼성전자(화성/평택)', biz: '반도체', salary: '1억 2,000만 원'}, {name: '현대차남양연구소', biz: 'R&D', salary: '1억 1,700만 원'}, {name: '기아(화성)', biz: '완성차', salary: '1억 2,700만 원'}, {name: 'HL만도(평택)', biz: '차부품', salary: '9,500만 원'}, {name: '도쿄일렉트론코리아', biz: '외국계장비', salary: '1억 1,000만 원'}, {name: 'ASML코리아', biz: '외국계장비', salary: '1억 1,500만 원'}, {name: '램리서치코리아', biz: '외국계장비', salary: '1억 1,000만 원'}, {name: '동진쎄미켐(화성)', biz: '소재', salary: '8,500만 원'}, {name: '솔브레인', biz: '소재', salary: '8,800만 원'}
-                    ]},
-                    { id: 'gg-paju', type: 'gyeonggi', name: '파주/고양/김포', desc: 'LG디스플레이 거점', top10: [
-                        {name: 'LG디스플레이(파주)', biz: '디스플레이', salary: '8,500만 원'}, {name: 'LG이노텍(파주)', biz: '부품', salary: '9,200만 원'}, {name: '현대모터스튜디오(고양)', biz: '판매/전시', salary: '8,000만 원'}, {name: '한국항공대산학', biz: '교육', salary: '6,500만 원'}, {name: 'EBS(고양)', biz: '방송', salary: '8,200만 원'}, {name: 'KINTEX', biz: '전시', salary: '7,000만 원'}, {name: '희성전자', biz: '부품', salary: '7,200만 원'}, {name: '파주전기초자', biz: '유리', salary: '7,500만 원'}, {name: '일산병원', biz: '의료', salary: '8,500만 원'}, {name: '김포공항(관련협력)', biz: '항공', salary: '6,800만 원'}
+                    { id: 'seoul-magok', type: 'seoul', name: '마곡/구로/가산', desc: 'LG사이언스파크, G밸리 IT단지', companies: [
+                        { name: 'LG에너지솔루션(마곡)', scale: '대기업', biz: '배터리 R&D', salary: '1억 2,300만 원' },
+                        { name: 'LG전자(마곡)', scale: '대기업', biz: 'R&D 연구원', salary: '1억 600만 원' },
+                        { name: '넷마블', scale: '중견기업', biz: '모바일 게임', salary: '8,500만 원' },
+                        { name: '컴투스', scale: '중견기업', biz: '모바일 게임', salary: '7,800만 원' },
+                        { name: '원익IPS', scale: '중견기업', biz: '반도체 증착 장비', salary: '8,200만 원' },
+                        { name: '메디톡스', scale: '중견기업', biz: '보툴리눔 톡신', salary: '7,600만 원' },
+                        { name: '쿠콘', scale: '중소기업', biz: '데이터 API 스크래핑', salary: '6,500만 원' },
+                        { name: '라온시큐어', scale: '중소기업', biz: '모바일 보안 솔루션', salary: '6,200만 원' }
                     ]},
 
-                    { id: 'metro-incheon', type: 'metro', name: '인천광역시', desc: '셀트리온, 송도바이오', top10: [
-                        {name: '셀트리온', biz: '바이오', salary: '8,500만 원'}, {name: '삼성바이오로직스', biz: '바이오', salary: '9,900만 원'}, {name: '현대제철(인천)', biz: '철강', salary: '1억 500만 원'}, {name: '현대두산인프라코어', biz: '건설기계', salary: '9,500만 원'}, {name: '인천국제공항공사', biz: '공기업', salary: '9,200만 원'}, {name: '포스코이앤씨(송도)', biz: '건설', salary: '9,200만 원'}, {name: 'GM한국사업장', biz: '자동차', salary: '8,800만 원'}, {name: 'SK인천석유화학', biz: '정유', salary: '1억 4,000만 원'}, {name: '엠코테크놀로지', biz: '반도체후공정', salary: '7,500만 원'}, {name: '만도(청라)', biz: 'R&D', salary: '9,000만 원'}
+                    { id: 'gg-pangyo', type: 'gyeonggi', name: '성남/판교/분당', desc: '한국의 실리콘밸리, IT/게임', companies: [
+                        { name: 'SK케미칼', scale: '대기업', biz: '친환경 소재', salary: '1억 500만 원' },
+                        { name: '네이버', scale: '대기업', biz: '포털/검색/AI', salary: '1억 2,000만 원' },
+                        { name: '카카오', scale: '대기업', biz: '모바일 플랫폼', salary: '1억 1,000만 원' },
+                        { name: '엔씨소프트', scale: '중견기업', biz: 'MMORPG 게임', salary: '1억 500만 원' },
+                        { name: '크래프톤', scale: '중견기업', biz: '배틀그라운드', salary: '1억 1,000만 원' },
+                        { name: '한글과컴퓨터', scale: '중견기업', biz: '한컴오피스/SaaS', salary: '6,800만 원' },
+                        { name: '루닛', scale: '중소기업', biz: '의료 AI 영상 진단', salary: '7,800만 원' },
+                        { name: '뷰노', scale: '중소기업', biz: '생체신호 AI 딥러닝', salary: '7,200만 원' }
                     ]},
-                    { id: 'metro-busan', type: 'metro', name: '부산광역시', desc: '르노, 한국거래소 등', top10: [
-                        {name: '한국거래소', biz: '금융', salary: '1억 1,500만 원'}, {name: '르노코리아자동차', biz: '완성차', salary: '8,500만 원'}, {name: '한국남부발전', biz: '공기업', salary: '9,200만 원'}, {name: '주택도시보증공사', biz: '공기업', salary: '8,800만 원'}, {name: '부산은행', biz: '금융', salary: '1억 500만 원'}, {name: '대한제강', biz: '철강', salary: '8,200만 원'}, {name: '동국제강(부산)', biz: '철강', salary: '8,500만 원'}, {name: '한진중공업(영도)', biz: '조선', salary: '7,500만 원'}, {name: '에어부산', biz: '항공여객', salary: '6,500만 원'}, {name: '성우하이텍', biz: '차부품', salary: '7,000만 원'}
+                    { id: 'gg-suwon', type: 'gyeonggi', name: '수원/용인/기흥', desc: '삼성전자 본사 디지털시티', companies: [
+                        { name: '삼성전자(수원/기흥)', scale: '대기업', biz: '반도체/VD 가전', salary: '1억 2,000만 원' },
+                        { name: '삼성전기', scale: '대기업', biz: 'MLCC/패키지기판', salary: '9,800만 원' },
+                        { name: 'GC녹십자(용인)', scale: '중견기업', biz: '혈액제제/백신', salary: '7,500만 원' },
+                        { name: '에스앤에스텍', scale: '중견기업', biz: '블랭크마스크', salary: '7,800만 원' },
+                        { name: '주성엔지니어링', scale: '중견기업', biz: '반도체/태양광 장비', salary: '8,100만 원' },
+                        { name: '두산로보틱스', scale: '중소기업', biz: '협동로봇', salary: '8,200만 원' },
+                        { name: '피에스케이홀딩스', scale: '중소기업', biz: '패키징 세정 장비', salary: '7,200만 원' }
                     ]},
-                    { id: 'metro-ulsan', type: 'metro', name: '울산광역시', desc: '현대차, HD현대중공업', top10: [
-                        {name: 'S-OIL', biz: '정유', salary: '1억 6,500만 원'}, {name: '현대자동차(울산)', biz: '완성차', salary: '1억 1,700만 원'}, {name: 'HD현대중공업', biz: '조선', salary: '8,900만 원'}, {name: 'SK이노베이션(울산)', biz: '정유', salary: '1억 5,200만 원'}, {name: '고려아연(온산)', biz: '비철금속', salary: '1억 1,500만 원'}, {name: '롯데케미칼(울산)', biz: '화학', salary: '1억 400만 원'}, {name: '한화솔루션(울산)', biz: '화학', salary: '1억 500만 원'}, {name: '현대미포조선', biz: '조선', salary: '8,500만 원'}, {name: '한국석유공사', biz: '공기업', salary: '9,000만 원'}, {name: '한국동서발전', biz: '공기업', salary: '9,200만 원'}
+                    { id: 'gg-hwaseong', type: 'gyeonggi', name: '화성/평택/이천', desc: 'SK하이닉스, 삼성전자 평택캠퍼스', companies: [
+                        { name: 'SK하이닉스(이천)', scale: '대기업', biz: 'D램/NAND/HBM', salary: '1억 2,100만 원' },
+                        { name: '삼성전자(평택/화성)', scale: '대기업', biz: '파운드리/메모리', salary: '1억 2,000만 원' },
+                        { name: '현대차 남양연구소', scale: '대기업', biz: '완성차 R&D', salary: '1억 1,700만 원' },
+                        { name: '동진쎄미켐(화성)', scale: '중견기업', biz: '감광액(포토레지스트)', salary: '8,500만 원' },
+                        { name: '솔브레인', scale: '중견기업', biz: '고순도 불산 에칭액', salary: '8,800만 원' },
+                        { name: '유진테크(이천)', scale: '중견기업', biz: '반도체 박막 장비', salary: '8,000만 원' },
+                        { name: '테라셈', scale: '중소기업', biz: '이미지센서 패키징', salary: '5,800만 원' }
                     ]},
-                    { id: 'metro-daejeon', type: 'metro', name: '대전광역시', desc: '연구단지, 공기업 본사', top10: [
-                        {name: '한국수자원공사', biz: '공기업', salary: '8,500만 원'}, {name: '한국조폐공사', biz: '공기업', salary: '8,200만 원'}, {name: '한국철도공사(코레일)', biz: '공기업', salary: '7,500만 원'}, {name: '국방과학연구소(ADD)', biz: '연구원', salary: '9,800만 원'}, {name: '한국항공우주연구원', biz: '연구원', salary: '9,500만 원'}, {name: '한국전자통신연구원', biz: '연구원', salary: '1억 200만 원'}, {name: 'KT&G(신탄진)', biz: '제조', salary: '9,000만 원'}, {name: '한화(대전)', biz: '방산', salary: '9,500만 원'}, {name: 'LG화학기술연구원', biz: 'R&D', salary: '1억 1,000만 원'}, {name: 'LX세미콘(대전)', biz: '반도체설계', salary: '1억 500만 원'}
+                    { id: 'gg-paju', type: 'gyeonggi', name: '파주/고양/김포', desc: 'LG디스플레이 클러스터', companies: [
+                        { name: 'LG디스플레이(파주)', scale: '대기업', biz: '대형 OLED 패널', salary: '8,500만 원' },
+                        { name: 'LG이노텍(파주)', scale: '대기업', biz: '기판소재', salary: '9,200만 원' },
+                        { name: '희성전자', scale: '중견기업', biz: 'BLU 디스플레이', salary: '7,200만 원' },
+                        { name: '신성델타테크', scale: '중견기업', biz: '배터리 부품/사출', salary: '6,800만 원' },
+                        { name: '파주전기초자', scale: '중견기업', biz: '디스플레이 유리', salary: '7,500만 원' },
+                        { name: '뉴옵틱스', scale: '중소기업', biz: '광학 필름/도광판', salary: '6,200만 원' }
                     ]},
-                    { id: 'metro-daegu', type: 'metro', name: '대구광역시', desc: '한국가스공사, 2차전지', top10: [
-                        {name: '한국가스공사', biz: '공기업', salary: '9,500만 원'}, {name: 'DGB대구은행', biz: '금융', salary: '1억 500만 원'}, {name: '엘앤에프', biz: '2차전지', salary: '8,500만 원'}, {name: '한국부동산원', biz: '공기업', salary: '8,800만 원'}, {name: '에스엘', biz: '차부품', salary: '8,000만 원'}, {name: '평화정공', biz: '차부품', salary: '7,500만 원'}, {name: '신용보증기금', biz: '공기업', salary: '9,200만 원'}, {name: '대동', biz: '농기계', salary: '7,200만 원'}, {name: '한국장학재단', biz: '공공기관', salary: '7,000만 원'}, {name: '이수페타시스', biz: 'PCB기판', salary: '7,800만 원'}
+
+                    { id: 'metro-incheon', type: 'metro', name: '인천광역시', desc: '송도 바이오클러스터, 청라', companies: [
+                        { name: '삼성바이오로직스', scale: '대기업', biz: '바이오 의약품 수탁', salary: '9,900만 원' },
+                        { name: '현대제철(인천)', scale: '대기업', biz: 'H형강/철근', salary: '1억 500만 원' },
+                        { name: 'SK인천석유화학', scale: '대기업', biz: '항공유/파라자일렌', salary: '1억 4,000만 원' },
+                        { name: '셀트리온', scale: '중견기업', biz: '바이오시밀러', salary: '8,500만 원' },
+                        { name: '엠코테크놀로지', scale: '중견기업', biz: '반도체 후공정 패키징', salary: '7,500만 원' },
+                        { name: '핸즈코퍼레이션', scale: '중견기업', biz: '알루미늄 휠', salary: '6,500만 원' },
+                        { name: '캠시스', scale: '중소기업', biz: '카메라 모듈 제조', salary: '5,800만 원' },
+                        { name: '경방', scale: '중소기업', biz: '방직/타임스퀘어', salary: '5,500만 원' }
                     ]},
-                    { id: 'metro-gwangju', type: 'metro', name: '광주광역시', desc: '한전, 기아차 광주공장', top10: [
-                        {name: '한국전력공사(나주)', biz: '공기업', salary: '8,800만 원'}, {name: '기아(광주)', biz: '완성차', salary: '1억 2,700만 원'}, {name: '금호타이어', biz: '타이어', salary: '8,000만 원'}, {name: '한전KDN', biz: '공기업', salary: '8,200만 원'}, {name: '한전KPS', biz: '공기업', salary: '8,500만 원'}, {name: '광주은행', biz: '금융', salary: '1억 200만 원'}, {name: '삼성전자(광주)', biz: '가전', salary: '9,500만 원'}, {name: '앰코테크놀로지(광주)', biz: '반도체', salary: '7,500만 원'}, {name: '대유에이텍', biz: '부품', salary: '6,800만 원'}, {name: '농어촌공사(나주)', biz: '공기업', salary: '8,000만 원'}
+                    { id: 'metro-busan', type: 'metro', name: '부산광역시', desc: '한국거래소, 해운/항만, 르노', companies: [
+                        { name: '한국거래소 (KRX)', scale: '대기업', biz: '증권/파생상품 시장', salary: '1억 1,500만 원' },
+                        { name: '르노코리아자동차', scale: '대기업', biz: '하이브리드 SUV', salary: '8,500만 원' },
+                        { name: 'BNK부산은행', scale: '중견기업', biz: '지방 금융지주', salary: '1억 500만 원' },
+                        { name: '동국제강(부산)', scale: '중견기업', biz: '컬러강판', salary: '8,500만 원' },
+                        { name: '성우하이텍', scale: '중견기업', biz: '차체 부품 제조', salary: '7,000만 원' },
+                        { name: '태웅', scale: '중견기업', biz: '풍력 자유형 단조', salary: '6,800만 원' },
+                        { name: '오스템임플란트(부산공장)', scale: '중견기업', biz: '임플란트 생산', salary: '7,200만 원' },
+                        { name: '조광페인트', scale: '중소기업', biz: '공업용/건축용 도료', salary: '5,800만 원' },
+                        { name: '삼덕통상', scale: '중소기업', biz: '기능성 신발 제조', salary: '5,200만 원' }
+                    ]},
+                    { id: 'metro-ulsan', type: 'metro', name: '울산광역시', desc: '중화학공업의 심장, 현대차/정유', companies: [
+                        { name: 'S-OIL(온산)', scale: '대기업', biz: '정유/샤힌 프로젝트', salary: '1억 6,500만 원' },
+                        { name: 'SK이노베이션(울산CLX)', scale: '대기업', biz: '국내 최대 정유공장', salary: '1억 5,200만 원' },
+                        { name: '현대자동차(울산공장)', scale: '대기업', biz: '완성차 단일최대공장', salary: '1억 1,700만 원' },
+                        { name: '고려아연(온산제련소)', scale: '대기업', biz: '비철금속 세계1위', salary: '1억 1,500만 원' },
+                        { name: 'HD현대중공업', scale: '대기업', biz: '조선/엔진기계', salary: '8,900만 원' },
+                        { name: '덕양산업', scale: '중견기업', biz: '자동차 칵핏 모듈', salary: '7,200만 원' },
+                        { name: '세진중공업', scale: '중견기업', biz: '조선 데크하우스', salary: '6,800만 원' },
+                        { name: '송원산업', scale: '중견기업', biz: '플라스틱 산화방지제', salary: '7,500만 원' },
+                        { name: '대산모델', scale: '중소기업', biz: '자동차 디자인 목업', salary: '5,100만 원' }
+                    ]},
+                    { id: 'metro-daejeon', type: 'metro', name: '대전광역시', desc: '대덕연구개발특구, 정부출연연', companies: [
+                        { name: '한국전자통신연구원(ETRI)', scale: '대기업', biz: 'ICT 정부출연연', salary: '1억 200만 원' },
+                        { name: '국방과학연구소 (ADD)', scale: '대기업', biz: '유도무기 국방연구', salary: '9,800만 원' },
+                        { name: 'KT&G 본사', scale: '대기업', biz: '담배/인삼/바이오', salary: '9,000만 원' },
+                        { name: 'LX세미콘', scale: '중견기업', biz: '디스플레이 DDI 팹리스', salary: '1억 500만 원' },
+                        { name: '한온시스템', scale: '중견기업', biz: '자동차 열관리 공조', salary: '9,500만 원' },
+                        { name: '골프존', scale: '중견기업', biz: '스크린골프 시뮬레이터', salary: '8,200만 원' },
+                        { name: '리가켐바이오', scale: '중견기업', biz: 'ADC 항암 신약', salary: '7,800만 원' },
+                        { name: '바이오니아', scale: '중소기업', biz: '분자진단/유전자분석', salary: '6,200만 원' },
+                        { name: '펩트론', scale: '중소기업', biz: '펩타이드 지속형 제형', salary: '6,000만 원' }
+                    ]},
+                    { id: 'metro-daegu', type: 'metro', name: '대구광역시', desc: '미래 모빌리티, 2차전지 양극재', companies: [
+                        { name: '한국가스공사 본사', scale: '대기업', biz: '에너지 공기업', salary: '9,500만 원' },
+                        { name: '엘앤에프', scale: '대기업', biz: '하이니켈 NCMA 양극재', salary: '8,500만 원' },
+                        { name: 'DGB대구은행', scale: '중견기업', biz: '시중은행 전환(iM뱅크)', salary: '1억 500만 원' },
+                        { name: '에스엘', scale: '중견기업', biz: '차량용 LED 헤드램프', salary: '8,000만 원' },
+                        { name: '평화정공', scale: '중견기업', biz: '자동차 도어 래치', salary: '7,500만 원' },
+                        { name: '상신브레이크', scale: '중견기업', biz: '자동차 마찰 브레이크', salary: '6,800만 원' },
+                        { name: '대동', scale: '중견기업', biz: '스마트 농기계/트랙터', salary: '7,200만 원' },
+                        { name: '메가젠임플란트', scale: '중소기업', biz: '유럽 1위 치과 임플란트', salary: '6,500만 원' }
+                    ]},
+                    { id: 'metro-gwangju', type: 'metro', name: '광주광역시', desc: '기아 광주공장, 에너지밸리', companies: [
+                        { name: '기아(광주공장)', scale: '대기업', biz: '스포티지/셀토스 조립', salary: '1억 2,700만 원' },
+                        { name: '삼성전자(광주사업장)', scale: '대기업', biz: '비스포크 냉장고 생산', salary: '9,500만 원' },
+                        { name: '한국전력공사(나주)', scale: '대기업', biz: '전력 인프라 공기업', salary: '8,800만 원' },
+                        { name: '광주은행', scale: '중견기업', biz: 'JB금융지주 지방은행', salary: '1억 200만 원' },
+                        { name: '금호타이어', scale: '중견기업', biz: '승용차/전기차 타이어', salary: '8,000만 원' },
+                        { name: '대유에이텍', scale: '중견기업', biz: '자동차 시트 완제품', salary: '6,800만 원' },
+                        { name: '화천기공', scale: '중견기업', biz: '공작기계 CNC', salary: '6,500만 원' },
+                        { name: '오텍캐리어', scale: '중소기업', biz: '상업용 에어컨/냉동기', salary: '5,800만 원' }
                     ]}
                 ]
             }));
