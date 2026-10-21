@@ -1,1447 +1,551 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>K-Salary Insight | 대한민국 30대 그룹·전국 연봉·성과급·세무 포털</title>
-  <style>
-    :root {
-      --bg: #f5f5f7;
-      --card: #ffffff;
-      --text: #1d1d1f;
-      --muted: #86868b;
-      --accent: #0071e3;
-      --accent-hover: #0077ed;
-      --green: #34c759;
-      --red: #ff3b30;
-      --border: rgba(0, 0, 0, 0.08);
-      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      --radius: 18px;
-      --radius-sm: 10px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", sans-serif; letter-spacing: -0.02em; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; }
-
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 20px;
-    }
-    .header-inner { max-width: 1120px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .logo { font-size: 20px; font-weight: 800; color: var(--text); }
-    .logo span { color: var(--accent); }
-    .header-badge { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: rgba(0, 113, 227, 0.08); color: var(--accent); font-weight: 600; }
-
-    .container { max-width: 1120px; margin: 24px auto 0; padding: 0 16px; }
-
-    .nav-tabs {
-      display: flex; gap: 8px; overflow-x: auto; padding: 6px; background: rgba(0,0,0,0.04);
-      border-radius: var(--radius-sm); margin-bottom: 24px; scrollbar-width: none;
-    }
-    .nav-tabs::-webkit-scrollbar { display: none; }
-    .nav-btn {
-      flex: 1; min-width: 160px; padding: 12px 14px; font-size: 14px; font-weight: 700;
-      color: var(--muted); background: transparent; border: none; border-radius: 8px;
-      cursor: pointer; transition: all 0.2s ease; white-space: nowrap; text-align: center;
-    }
-    .nav-btn.active { background: #fff; color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-
-    .card {
-      background: var(--card); border-radius: var(--radius); border: 1px solid var(--border);
-      padding: 30px; box-shadow: var(--shadow); margin-bottom: 24px;
-    }
-    .card-title { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
-    .card-desc { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
-
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    @media (max-width: 860px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
-
-    .form-group { margin-bottom: 16px; }
-    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-    .input-box { position: relative; display: flex; align-items: center; }
-    input, select {
-      width: 100%; height: 46px; padding: 10px 14px; font-size: 15px; border-radius: var(--radius-sm);
-      border: 1px solid var(--border); background: #fbfbfd; outline: none; transition: border-color 0.2s;
-    }
-    input:focus, select:focus { border-color: var(--accent); background: #fff; }
-    .unit-tag { position: absolute; right: 14px; font-size: 13px; color: var(--muted); pointer-events: none; }
-
-    .btn-action {
-      width: 100%; height: 50px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm);
-      font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-top: 10px;
-    }
-    .btn-action:hover { background: var(--accent-hover); }
-
-    .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-    .search-box { flex: 1; min-width: 260px; height: 46px; padding: 0 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 14px; }
-    .select-box { height: 46px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 14px; background: #fff; }
-
-    .company-card {
-      border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 22px; background: #fff; margin-bottom: 16px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .company-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.04); }
-    .card-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 10px; flex-wrap: wrap; }
-    .comp-title { font-size: 18px; font-weight: 800; color: var(--text); }
-    .badge-wrap { display: flex; gap: 6px; align-items: center; }
-    .rank-tag { font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 12px; background: #000; color: #fff; }
-    .group-tag { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; background: rgba(0, 113, 227, 0.08); color: var(--accent); }
-    
-    .btn-recruit {
-      display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; font-size: 12px; font-weight: 700;
-      color: #fff; background: var(--accent); border-radius: 6px; text-decoration: none; transition: background 0.2s;
-    }
-    .btn-recruit:hover { background: var(--accent-hover); }
-
-    .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #fbfbfd; padding: 14px; border-radius: 8px; margin: 12px 0; }
-    @media (max-width: 680px) { .metric-grid { grid-template-columns: 1fr; } }
-    .m-item { font-size: 13px; color: var(--muted); }
-    .m-item b { display: block; font-size: 15px; font-weight: 800; margin-top: 2px; }
-    .val-bonus b { color: var(--red); }
-    .val-salary b { color: var(--accent); }
-
-    .reason-box { font-size: 13px; color: #4b5563; line-height: 1.6; background: #f8fafc; padding: 12px; border-radius: 8px; }
-
-    .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-    .data-table th { text-align: left; padding: 12px 10px; background: #f8fafc; color: var(--muted); font-weight: 700; border-bottom: 1px solid var(--border); }
-    .data-table td { padding: 14px 10px; border-bottom: 1px solid var(--border); }
-    .rank-td { font-weight: 900; color: var(--accent); width: 48px; }
-    .badge-industry { font-size: 11px; padding: 3px 8px; border-radius: 6px; background: #f1f5f9; font-weight: 600; }
-
-    .refund-board {
-      border-radius: var(--radius-sm); padding: 26px; text-align: center; margin: 24px 0 20px;
-      display: none; transition: all 0.3s;
-    }
-    .refund-board.get { background: #e8f5e9; border: 2px solid var(--green); }
-    .refund-board.pay { background: #ffebee; border: 2px solid var(--red); }
-    .refund-sub { font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
-    .refund-num { font-size: 38px; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 6px; }
-    .refund-board.get .refund-num { color: #1b5e20; }
-    .refund-board.pay .refund-num { color: #b71c1c; }
-
-    .stat-line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.05); font-size: 14px; }
-    .stat-line:last-child { border-bottom: none; }
-    .stat-line span:first-child { color: var(--muted); }
-    .stat-line span:last-child { font-weight: 700; }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.25s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출근하기 싫다 - 직장인 생존 백서</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- 폰트: 프리텐다드 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f3f4f6; }
+        .toss-blue { color: #3182f6; }
+        .bg-toss-blue { background-color: #3182f6; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
 </head>
-<body>
+<body x-data="appData()">
 
-<header>
-  <div class="header-inner">
-    <div class="logo">K-Salary <span>Insight</span></div>
-    <div class="header-badge">2026 공정위 대기업 집단 & 전국 지자체 공시</div>
-  </div>
-</header>
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900">
+                출근하기 싫다 <span class="toss-blue text-lg font-semibold ml-2">직장인 생존 백서</span>
+            </h1>
+            <div class="hidden sm:block text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">2026 대한민국 대기업 & 지자체 공시</div>
+        </div>
+        <!-- Tabs -->
+        <div class="max-w-5xl mx-auto px-4 border-t">
+            <div class="flex space-x-6 overflow-x-auto hide-scrollbar whitespace-nowrap">
+                <button @click="currentTab = 'companies'" :class="currentTab === 'companies' ? 'border-b-2 border-blue-500 toss-blue font-bold' : 'text-gray-500 font-medium'" class="py-3 px-1 transition">30대 그룹사 채용·성과급</button>
+                <button @click="currentTab = 'regions'" :class="currentTab === 'regions' ? 'border-b-2 border-blue-500 toss-blue font-bold' : 'text-gray-500 font-medium'" class="py-3 px-1 transition">전국 지역별 연봉 TOP 10</button>
+                <button @click="currentTab = 'calculators'" :class="currentTab === 'calculators' ? 'border-b-2 border-blue-500 toss-blue font-bold' : 'text-gray-500 font-medium'" class="py-3 px-1 transition">직장인 생존 계산기</button>
+            </div>
+        </div>
+    </header>
 
-<div class="container">
-  <div class="nav-tabs">
-    <button class="nav-btn active" onclick="navigate(this, 'bonus')">30대 그룹 성과급 & 채용 (150개사)</button>
-    <button class="nav-btn" onclick="navigate(this, 'scale')">기업규모 6단계 직무·직급 연봉</button>
-    <button class="nav-btn" onclick="navigate(this, 'region')">전국 17개 시도 TOP 10 (420개사)</button>
-    <button class="nav-btn" onclick="navigate(this, 'netpay')">연봉 실수령액 계산기</button>
-    <button class="nav-btn" onclick="navigate(this, 'tax')">연말정산 1분 환급 시뮬레이터</button>
-  </div>
+    <main class="max-w-5xl mx-auto px-4 py-8">
 
-  <!-- 1. 30대 그룹사별 성과급 디렉토리 -->
-  <div id="view-bonus" class="tab-content active">
-    <div class="card">
-      <h2 class="card-title">대한민국 30대 대기업 그룹 성과급·평균연봉·채용공고</h2>
-      <p class="card-desc">공정거래위원회 공시대상 기업집단 자산총액 기준 1위부터 30위까지의 주요 계열사 성과급 산정 공식, 실수령 예상액, 총 평균 연봉 및 공식 채용 사이트 연결 링크입니다.</p>
+        <!-- 탭 1: 30대 그룹사 -->
+        <div x-show="currentTab === 'companies'" x-transition>
+            <div class="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">대한민국 30대 그룹 상세 해부</h2>
+                    <p class="text-sm text-gray-500 mt-1">공정위 지정 자산총액 1~30위 그룹. 클릭 시 핵심 계열사 채용사이트 및 연봉 정보가 펼쳐집니다.</p>
+                </div>
+            </div>
 
-      <div class="filter-bar">
-        <input type="text" class="search-box" id="bonus-keyword" placeholder="기업명, 계열사, 사업부 검색 (예: 하이닉스, 현대차, 에쓰오일, HMM)" onkeyup="filterBonuses()">
-        <select class="select-box" id="bonus-group-dropdown" onchange="filterBonuses()">
-          <option value="ALL">자산총액 1위~30위 그룹 전체 보기</option>
-        </select>
-      </div>
+            <div class="space-y-4">
+                <template x-for="group in top30Groups" :key="group.rank">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <button @click="expandedGroup = (expandedGroup === group.rank ? null : group.rank)" class="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 transition">
+                            <div class="flex items-center gap-4">
+                                <span class="text-gray-400 font-semibold w-6 text-left" x-text="group.rank"></span>
+                                <h3 class="text-lg font-bold text-gray-900" x-text="group.name"></h3>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400 transform transition-transform" :class="expandedGroup === group.rank ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
 
-      <div id="bonus-card-list"></div>
+                        <div x-show="expandedGroup === group.rank" x-collapse>
+                            <div class="px-6 pb-6 pt-2 space-y-4 bg-gray-50 border-t border-gray-100">
+                                <template x-for="company in group.subsidiaries">
+                                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <h4 class="text-lg font-bold text-gray-800" x-text="company.name"></h4>
+                                                <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded" x-text="company.biz"></span>
+                                            </div>
+                                            <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                                                <div><span class="text-gray-400">성과급/상여:</span> <span class="font-medium text-red-500 ml-1" x-text="company.bonus"></span></div>
+                                                <div><span class="text-gray-400">평균 연봉:</span> <span class="font-semibold toss-blue ml-1" x-text="company.salary"></span></div>
+                                            </div>
+                                        </div>
+                                        <a :href="company.url" target="_blank" class="shrink-0 inline-flex justify-center items-center px-4 py-2 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition text-sm">
+                                            공식 사이트 ↗
+                                        </a>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- 탭 2: 지역별 연봉 -->
+        <div x-show="currentTab === 'regions'" x-transition style="display: none;">
+            <h2 class="text-xl font-bold text-gray-800 mb-1">우리 동네 대장 기업은 어디일까?</h2>
+            <p class="text-sm text-gray-500 mb-6">지역 카드를 클릭하면 해당 지역의 평균 연봉 TOP 10 기업이 상세하게 표시됩니다.</p>
+
+            <div class="space-y-8">
+                <!-- 서울 -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4 flex items-center"><span class="w-2 h-6 bg-toss-blue rounded-full mr-2"></span>서울특별시 주요 거점</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <template x-for="r in regions.filter(r => r.type === 'seoul')">
+                            <button @click="openModal(r)" class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-400 hover:shadow-md transition text-left group">
+                                <h4 class="font-bold text-gray-800 group-hover:text-blue-600" x-text="r.name"></h4>
+                                <p class="text-xs text-gray-400 mt-2 truncate" x-text="r.desc"></p>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+                <!-- 경기 -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4 flex items-center"><span class="w-2 h-6 bg-toss-blue rounded-full mr-2"></span>경기도 주요 거점</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <template x-for="r in regions.filter(r => r.type === 'gyeonggi')">
+                            <button @click="openModal(r)" class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-400 hover:shadow-md transition text-left group">
+                                <h4 class="font-bold text-gray-800 group-hover:text-blue-600" x-text="r.name"></h4>
+                                <p class="text-xs text-gray-400 mt-2 truncate" x-text="r.desc"></p>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+                <!-- 6대 광역시 -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4 flex items-center"><span class="w-2 h-6 bg-toss-blue rounded-full mr-2"></span>전국 6대 광역시</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <template x-for="r in regions.filter(r => r.type === 'metro')">
+                            <button @click="openModal(r)" class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-400 hover:shadow-md transition text-left group">
+                                <h4 class="font-bold text-gray-800 group-hover:text-blue-600" x-text="r.name"></h4>
+                                <p class="text-xs text-gray-400 mt-2 truncate" x-text="r.desc"></p>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 탭 3: 생존 계산기 -->
+        <div x-show="currentTab === 'calculators'" x-transition style="display: none;">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <button @click="activeCalc = 'net'" :class="activeCalc === 'net' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200'" class="p-4 rounded-2xl font-bold transition">실수령액 계산기</button>
+                <button @click="activeCalc = 'tax'" :class="activeCalc === 'tax' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200'" class="p-4 rounded-2xl font-bold transition">연말정산 예측</button>
+                <button @click="activeCalc = 'severance'" :class="activeCalc === 'severance' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200'" class="p-4 rounded-2xl font-bold transition">퇴직금 (DB/DC)</button>
+                <button @click="activeCalc = 'pension'" :class="activeCalc === 'pension' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200'" class="p-4 rounded-2xl font-bold transition">국민연금 시뮬레이터</button>
+            </div>
+
+            <div class="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-gray-100">
+                <!-- 1. 실수령액 -->
+                <div x-show="activeCalc === 'net'">
+                    <h3 class="text-xl font-bold mb-6">내 통장에 꽂히는 진짜 월급은? (4대보험 상세)</h3>
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="w-full md:w-1/2 space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">계약 연봉 (만 원)</label>
+                                <input type="number" x-model="calcData.net.salary" placeholder="예: 5000" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2 bg-gray-50 p-6 rounded-2xl">
+                            <div class="text-sm text-gray-500 mb-1">월 예상 실수령액</div>
+                            <div class="text-3xl font-bold toss-blue mb-4" x-text="formatWon(calculateNet().net) + '원'"></div>
+                            <div class="space-y-2 text-sm border-t border-gray-200 pt-4">
+                                <div class="flex justify-between"><span class="text-gray-500">국민연금 (4.5%)</span> <span x-text="formatWon(calculateNet().pension) + '원'"></span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">건강보험 (3.545%)</span> <span x-text="formatWon(calculateNet().health) + '원'"></span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">장기요양보험</span> <span x-text="formatWon(calculateNet().care) + '원'"></span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">고용보험 (0.9%)</span> <span x-text="formatWon(calculateNet().emp) + '원'"></span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">소득세/지방세 (추정)</span> <span x-text="formatWon(calculateNet().tax) + '원'"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 연말정산 -->
+                <div x-show="activeCalc === 'tax'" style="display: none;">
+                    <h3 class="text-xl font-bold mb-6">13월의 월급 vs 세금 폭탄 방어전</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">총 급여 (만 원)</label>
+                                <input type="number" x-model="calcData.tax.income" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">신용/체크카드 사용액 (만 원)</label>
+                                <input type="number" x-model="calcData.tax.card" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">의료비 지출 (만 원)</label>
+                                <input type="number" x-model="calcData.tax.medical" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">연금저축/IRP 납입액 (만 원)</label>
+                                <input type="number" x-model="calcData.tax.pension" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-2xl flex flex-col justify-center items-center text-center">
+                            <div class="text-sm text-gray-500 mb-2">예상 환급(납부)액 추정치</div>
+                            <div class="text-3xl font-bold mb-2" :class="calculateTax() > 0 ? 'text-blue-600' : 'text-red-500'" x-text="(calculateTax() > 0 ? '+' : '') + formatWon(calculateTax()) + '원'"></div>
+                            <p class="text-xs text-gray-400 mt-4">* 입력하신 주요 공제 항목을 바탕으로 한 단순 시뮬레이션입니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 퇴직금 -->
+                <div x-show="activeCalc === 'severance'" style="display: none;">
+                    <h3 class="text-xl font-bold mb-6">퇴사할 때 얼마 받을까? (DB vs DC 비교)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">현재 계약 연봉 (만 원)</label>
+                                <input type="number" x-model="calcData.sev.salary" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">근속 연수 (년)</label>
+                                <input type="number" x-model="calcData.sev.years" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">DC형 예상 연평균 운용수익률 (%)</label>
+                                <input type="number" step="0.1" x-model="calcData.sev.rate" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-white border border-blue-200 p-5 rounded-2xl shadow-sm">
+                                <div class="text-sm text-gray-500">확정급여형 (DB - 현재 연봉 기준)</div>
+                                <div class="text-2xl font-bold text-gray-900 mt-1" x-text="formatWon(calcDB()) + '원'"></div>
+                            </div>
+                            <div class="bg-white border border-green-200 p-5 rounded-2xl shadow-sm">
+                                <div class="text-sm text-gray-500">확정기여형 (DC - 운용 수익 복리 반영)</div>
+                                <div class="text-2xl font-bold text-green-600 mt-1" x-text="formatWon(calcDC()) + '원'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. 국민연금 -->
+                <div x-show="activeCalc === 'pension'" style="display: none;">
+                    <h3 class="text-xl font-bold mb-6">노후 생명줄, 국민연금 미래가치 시뮬레이터</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">현재 나이</label>
+                                    <input type="number" x-model="calcData.pen.age" class="w-full p-3 bg-gray-50 border rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">입사 나이</label>
+                                    <input type="number" x-model="calcData.pen.joinAge" class="w-full p-3 bg-gray-50 border rounded-xl">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">예상 은퇴 나이 (정년)</label>
+                                <input type="number" x-model="calcData.pen.retireAge" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">현재 계약 연봉 (만 원)</label>
+                                <input type="number" x-model="calcData.pen.salary" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">향후 직급별 연평균 임금인상률 (%)</label>
+                                <input type="number" step="0.1" x-model="calcData.pen.growth" placeholder="예: 3.5" class="w-full p-3 bg-gray-50 border rounded-xl">
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 text-white p-6 rounded-2xl flex flex-col justify-center">
+                            <div class="text-sm text-gray-400 mb-1">만 65세 이후 예상 <span class="text-blue-400">매월 수령액</span> (복리 생애소득 반영)</div>
+                            <div class="text-4xl font-bold text-white mb-4" x-text="formatWon(calcPension()) + '원'"></div>
+                            <ul class="text-xs text-gray-400 space-y-2 mt-4 border-t border-gray-600 pt-4">
+                                <li>• 총 납입 예상 기간: <span x-text="(calcData.pen.retireAge - calcData.pen.joinAge) || 0"></span>년</li>
+                                <li>• 은퇴 시점 환산 최종 연봉: <span x-text="formatWon(calcFinalSalary())"></span>원</li>
+                                <li>* 소득대체율 40% 기준 산식 적용 (물가상승률 미반영 명목가치)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Region Modal -->
+    <div x-show="isModalOpen" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/50 transition-opacity" @click="closeModal"></div>
+        <div class="bg-white rounded-3xl shadow-xl w-full max-w-lg overflow-hidden z-10 flex flex-col max-h-[80vh]" x-transition>
+            <div class="p-6 border-b flex justify-between items-center bg-gray-50">
+                <h3 class="text-xl font-bold text-gray-900" x-text="modalData.name + ' TOP 10'"></h3>
+                <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="overflow-y-auto p-4 flex-1">
+                <ul class="space-y-3">
+                    <template x-for="(comp, index) in modalData.top10" :key="index">
+                        <li class="p-4 bg-gray-50 rounded-xl flex justify-between items-center border border-gray-100 hover:border-blue-200 transition">
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center" x-text="index + 1"></span>
+                                <div>
+                                    <div class="font-bold text-gray-800" x-text="comp.name"></div>
+                                    <div class="text-xs text-gray-500 mt-0.5" x-text="comp.biz"></div>
+                                </div>
+                            </div>
+                            <div class="font-bold text-gray-900" x-text="comp.salary"></div>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- 2. 기업규모 6단계 직무·직급 연봉 매트릭스 -->
-  <div id="view-scale" class="tab-content">
-    <div class="card">
-      <h2 class="card-title">기업 규모 6단계별 직군·직급 현실 연봉 매트릭스</h2>
-      <p class="card-desc">7대 표준 직무 분류를 기준으로 기업 규모를 변경해도 직무가 사라지지 않고 신입부터 부장급까지의 실제 연봉 범위를 한눈에 비교할 수 있습니다.</p>
-
-      <div class="filter-bar">
-        <select class="select-box" id="scale-tier-dropdown" onchange="renderScaleGrid()">
-          <option value="S_LARGE">1. S급 대기업 (삼성전자·SK하이닉스·현대차·정유사 등 초격차)</option>
-          <option value="GEN_LARGE">2. 일반 대기업 (유통·식품·전통제조 30대 그룹사)</option>
-          <option value="S_MID">3. S급 중견기업 (알짜 반도체소부장·바이오·코스닥 우량 상장사)</option>
-          <option value="GEN_MID">4. 일반 중견기업 (1차 자동차/전자 벤더, 중견제조업)</option>
-          <option value="S_SMALL">5. S급 강소기업 / 유망 스타트업 (시리즈B+ 테크, 특허 기술기업)</option>
-          <option value="GEN_SMALL">6. 일반 중소기업 (300인 미만 일반 제조업 및 단순 사무직)</option>
-        </select>
-      </div>
-
-      <div style="overflow-x:auto;">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>표준 직무 카테고리</th>
-              <th>세부 직무군</th>
-              <th>신입 사원</th>
-              <th>대리 (3~5년)</th>
-              <th>과장 (6~8년)</th>
-              <th>차·부장 (9년+)</th>
-            </tr>
-          </thead>
-          <tbody id="scale-grid-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3. 전국 17개 시도 시군구별 랭킹 -->
-  <div id="view-region" class="tab-content">
-    <div class="card">
-      <h2 class="card-title">전국 17개 시·도 및 세부 시·군·구 연봉 순위 TOP 10</h2>
-      <p class="card-desc">충청, 세종, 대전, 대구, 부산, 전북, 강원, 제주 등 전국 모든 지자체의 핵심 본사 및 생산 거점 알짜 기업들의 평균 연봉 데이터를 제공합니다.</p>
-
-      <div class="grid-2" style="margin-bottom:16px;">
-        <div class="form-group">
-          <label>1단계: 17개 시·도 광역 자치단체</label>
-          <select id="sel-metro" onchange="handleMetroChange()">
-            <option value="seoul">서울특별시</option>
-            <option value="gyeonggi">경기도</option>
-            <option value="incheon">인천광역시</option>
-            <option value="busan">부산광역시</option>
-            <option value="daegu">대구광역시</option>
-            <option value="daejeon">대전광역시</option>
-            <option value="gwangju">광주광역시</option>
-            <option value="ulsan">울산광역시</option>
-            <option value="sejong">세종특별자치시</option>
-            <option value="chungnam">충청남도</option>
-            <option value="chungbuk">충청북도</option>
-            <option value="gyeongbuk">경상북도</option>
-            <option value="gyeongnam">경상남도</option>
-            <option value="jeonnam">전라남도</option>
-            <option value="jeonbuk">전라북도</option>
-            <option value="gangwon">강원특별자치도</option>
-            <option value="jeju">제주특별자치도</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>2단계: 세부 시·군·구 권역</label>
-          <select id="sel-sub" onchange="renderRegionRanking()"></select>
-        </div>
-      </div>
-
-      <div style="overflow-x:auto;">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th style="width:48px;">순위</th>
-              <th>기업명</th>
-              <th>주요 사업 분야</th>
-              <th>직원 평균 연봉</th>
-              <th>거점 위치 및 특징</th>
-            </tr>
-          </thead>
-          <tbody id="region-ranking-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4. 연봉 실수령액 계산기 -->
-  <div id="view-netpay" class="tab-content">
-    <div class="card">
-      <h2 class="card-title">2026 연봉 실수령액 계산기</h2>
-      <p class="card-desc">국민연금, 건강보험, 노인장기요양, 고용보험과 소득세·지방소득세를 정밀 분리 계산합니다.</p>
-      
-      <div class="grid-3">
-        <div class="form-group">
-          <label>세전 계약 연봉</label>
-          <div class="input-box"><input type="number" id="inp-salary" value="6000"><span class="unit-tag">만원</span></div>
-        </div>
-        <div class="form-group">
-          <label>연간 비과세 식대 총액</label>
-          <div class="input-box"><input type="number" id="inp-taxfree" value="240"><span class="unit-tag">만원</span></div>
-        </div>
-        <div class="form-group">
-          <label>부양가족 수 (본인 포함)</label>
-          <div class="input-box"><input type="number" id="inp-dependents" value="1"><span class="unit-tag">명</span></div>
-        </div>
-      </div>
-      <button class="btn-action" onclick="calculateNetPay()">월 실수령액 산출하기</button>
-
-      <div id="netpay-result-panel" style="display:none; margin-top:24px;">
-        <div style="background:#f0f7ff; border-radius:var(--radius-sm); padding:24px; text-align:center; margin-bottom:20px;">
-          <div style="font-size:13px; color:var(--muted); margin-bottom:4px;">예상 월 실수령액</div>
-          <div style="font-size:36px; font-weight:900; color:var(--accent);" id="res-month-net">0 원</div>
-          <div style="font-size:13px; color:#555; margin-top:4px;">연간 총 실수령액: <b id="res-year-net">0 원</b></div>
-        </div>
-        <div class="stat-line"><span>월 세전 기본급</span><span id="res-month-gross">0 원</span></div>
-        <div class="stat-line"><span>국민연금 (4.5%)</span><span id="res-pension">0 원</span></div>
-        <div class="stat-line"><span>건강보험 (3.545%)</span><span id="res-health">0 원</span></div>
-        <div class="stat-line"><span>노인장기요양보험 (건보의 12.95%)</span><span id="res-care">0 원</span></div>
-        <div class="stat-line"><span>고용보험 (0.9%)</span><span id="res-employ">0 원</span></div>
-        <div class="stat-line"><span>근로소득세 (기본 간이세액)</span><span id="res-incometax">0 원</span></div>
-        <div class="stat-line"><span>지방소득세 (소득세의 10%)</span><span id="res-localtax">0 원</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 5. 연말정산 환급금 1분 시뮬레이터 -->
-  <div id="view-tax" class="tab-content">
-    <div class="card">
-      <h2 class="card-title">연말정산 1분 예상 환급금 정밀 시뮬레이터</h2>
-      <p class="card-desc">국민연금·건강보험 자동 소득공제, 신용/체크카드 소비공제, 월세액·연금저축(IRP)·보험·의료비·교육비 세액공제를 반영합니다.</p>
-
-      <div class="grid-2">
-        <div class="form-group">
-          <label>연간 세전 총급여액 (연봉)</label>
-          <div class="input-box"><input type="number" id="tax-gross" value="5500"><span class="unit-tag">만원</span></div>
-        </div>
-        <div class="form-group">
-          <label>부양가족 수 (본인 포함 1인당 150만 공제)</label>
-          <div class="input-box"><input type="number" id="tax-people" value="1"><span class="unit-tag">명</span></div>
-        </div>
-      </div>
-
-      <div style="font-weight:800; font-size:15px; margin:16px 0 10px; color:var(--accent);">1년간 월급에서 원천징수된 세금 (기납부세액)</div>
-      <div class="grid-2">
-        <div class="form-group">
-          <label>기납부 소득세</label>
-          <div class="input-box"><input type="number" id="tax-prep-income" value="280"><span class="unit-tag">만원</span></div>
-        </div>
-        <div class="form-group">
-          <label>기납부 지방소득세</label>
-          <div class="input-box"><input type="number" id="tax-prep-local" value="28"><span class="unit-tag">만원</span></div>
-        </div>
-      </div>
-
-      <div style="font-weight:800; font-size:15px; margin:16px 0 10px; color:var(--accent);">소비 지출 소득공제 (총급여 25% 초과분 인정)</div>
-      <div class="grid-3">
-        <div class="form-group">
-          <label>신용카드 지출액 (15%)</label>
-          <div class="input-box"><input type="number" id="tax-card-credit" value="1800"><span class="unit-tag">만원</span></div>
-        </div>
-        <div class="form-group">
-          <label>체크카드 / 현금영수증 (30%)</label>
-          <div class="input-box"><input type="number" id="tax-card-debit" value="800"><span class="unit-tag">만원</span></div>
-        </div>
-        <div class="form-group">
-          <label>전통시장 / 대중교통 (40%)</label>
-          <div class="input-box"><input type="number" id="tax-card-market" value="150"><span class="unit-tag">만원</span></div>
-        </div>
-      </div>
-
-      <div style="font-weight:800; font-size:15px; margin:16px 0 10px; color:var(--accent);">주요 세액공제 항목 (환급을 결정짓는 핵심)</div>
-      <div class="grid-4">
-        <div class="form-group">
-          <label>월세 납입 총액 (8천만 이하 15~17%)</label>
-          <div class="input-box"><input type="number" id="tax-rent-inp" value="600"><span class="unit-tag">만원</span></div>
-        </div>
-        <div class="form-group">
-          <label>연금저축 + IRP (한도 900만)</label>
-          <div class="input-box"><input type="number" id="tax-irp-inp" value="700"><span class="unit-tag">만원</span></div>
-        </div>
-        <div class="form-group">
-          <label>보장성 보험료 (한도 100만 12%)</label>
-          <div class="input-box"><input type="number" id="tax-ins-inp" value="100"><span class="unit-tag">만원</span></div>
-        </div>
-        <div class="form-group">
-          <label>의료비 지출액 (3% 초과분 15%)</label>
-          <div class="input-box"><input type="number" id="tax-med-inp" value="250"><span class="unit-tag">만원</span></div>
-        </div>
-      </div>
-
-      <button class="btn-action" onclick="calculateYearEndTax()">예상 환급금 정밀 진단</button>
-
-      <div id="refund-billboard" class="refund-board">
-        <div class="refund-sub" id="tax-board-status">13월의 보너스 환급</div>
-        <div class="refund-num" id="tax-board-amount">+ 0 원</div>
-        <div style="font-size:13px; color:#555;" id="tax-board-summary">분석 완료</div>
-      </div>
-
-      <div id="tax-breakdown-panel" style="display:none;">
-        <div class="stat-line"><span>1년간 미리 낸 세금 합계 (기납부세액)</span><span id="tr-sum-prepaid">0 원</span></div>
-        <div class="stat-line"><span>최종 결정세액 (소득세 + 지방소득세)</span><span id="tr-sum-final">0 원</span></div>
-        <div class="stat-line"><span>국민연금 + 건강/고용보험 소득공제액</span><span id="tr-sum-ins-ded">0 원</span></div>
-        <div class="stat-line"><span>신용·체크카드 소득공제 인정액</span><span id="tr-sum-card-ded">0 원</span></div>
-        <div class="stat-line"><span>월세·연금계좌·보험·의료비 세액공제 감면액</span><span id="tr-sum-credit-ded">0 원</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  // 탭 전환 오류 해결: 호출한 버튼 객체(btn)를 직접 전달받아 active 클래스 적용
-  function navigate(btn, viewKey) {
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    
-    if (btn) {
-      btn.classList.add('active');
-    }
-    const target = document.getElementById('view-' + viewKey);
-    if (target) {
-      target.classList.add('active');
-    }
-  }
-
-  // 1. 공정위 자산총액 기준 1위~30위 대기업 그룹 및 계열사 150개사
-  const top30Groups = [
-    { rank: 1, name: "삼성", recruit: "https://www.samsungcareers.com" },
-    { rank: 2, name: "SK", recruit: "https://www.skcareers.com" },
-    { rank: 3, name: "현대자동차", recruit: "https://talent.hyundai.com" },
-    { rank: 4, name: "LG", recruit: "https://careers.lg.com" },
-    { rank: 5, name: "포스코", recruit: "https://recruit.posco.com" },
-    { rank: 6, name: "롯데", recruit: "https://job.lotte.co.kr" },
-    { rank: 7, name: "한화", recruit: "https://www.hanwhain.com" },
-    { rank: 8, name: "HD현대", recruit: "https://recruit.hd.com" },
-    { rank: 9, name: "GS", recruit: "https://gs.recruiter.co.kr" },
-    { rank: 10, name: "농협", recruit: "https://with.nonghyup.com" },
-    { rank: 11, name: "신세계", recruit: "https://job.shinsegae.com" },
-    { rank: 12, name: "KT", recruit: "https://recruit.kt.com" },
-    { rank: 13, name: "CJ", recruit: "https://recruit.cj.net" },
-    { rank: 14, name: "한진", recruit: "https://recruit.koreanair.co.kr" },
-    { rank: 15, name: "카카오", recruit: "https://careers.kakao.com" },
-    { rank: 16, name: "LS", recruit: "https://ls.recruiter.co.kr" },
-    { rank: 17, name: "두산", recruit: "https://career.doosan.com" },
-    { rank: 18, name: "DL", recruit: "https://dl.recruiter.co.kr" },
-    { rank: 19, name: "HMM", recruit: "https://hmm21.recruiter.co.kr" },
-    { rank: 20, name: "중흥건설", recruit: "https://daewooenc.recruiter.co.kr" },
-    { rank: 21, name: "현대백화점", recruit: "https://recruit.ehyundai.com" },
-    { rank: 22, name: "부영", recruit: "https://www.booyoung.co.kr" },
-    { rank: 23, name: "네이버", recruit: "https://recruit.navercorp.com" },
-    { rank: 24, name: "한국타이어", recruit: "https://hankooktire.recruiter.co.kr" },
-    { rank: 25, name: "미래에셋", recruit: "https://recruit.miraeasset.com" },
-    { rank: 26, name: "에쓰오일", recruit: "https://s-oil.recruiter.co.kr" },
-    { rank: 27, name: "현대해상", recruit: "https://www.hi.co.kr" },
-    { rank: 28, name: "영풍/고려아연", recruit: "https://koreazinc.recruiter.co.kr" },
-    { rank: 29, name: "셀트리온", recruit: "https://celltrion.recruiter.co.kr" },
-    { rank: 30, name: "KT&G", recruit: "https://ktng.recruiter.co.kr" }
-  ];
-
-  const fullAffiliates = [
-    // 1. 삼성
-    { rank: 1, group: "삼성", name: "삼성전자 (DS 반도체)", div: "메모리/파운드리", bonus: "OPI 연봉 47% + TAI 100%", estBonus: "약 4,500만 ~ 5,800만 원", salary: "약 1억 3,500만 원", note: "HBM3E 공급 본격화 및 범용 D램 판가 반등으로 턴어라운드 반영.", link: "https://www.samsungcareers.com" },
-    { rank: 1, group: "삼성", name: "삼성전자 (MX 모바일)", div: "스마트폰/모바일", bonus: "OPI 연봉 50% (상한선)", estBonus: "약 4,800만 ~ 6,000만 원", salary: "약 1억 3,800만 원", note: "온디바이스 AI 갤럭시 S시리즈 판매 호조 및 고수익 태블릿 확대.", link: "https://www.samsungcareers.com" },
-    { rank: 1, group: "삼성", name: "삼성바이오로직스", div: "바이오 CDMO", bonus: "OPI 연봉 50% + 특별보너스", estBonus: "약 4,200만 ~ 5,500만 원", salary: "약 1억 2,800만 원", note: "4공장 풀가동 및 5공장 조기 가동, 역대 최대 수주잔고 달성.", link: "https://www.samsungcareers.com" },
-    { rank: 1, group: "삼성", name: "삼성SDI", div: "배터리/전자재료", bonus: "OPI 연봉 22%", estBonus: "약 1,800만 ~ 2,400만 원", salary: "약 1억 1,000만 원", note: "전기차 캐즘 속 ESS 전지 판매 비중 확대로 흑자 방어.", link: "https://www.samsungcareers.com" },
-    { rank: 1, group: "삼성", name: "삼성SDS", div: "클라우드/IT물류", bonus: "OPI 연봉 28%", estBonus: "약 2,200만 ~ 2,900만 원", salary: "약 1억 1,800만 원", note: "생성형 AI 브리티 엔터프라이즈 클라우드 전환 가속화.", link: "https://www.samsungcareers.com" },
-
-    // 2. SK
-    { rank: 2, group: "SK", name: "SK하이닉스", div: "HBM/DRAM", bonus: "PS 기준급 2,900% 이상 (영익 10%)", estBonus: "약 9,000만 ~ 1억 2,000만 원", salary: "약 1억 6,500만 원", note: "HBM 독점적 지위 기반 사상 최대 영업이익 10% 성과급 전액 분배.", link: "https://www.skcareers.com" },
-    { rank: 2, group: "SK", name: "SK텔레콤", div: "유무선통신/AI", bonus: "기본급의 850%", estBonus: "약 3,000만 ~ 3,800만 원", salary: "약 1억 4,200만 원", note: "견조한 5G 가입자 ARPU 및 AI 데이터센터 인프라 실적 견인.", link: "https://www.skcareers.com" },
-    { rank: 2, group: "SK", name: "SK이노베이션", div: "에너지/자원", bonus: "기본급 0 ~ 150%", estBonus: "약 0 ~ 800만 원", salary: "약 1억 200만 원", note: "정제마진 약세 및 배터리 자회사 적자로 성과급 축소.", link: "https://www.skcareers.com" },
-    { rank: 2, group: "SK", name: "SK가스", div: "LPG/가스발전", bonus: "기본급의 1,000%", estBonus: "약 3,600만 ~ 4,500만 원", salary: "약 1억 3,000만 원", note: "울산 GPS 겸용 복합화력발전소 상업 가동 및 트레이딩 호조.", link: "https://www.skcareers.com" },
-    { rank: 2, group: "SK", name: "SK실트론", div: "반도체 웨이퍼", bonus: "기본급의 450%", estBonus: "약 1,800만 ~ 2,500만 원", salary: "약 1억 400만 원", note: "12인치 실리콘 웨이퍼 가동률 회복 및 SiC 전력반도체 납품 확대.", link: "https://www.skcareers.com" },
-
-    // 3. 현대자동차
-    { rank: 3, group: "현대자동차", name: "현대자동차", div: "완성차/R&D", bonus: "기본급 500% + 격려금 1,800만원 + 주식", estBonus: "약 4,000만 ~ 4,800만 원", salary: "약 1억 2,800만 원", note: "북미/유럽 하이브리드(HEV) 및 제네시스 판매로 역대 최대 이익.", link: "https://talent.hyundai.com" },
-    { rank: 3, group: "현대자동차", name: "기아 (KIA)", div: "완성차 제조", bonus: "기본급 500% + 1,800만원 + 주식", estBonus: "약 4,200만 ~ 5,000만 원", salary: "약 1억 3,200만 원", note: "영업이익률 12% 돌파로 현대차그룹 내 최고 수익률 달성.", link: "https://talent.hyundai.com" },
-    { rank: 3, group: "현대자동차", name: "현대모비스", div: "전장/모듈", bonus: "기본급 400% + 1,400만원", estBonus: "약 2,800만 ~ 3,400만 원", salary: "약 1억 1,400만 원", note: "전동화 및 핵심 전장 부품 글로벌 완성차 수주 확대.", link: "https://talent.hyundai.com" },
-    { rank: 3, group: "현대자동차", name: "현대로템", div: "철도/K2방산", bonus: "기본급 450% + 1,200만원", estBonus: "약 2,500만 ~ 3,200만 원", salary: "약 1억 800만 원", note: "K2 흑표 전차 폴란드·루마니아 수출 잭팟으로 사상 최대 실적.", link: "https://talent.hyundai.com" },
-    { rank: 3, group: "현대자동차", name: "현대글로비스", div: "완성차 물류/해운", bonus: "기본급 400% + 1,000만원", estBonus: "약 2,300만 ~ 2,800만 원", salary: "약 1억 600만 원", note: "자동차 전용선(PCTC) 운임 강세 및 물류망 효율화 성공.", link: "https://talent.hyundai.com" },
-
-    // 4. LG
-    { rank: 4, group: "LG", name: "LG전자 (H&A 가전)", div: "스마트가전/구독", bonus: "기본급의 500%", estBonus: "약 2,200만 ~ 2,800만 원", salary: "약 1억 1,200만 원", note: "가전 구독 모델 안착 및 B2B 냉난방공조(HVAC) 실적 견인.", link: "https://careers.lg.com" },
-    { rank: 4, group: "LG", name: "LG에너지솔루션", div: "이차전지 배터리", bonus: "기본급의 350%", estBonus: "약 1,500만 ~ 2,000만 원", salary: "약 1억 500만 원", note: "EV 캐즘 영향으로 전년 대비 축소되었으나 ESS 방어로 지급.", link: "https://careers.lg.com" },
-    { rank: 4, group: "LG", name: "LG화학 (석유화학)", div: "기초화학소재", bonus: "기본급의 100%", estBonus: "약 400만 ~ 600만 원", salary: "약 9,800만 원", note: "중국발 범용 화학제품 공급 과잉으로 스프레드 축소 장기화.", link: "https://careers.lg.com" },
-    { rank: 4, group: "LG", name: "LG이노텍", div: "카메라모듈/반도체기판", bonus: "기본급의 400%", estBonus: "약 1,700만 ~ 2,300만 원", salary: "약 1억 400만 원", note: "북미 전략 고객사 플래그십 폴디드줌 카메라 모듈 납품 견조.", link: "https://careers.lg.com" },
-    { rank: 4, group: "LG", name: "LG유플러스", div: "통신/IDC", bonus: "기본급의 350%", estBonus: "약 1,400만 ~ 1,800만 원", salary: "약 1억 200만 원", note: "무선 회선 증가 및 메가 IDC 평촌센터 데이터 수수료 호조.", link: "https://careers.lg.com" },
-
-    // 5. 포스코
-    { rank: 5, group: "포스코", name: "포스코 (철강)", div: "일관제철 제강", bonus: "기본급 300% + 400만원", estBonus: "약 1,400만 ~ 1,800만 원", salary: "약 1억 500만 원", note: "저가 중국산 후판 공세에도 프리미엄 자동차강판 비중 확대로 방어.", link: "https://recruit.posco.com" },
-    { rank: 5, group: "포스코", name: "포스코인터내셔널", div: "글로벌 종합상사", bonus: "기본급의 500%", estBonus: "약 2,400만 ~ 3,000만 원", salary: "약 1억 2,100만 원", note: "호주 세넥스 에너지 가스전 E&P 및 친환경 모빌리티 구동모터 호조.", link: "https://recruit.posco.com" },
-    { rank: 5, group: "포스코", name: "포스코퓨처엠", div: "이차전지 양극/음극재", bonus: "기본급의 250%", estBonus: "약 1,100만 ~ 1,500만 원", salary: "약 9,200만 원", note: "양극재 판가 안정화 및 고수익 단결정 NCMA 양극재 출하 개시.", link: "https://recruit.posco.com" },
-    { rank: 5, group: "포스코", name: "포스코DX", div: "스마트팩토리 IT", bonus: "기본급의 400%", estBonus: "약 1,600만 ~ 2,200만 원", salary: "약 1억 200만 원", note: "철강 및 배터리 소재 공장 산업용 로봇 자동화 수주 급증.", link: "https://recruit.posco.com" },
-    { rank: 5, group: "포스코", name: "포스코이앤씨", div: "플랜트/건설", bonus: "기본급의 200%", estBonus: "약 800만 ~ 1,200만 원", salary: "약 9,500만 원", note: "해상풍력 하부구조물 및 친환경 제철 플랜트 시공 수주 선방.", link: "https://recruit.posco.com" },
-
-    // 6. 롯데
-    { rank: 6, group: "롯데", name: "롯데쇼핑 (백화점)", div: "유통/백화점", bonus: "기본급의 250%", estBonus: "약 800만 ~ 1,200만 원", salary: "약 7,800만 원", note: "잠실·본점 리뉴얼 및 외국인 관광객 명품 소비 집중에 힘입어 달성.", link: "https://job.lotte.co.kr" },
-    { rank: 6, group: "롯데", name: "롯데케미칼", div: "기초소재 석유화학", bonus: "기본급 0 ~ 50%", estBonus: "약 0 ~ 300만 원", salary: "약 8,800만 원", note: "글로벌 에틸렌 공급 과잉으로 인한 영업적자로 성과급 동결 수준.", link: "https://job.lotte.co.kr" },
-    { rank: 6, group: "롯데", name: "롯데웰푸드", div: "제과/빙과", bonus: "기본급의 300%", estBonus: "약 1,000만 ~ 1,400만 원", salary: "약 6,900만 원", note: "인도 등 글로벌 제과 수출 호조 및 빼빼로 글로벌화 성과.", link: "https://job.lotte.co.kr" },
-    { rank: 6, group: "롯데", name: "롯데칠성음료", div: "음료/주류", bonus: "기본급의 350%", estBonus: "약 1,200만 ~ 1,600만 원", salary: "약 7,200만 원", note: "제로 탄산음료 라인업 독점적 점유율 및 '새로' 소주 흥행 지속.", link: "https://job.lotte.co.kr" },
-    { rank: 6, group: "롯데", name: "롯데건설", div: "주택/인프라", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 400만 ~ 700만 원", salary: "약 8,500만 원", note: "부동산 PF 리스크 선제 해소 및 원가율 방어 집중.", link: "https://job.lotte.co.kr" },
-
-    // 7. 한화
-    { rank: 7, group: "한화", name: "한화에어로스페이스", div: "항공우주/방산", bonus: "연봉의 35 ~ 45%", estBonus: "약 3,200만 ~ 4,200만 원", salary: "약 1억 2,000만 원", note: "K9 자주포, 천무 다연장로켓 글로벌 수출 잔고 30조 돌파.", link: "https://www.hanwhain.com" },
-    { rank: 7, group: "한화", name: "한화오션", div: "특수선/조선해양", bonus: "기본급 350% + 격려금", estBonus: "약 1,500만 ~ 2,000만 원", salary: "약 9,800만 원", note: "LNG 운반선 고선가 매출 본격화 및 미 해군 함정 MRO 첫 수주.", link: "https://www.hanwhain.com" },
-    { rank: 7, group: "한화", name: "한화시스템", div: "방산전자/위성", bonus: "기본급의 400%", estBonus: "약 1,800만 ~ 2,400만 원", salary: "약 1억 600만 원", note: "AESA 레이다 수출 및 저궤도 위성 통신 양산 성과 가시화.", link: "https://www.hanwhain.com" },
-    { rank: 7, group: "한화", name: "한화솔루션", div: "태양광/케미칼", bonus: "기본급 150%", estBonus: "약 600만 ~ 900만 원", salary: "약 9,100만 원", note: "미국 솔라허브 증설 효과 대비 글로벌 모듈 재고 소진 지연.", link: "https://www.hanwhain.com" },
-    { rank: 7, group: "한화", name: "한화생명", div: "보험/금융", bonus: "기본급의 400%", estBonus: "약 1,900만 ~ 2,500만 원", salary: "약 1억 1,000만 원", note: "신계약서비스마진(CSM) 성장세 유지 및 해외 법인 이익 기여.", link: "https://www.hanwhain.com" },
-
-    // 8. HD현대
-    { rank: 8, group: "HD현대", name: "HD현대중공업", div: "조선/해양플랜트", bonus: "기본급 450% + 약정금", estBonus: "약 2,000만 ~ 2,700만 원", salary: "약 1억 1,500만 원", note: "조선 슈퍼사이클 진입 및 친환경 고선가 선박 건조 마진 반영.", link: "https://recruit.hd.com" },
-    { rank: 8, group: "HD현대", name: "HD현대일렉트릭", div: "초고압 변압기", bonus: "기본급의 600% 이상", estBonus: "약 2,800만 ~ 3,800만 원", salary: "약 1억 1,000만 원", note: "미국 AI 데이터센터발 전력망 품귀로 창사 이래 최고 영업이익률.", link: "https://recruit.hd.com" },
-    { rank: 8, group: "HD현대", name: "HD현대마린솔루션", div: "선박 AM/친환경개조", bonus: "기본급의 500%", estBonus: "약 2,200만 ~ 3,000만 원", salary: "약 1억 500만 원", note: "고마진 친환경 선박 개조(Retrofit) 및 부품 수주 급증.", link: "https://recruit.hd.com" },
-    { rank: 8, group: "HD현대", name: "HD현대사이트솔루션", div: "건설기계 지주", bonus: "기본급의 350%", estBonus: "약 1,400만 ~ 1,800만 원", salary: "약 9,600만 원", note: "신흥국 인프라 광산용 중대형 굴착기 수출로 선방.", link: "https://recruit.hd.com" },
-    { rank: 8, group: "HD현대", name: "HD현대오일뱅크", div: "정유/석유화학", bonus: "기본급의 500%", estBonus: "약 2,200만 ~ 2,900만 원", salary: "약 1억 2,000만 원", note: "고도화설비 풀가동 및 바이오 항공유 등 친환경 연료 개발.", link: "https://recruit.hd.com" },
-
-    // 9. GS
-    { rank: 9, group: "GS", name: "GS칼텍스", div: "정유/화학", bonus: "기본급의 700%", estBonus: "약 3,200만 ~ 4,200만 원", salary: "약 1억 5,300만 원", note: "정제마진 변동성 속에서도 올레핀 복합분해설비(MFC) 이익 방어.", link: "https://gs.recruiter.co.kr" },
-    { rank: 9, group: "GS", name: "GS건설", div: "주택/인프라", bonus: "기본급 150%", estBonus: "약 600만 ~ 900만 원", salary: "약 9,200만 원", note: "품질혁신 비용 투입 후 안정화 및 모듈러 주택 신사업 가속.", link: "https://gs.recruiter.co.kr" },
-    { rank: 9, group: "GS", name: "GS리테일", div: "편의점/슈퍼", bonus: "기본급의 250%", estBonus: "약 700만 ~ 1,000만 원", salary: "약 6,800만 원", note: "GS25 PB 상품 강화 및 퀵커머스 플랫폼 효율화 달성.", link: "https://gs.recruiter.co.kr" },
-    { rank: 9, group: "GS", name: "GS EPS", div: "LNG/바이오 발전", bonus: "기본급의 600%", estBonus: "약 2,600만 ~ 3,400만 원", salary: "약 1억 2,500만 원", note: "당진 발전소 가동률 증대 및 친환경 바이오매스 발전 이익 기여.", link: "https://gs.recruiter.co.kr" },
-    { rank: 9, group: "GS", name: "GS글로벌", div: "종합무역", bonus: "기본급의 300%", estBonus: "약 1,100만 ~ 1,500만 원", salary: "약 8,400만 원", note: "철강 트레이딩 및 친환경 전기 상용차 유통 물동량 안정.", link: "https://gs.recruiter.co.kr" },
-
-    // 10. 농협
-    { rank: 10, group: "농협", name: "NH투자증권", div: "금융투자/IB", bonus: "기본급의 450% (개별 차등)", estBonus: "약 3,200만 ~ 5,500만 원", salary: "약 1억 6,800만 원", note: "대형 IPO 주관 및 채권/파생 운용 수익 극대화 달성.", link: "https://with.nonghyup.com" },
-    { rank: 10, group: "농협", name: "NH농협은행", div: "시중은행", bonus: "기본급의 350% + 500만원", estBonus: "약 1,800만 ~ 2,500만 원", salary: "약 1억 1,500만 원", note: "우량 기업대출 확대 및 공공금융 수수료 이익 성장.", link: "https://with.nonghyup.com" },
-    { rank: 10, group: "농협", name: "NH농협생명", div: "생명보험", bonus: "기본급의 300%", estBonus: "약 1,400만 ~ 1,900만 원", salary: "약 9,800만 원", note: "보장성 보험 중심의 CSM 순증 및 안정적 채권 자산 운용.", link: "https://with.nonghyup.com" },
-    { rank: 10, group: "농협", name: "NH농협손해보험", div: "손해보험", bonus: "기본급의 300%", estBonus: "약 1,300만 ~ 1,800만 원", salary: "약 9,500만 원", note: "농작물재해보험 공공지원 및 장기 보장성 상품 판매 증대.", link: "https://with.nonghyup.com" },
-    { rank: 10, group: "농협", name: "농협경제지주", div: "농산물 유통/가공", bonus: "성과급 미확인 (호봉표 규정)", estBonus: "약 600만 ~ 900만 원", salary: "약 7,800만 원", note: "전국 농협하나로마트 통합 물류 및 스마트 농식품 가공.", link: "https://with.nonghyup.com" },
-
-    // 11. 신세계
-    { rank: 11, group: "신세계", name: "신세계백화점", div: "백화점 유통", bonus: "기본급의 350%", estBonus: "약 1,200만 ~ 1,700만 원", salary: "약 8,200만 원", note: "강남점 국내 최초 단일 점포 거래액 3조 돌파 인센티브.", link: "https://job.shinsegae.com" },
-    { rank: 11, group: "신세계", name: "이마트", div: "대형마트", bonus: "기본급 100%", estBonus: "약 300만 ~ 500만 원", salary: "약 5,600만 원", note: "상시 최저가 정책 및 창고형 트레이더스 수익성 개선.", link: "https://job.shinsegae.com" },
-    { rank: 11, group: "신세계", name: "신세계인터내셔날", div: "패션/코스메틱", bonus: "기본급의 200%", estBonus: "약 700만 ~ 1,000만 원", salary: "약 6,700만 원", note: "자체 화장품(연작 등) 수출 및 니치 향수 판권 호조.", link: "https://job.shinsegae.com" },
-    { rank: 11, group: "신세계", name: "신세계센트럴시티", div: "부동산 임대/운영", bonus: "기본급의 300%", estBonus: "약 1,100만 ~ 1,500만 원", salary: "약 8,000만 원", note: "고속터미널 센트럴시티 매장 임대 및 복합쇼핑몰 안정화.", link: "https://job.shinsegae.com" },
-    { rank: 11, group: "신세계", name: "SCK컴퍼니 (스타벅스)", div: "식음료 F&B", bonus: "기본급의 250%", estBonus: "약 600만 ~ 900만 원", salary: "약 4,900만 원", note: "드라이브스루(DT) 매장 확대 및 MD 상품 완판 행진.", link: "https://job.shinsegae.com" },
-
-    // 12. KT
-    { rank: 12, group: "KT", name: "KT (본사)", div: "유무선통신/AICT", bonus: "기본급 400%", estBonus: "약 1,800만 ~ 2,400만 원", salary: "약 1억 600만 원", note: "B2B 클라우드/IDC 및 공공 엔터프라이즈 AICT 수주 확대.", link: "https://recruit.kt.com" },
-    { rank: 12, group: "KT", name: "BC카드", div: "결제/금융망", bonus: "기본급 350%", estBonus: "약 1,500만 ~ 2,000만 원", salary: "약 1억 200만 원", note: "자체 카드 발급 비중 증대 및 글로벌 결제 인프라 수출.", link: "https://recruit.kt.com" },
-    { rank: 12, group: "KT", name: "KT DS", div: "금융/통신 IT서비스", bonus: "기본급 250%", estBonus: "약 900만 ~ 1,300만 원", salary: "약 8,200만 원", note: "KT그룹 시스템 클라우드 전환 및 대외 금융 차세대 수주.", link: "https://recruit.kt.com" },
-    { rank: 12, group: "KT", name: "KT알파", div: "커머스/콘텐츠", bonus: "기본급 200%", estBonus: "약 700만 ~ 1,000만 원", salary: "약 7,400만 원", note: "T커머스 쇼핑 채널 흑자 기조 및 콘텐츠 유통 판권 선방.", link: "https://recruit.kt.com" },
-    { rank: 12, group: "KT", name: "kt sat", div: "위성 통신", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 800만 ~ 1,200만 원", salary: "약 8,900만 원", note: "정지궤도 통신위성 무궁화호 해양 및 글로벌 백홀 공급.", link: "https://recruit.kt.com" },
-
-    // 13. CJ
-    { rank: 13, group: "CJ", name: "CJ제일제당 (식품)", div: "K-푸드 가공", bonus: "기본급 350%", estBonus: "약 1,400만 ~ 1,900만 원", salary: "약 7,800만 원", note: "비비고 만두 북미 1위 수성 및 유럽/호주 신시장 개척.", link: "https://recruit.cj.net" },
-    { rank: 13, group: "CJ", name: "CJ대한통운", div: "택배/계약물류", bonus: "기본급 300%", estBonus: "약 1,200만 ~ 1,600만 원", salary: "약 8,200만 원", note: "오네(O-NE) 매일배송 브랜드 안착 및 알리/테무 통관 물동량 급증.", link: "https://recruit.cj.net" },
-    { rank: 13, group: "CJ", name: "CJ올리브영", div: "헬스앤뷰티", bonus: "연봉의 40~60%", estBonus: "약 2,500만 ~ 3,800만 원", salary: "약 8,500만 원", note: "외국인 방한 필수 코스 등극 및 온·오프라인 옴니채널 독점.", link: "https://recruit.cj.net" },
-    { rank: 13, group: "CJ", name: "CJ ENM", div: "미디어/엔터", bonus: "기본급 150%", estBonus: "약 500만 ~ 800만 원", salary: "약 7,900만 원", note: "티빙(TVING) KBO 중계 효과 및 글로벌 스튜디오 피프스시즌 턴어라운드.", link: "https://recruit.cj.net" },
-    { rank: 13, group: "CJ", name: "CJ프레시웨이", div: "식자재/급식", bonus: "기본급 250%", estBonus: "약 800만 ~ 1,200만 원", salary: "약 6,500만 원", note: "외식 솔루션 B2B 납품 및 단체급식 대형 사업장 신규 수주.", link: "https://recruit.cj.net" },
-
-    // 14. 한진
-    { rank: 14, group: "한진", name: "대한항공", div: "항공 여객/화물", bonus: "기본급 500%", estBonus: "약 2,200만 ~ 2,900만 원", salary: "약 1억 200만 원", note: "미주/유럽 장거리 프리미엄 좌석 풀가동 및 화물 운임 방어.", link: "https://recruit.koreanair.co.kr" },
-    { rank: 14, group: "한진", name: "(주)한진", div: "육상운송/택배", bonus: "기본급 200%", estBonus: "약 700만 ~ 1,000만 원", salary: "약 7,400만 원", note: "대전 메가 허브 터미널 가동에 따른 택배 원가 절감.", link: "https://recruit.koreanair.co.kr" },
-    { rank: 14, group: "한진", name: "진에어", div: "저비용항공(LCC)", bonus: "기본급 350%", estBonus: "약 1,100만 ~ 1,600만 원", salary: "약 7,800만 원", note: "일본 및 동남아 노선 여객 수요 폭발로 역대 최대 분기 실적.", link: "https://recruit.koreanair.co.kr" },
-    { rank: 14, group: "한진", name: "한국공항", div: "항공기 지상조업", bonus: "성과급 미확인 (노사 협약)", estBonus: "약 500만 ~ 800만 원", salary: "약 6,800만 원", note: "인천공항 항공기 이착륙 편수 회복에 따른 지상조업 물량 풀가동.", link: "https://recruit.koreanair.co.kr" },
-    { rank: 14, group: "한진", name: "한진칼", div: "지주회사", bonus: "성과급 미확인 (임원/사규)", estBonus: "약 1,000만 ~ 1,500만 원", salary: "약 9,200만 원", note: "아시아나 통합 승인 작업 및 그룹 브랜드 자산 관리.", link: "https://recruit.koreanair.co.kr" },
-
-    // 15. 카카오
-    { rank: 15, group: "카카오", name: "카카오 (본사)", div: "플랫폼/메신저", bonus: "기본급 200% + 스톡", estBonus: "약 800만 ~ 1,500만 원", salary: "약 1억 1,100만 원", note: "톡비즈 디스플레이 광고 회복 및 카카오톡 탭 개편 수혜.", link: "https://careers.kakao.com" },
-    { rank: 15, group: "카카오", name: "카카오뱅크", div: "인터넷은행", bonus: "개인별 성과급 (연봉 20~30%)", estBonus: "약 2,000만 ~ 3,200만 원", salary: "약 1억 3,500만 원", note: "주택담보대출 갈아타기 플랫폼 독점적 유입 및 이자이익 급증.", link: "https://careers.kakao.com" },
-    { rank: 15, group: "카카오", name: "카카오페이", div: "핀테크 결제", bonus: "기본급 150%", estBonus: "약 600만 ~ 1,000만 원", salary: "약 9,400만 원", note: "해외 온·오프라인 결제액 증가 및 증권/보험 턴어라운드.", link: "https://careers.kakao.com" },
-    { rank: 15, group: "카카오", name: "카카오모빌리티", div: "택시/내비", bonus: "연봉의 15~25%", estBonus: "약 1,200만 ~ 2,000만 원", salary: "약 1억 200만 원", note: "가맹택시 수수료 개편 안정화 및 주차/대리 물류 확장.", link: "https://careers.kakao.com" },
-    { rank: 15, group: "카카오", name: "카카오게임즈", div: "게임 퍼블리싱", bonus: "성과급 미확인 (프로젝트별 차등)", estBonus: "약 600만 ~ 1,200만 원", salary: "약 8,800만 원", note: "오딘 등 핵심 라이브 게임 안정 유지 및 글로벌 신작 대기.", link: "https://careers.kakao.com" },
-
-    // 16. LS
-    { rank: 16, group: "LS", name: "LS전선", div: "해저초고압케이블", bonus: "기본급 450%", estBonus: "약 2,000만 ~ 2,600만 원", salary: "약 9,800만 원", note: "전 세계 해상풍력용 해저케이블 수주 잔고 사상 최대치 경신.", link: "https://ls.recruiter.co.kr" },
-    { rank: 16, group: "LS", name: "LS일렉트릭", div: "스마트전력망", bonus: "기본급 500%", estBonus: "약 2,200만 ~ 2,800만 원", salary: "약 1억 200만 원", note: "북미 배터리 공장 전력 인프라 및 친환경 배전반 수출 폭증.", link: "https://ls.recruiter.co.kr" },
-    { rank: 16, group: "LS", name: "LS MnM", div: "동제련/이차전지소재", bonus: "기본급 400%", estBonus: "약 1,800만 ~ 2,400만 원", salary: "약 1억 500만 원", note: "고순도 전기동 프리미엄 및 황산니켈 배터리 소재 사업 순항.", link: "https://ls.recruiter.co.kr" },
-    { rank: 16, group: "LS", name: "LS엠트론", div: "트랙터/사출기", bonus: "기본급 300%", estBonus: "약 1,100만 ~ 1,500만 원", salary: "약 8,600만 원", note: "북미 소형 트랙터 수요 회복 및 전동 사출기 수출 확대.", link: "https://ls.recruiter.co.kr" },
-    { rank: 16, group: "LS", name: "E1", div: "LPG 수입/유통", bonus: "기본급 800%", estBonus: "약 3,200만 ~ 4,000만 원", salary: "약 1억 2,500만 원", note: "국제 LPG 트레이딩 마진 및 수소/신재생 충전 인프라 확장.", link: "https://ls.recruiter.co.kr" },
-
-    // 17. 두산
-    { rank: 17, group: "두산", name: "두산에너빌리티", div: "원전주기기/가스터빈", bonus: "기본급 400%", estBonus: "약 1,800만 ~ 2,500만 원", salary: "약 1억 1,200만 원", note: "체코 원전 수주 잭팟 및 대형 가스터빈 상용화 실적 달성.", link: "https://career.doosan.com" },
-    { rank: 17, group: "두산", name: "두산밥캣", div: "소형건설장비", bonus: "연봉의 25~35%", estBonus: "약 2,500만 ~ 3,500만 원", salary: "약 1억 2,200만 원", note: "북미 농경/조경 장비 GME 및 콤팩트 휠로더 시장 점유율 1위.", link: "https://career.doosan.com" },
-    { rank: 17, group: "두산", name: "(주)두산", div: "전자BG 반도체소재", bonus: "기본급 350%", estBonus: "약 1,500만 ~ 2,000만 원", salary: "약 1억 400만 원", note: "AI 가속기용 초다층 인쇄회로기판(동박적층판 CCL) 엔비디아 납품.", link: "https://career.doosan.com" },
-    { rank: 17, group: "두산", name: "두산퓨얼셀", div: "수소연료전지", bonus: "기본급 200%", estBonus: "약 700만 ~ 1,100만 원", salary: "약 8,900만 원", note: "청정수소발전의무화제도(CHPS) 입찰 물량 발전소 준공 가속.", link: "https://career.doosan.com" },
-    { rank: 17, group: "두산", name: "두산로보틱스", div: "협동로봇", bonus: "성과급 미확인 (R&D 스톡옵션)", estBonus: "약 500만 ~ 800만 원", salary: "약 8,400만 원", note: "식음료 F&B 자동화 및 북미 팔레타이징 로봇 솔루션 수출.", link: "https://career.doosan.com" },
-
-    // 18. DL
-    { rank: 18, group: "DL", name: "DL이앤씨", div: "주택/토목 플랜트", bonus: "기본급 200%", estBonus: "약 800만 ~ 1,200만 원", salary: "약 9,400만 원", note: "해외 플랜트 원가율 정상화 및 SMR(소형원전) 원전 시공 착수.", link: "https://dl.recruiter.co.kr" },
-    { rank: 18, group: "DL", name: "DL케미칼", div: "특수석유화학", bonus: "기본급 250%", estBonus: "약 1,000만 ~ 1,400만 원", salary: "약 9,800만 원", note: "고부가 폴리부텐(PB) 글로벌 점유율 1위 및 크레이튼(Kraton) 흑자 전환.", link: "https://dl.recruiter.co.kr" },
-    { rank: 18, group: "DL", name: "DL건설", div: "건축/주택", bonus: "기본급 150%", estBonus: "약 500만 ~ 800만 원", salary: "약 8,200만 원", note: "수주 심의 강화로 미분양 리스크 방어 및 공공 토목 비중 증대.", link: "https://dl.recruiter.co.kr" },
-    { rank: 18, group: "DL", name: "대림", div: "무역/물류", bonus: "기본급 200%", estBonus: "약 700만 ~ 1,000만 원", salary: "약 8,000만 원", note: "석유화학 제품 글로벌 트레이딩 및 복합 물류망 안정 운영.", link: "https://dl.recruiter.co.kr" },
-    { rank: 18, group: "DL", name: "글래드호텔앤리조트", div: "호텔/레저", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 300만 ~ 500만 원", salary: "약 5,200만 원", note: "서울 도심 비즈니스 호텔 객실 점유율(OCC) 85% 이상 회복.", link: "https://dl.recruiter.co.kr" },
-
-    // 19. HMM
-    { rank: 19, group: "HMM", name: "HMM (본사)", div: "원양 컨테이너선", bonus: "기본급 600%", estBonus: "약 3,500만 ~ 4,500만 원", salary: "약 1억 2,500만 원", note: "홍해 사태로 인한 희망봉 우회 및 글로벌 해상 운임(SCFI) 급등.", link: "https://hmm21.recruiter.co.kr" },
-    { rank: 19, group: "HMM", name: "HMM오션서비스", div: "선박 관리/해상기술", bonus: "기본급 350%", estBonus: "약 1,400만 ~ 1,900만 원", salary: "약 8,800만 원", note: "초대형 메가 컨테이너선 안전 운항 및 선박 탄소 규제 엔진 개조.", link: "https://hmm21.recruiter.co.kr" },
-    { rank: 19, group: "HMM", name: "부산신항터미널(HPNT)", div: "항만 하역 터미널", bonus: "성과급 미확인 (물동량 협약)", estBonus: "약 800만 ~ 1,200만 원", salary: "약 8,100만 원", note: "부산신항 4부두 컨테이너 환적 물동량 풀가동.", link: "https://hmm21.recruiter.co.kr" },
-    { rank: 19, group: "HMM", name: "HMM선박금융", div: "선박 금융/자산운용", bonus: "성과급 미확인 (개별 연봉)", estBonus: "약 1,200만 ~ 1,800만 원", salary: "약 1억 1,000만 원", note: "친환경 신조선 선대 확충을 위한 금융 구조화 프로젝트.", link: "https://hmm21.recruiter.co.kr" },
-    { rank: 19, group: "HMM", name: "에이치엠엠운송", div: "내륙 화물 운송", bonus: "성과급 미확인 (기본 성과)", estBonus: "약 500만 ~ 800만 원", salary: "약 6,900만 원", note: "항만 연계 철도/트럭 복합 화물 내륙 이송망 서비스.", link: "https://hmm21.recruiter.co.kr" },
-
-    // 20. 중흥건설
-    { rank: 20, group: "중흥건설", name: "대우건설", div: "종합건설/원전", bonus: "기본급 200%", estBonus: "약 800만 ~ 1,300만 원", salary: "약 9,400만 원", note: "체코 원전 시공 우선협상자 참여 및 나이지리아/이라크 플랜트 호조.", link: "https://daewooenc.recruiter.co.kr" },
-    { rank: 20, group: "중흥건설", name: "중흥건설", div: "주택/건축", bonus: "성과급 미확인 (분양 성과)", estBonus: "약 600만 ~ 1,000만 원", salary: "약 8,200만 원", note: "호남권 및 수도권 중흥S-클래스 분양 대금 회수.", link: "https://daewooenc.recruiter.co.kr" },
-    { rank: 20, group: "중흥건설", name: "중흥토건", div: "토목/도시개발", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 600만 ~ 900만 원", salary: "약 7,900만 원", note: "도시정비사업 재개발/재건축 수주 물량 중심 시공.", link: "https://daewooenc.recruiter.co.kr" },
-    { rank: 20, group: "중흥건설", name: "헤럴드미디어", div: "신문/방송 언론", bonus: "기본급 100%", estBonus: "약 300만 ~ 500만 원", salary: "약 6,800만 원", note: "디지털 저널리즘 포털 및 친환경 포럼 행사 수익.", link: "https://daewooenc.recruiter.co.kr" },
-    { rank: 20, group: "중흥건설", name: "중흥주택", div: "부동산 시행", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 500만 ~ 800만 원", salary: "약 7,400만 원", note: "공공택지 시행 부지 개발 및 사업장 공정 관리.", link: "https://daewooenc.recruiter.co.kr" },
-
-    // 21. 현대백화점
-    { rank: 21, group: "현대백화점", name: "현대백화점", div: "더현대 유통", bonus: "기본급 300%", estBonus: "약 1,100만 ~ 1,500만 원", salary: "약 8,400만 원", note: "'더현대 서울' 글로벌 팝업스토어 흥행 및 외국인 유입 급증.", link: "https://recruit.ehyundai.com" },
-    { rank: 21, group: "현대백화점", name: "현대그린푸드", div: "단체급식/식자재", bonus: "기본급 250%", estBonus: "약 800만 ~ 1,200만 원", salary: "약 6,800만 원", note: "대형 제조사 단체급식 확대 및 케어푸드 맞춤 식단 호조.", link: "https://recruit.ehyundai.com" },
-    { rank: 21, group: "현대백화점", name: "한섬 (HANDSOME)", div: "패션 브랜드", bonus: "기본급 300%", estBonus: "약 1,000만 ~ 1,400만 원", salary: "약 7,600만 원", note: "타임, 마인 등 하이엔드 자체 브랜드 럭셔리 라인업 견조.", link: "https://recruit.ehyundai.com" },
-    { rank: 21, group: "현대백화점", name: "현대홈쇼핑", div: "TV/라이브커머스", bonus: "기본급 200%", estBonus: "약 700만 ~ 1,000만 원", salary: "약 7,300만 원", note: "송출수수료 부담 완화 및 단독 브랜드 모바일 방송 확대.", link: "https://recruit.ehyundai.com" },
-    { rank: 21, group: "현대백화점", name: "현대리바트", div: "가구/인테리어", bonus: "기본급 150%", estBonus: "약 500만 ~ 800만 원", salary: "약 6,700만 원", note: "B2B 빌트인 가구 공급 및 사무용 하이엔드 가구 수주.", link: "https://recruit.ehyundai.com" },
-
-    // 22. 부영
-    { rank: 22, group: "부영", name: "부영주택", div: "공공임대/분양", bonus: "성과급 미확인 (출산장려금 특화)", estBonus: "약 600만 ~ 1,000만 원", salary: "약 8,200만 원", note: "출산직원 1억원 파격 지원 복지 및 전국 임대아파트 임대료 회수.", link: "https://www.booyoung.co.kr" },
-    { rank: 22, group: "부영", name: "(주)부영", div: "지주/투자", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 600만 ~ 900만 원", salary: "약 8,500만 원", note: "그룹 전사 임대 자산 관리 및 공공부지 사업권 추진.", link: "https://www.booyoung.co.kr" },
-    { rank: 22, group: "부영", name: "무주덕유산리조트", div: "스키/레저", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 300만 ~ 500만 원", salary: "약 5,100만 원", note: "동계 시즌 스키장 슬로프 및 사계절 관광객 유치.", link: "https://www.booyoung.co.kr" },
-    { rank: 22, group: "부영", name: "오투리조트", div: "골프/콘도", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 300만 ~ 500만 원", salary: "약 4,900만 원", note: "태백 고원 골프장 예약률 및 여름 피서객 콘도 숙박.", link: "https://www.booyoung.co.kr" },
-    { rank: 22, group: "부영", name: "부영환경산업", div: "건설 자재/환경", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 400만 ~ 600만 원", salary: "약 6,200만 원", note: "부영 공공아파트 단지 조경 공사 및 친환경 폐기물 관리.", link: "https://www.booyoung.co.kr" },
-
-    // 23. 네이버
-    { rank: 23, group: "네이버", name: "네이버 (NAVER)", div: "포털/AI플랫폼", bonus: "연봉의 25~35% + 스톡", estBonus: "약 2,500만 ~ 3,800만 원", salary: "약 1억 3,400만 원", note: "하이퍼클로바X 생성형 AI 도입 및 검색/쇼핑 수수료 견조.", link: "https://recruit.navercorp.com" },
-    { rank: 23, group: "네이버", name: "네이버클라우드", div: "클라우드/B2B", bonus: "연봉의 20~30%", estBonus: "약 1,800만 ~ 2,600만 원", salary: "약 1억 1,500만 원", note: "공공 및 금융 소버린 AI 인프라 수주 1위 달성.", link: "https://recruit.navercorp.com" },
-    { rank: 23, group: "네이버", name: "네이버웹툰", div: "글로벌 스토리", bonus: "연봉의 20~35% + 주식", estBonus: "약 1,800만 ~ 3,000만 원", salary: "약 1억 1,000만 원", note: "나스닥 상장 성공 및 글로벌 IP 2차 영상화 라이선스 폭증.", link: "https://recruit.navercorp.com" },
-    { rank: 23, group: "네이버", name: "네이버파이낸셜", div: "네이버페이", bonus: "연봉의 20~30%", estBonus: "약 1,600만 ~ 2,500만 원", salary: "약 1억 1,800만 원", note: "현장 결제 오프라인 확대 및 대출비교 플랫폼 수수료 증대.", link: "https://recruit.navercorp.com" },
-    { rank: 23, group: "네이버", name: "라인플러스", div: "글로벌 메신저", bonus: "연봉의 25~35%", estBonus: "약 2,000만 ~ 3,200만 원", salary: "약 1억 400만 원", note: "일본·대만·태국 국민 메신저 광고 및 핀테크 플랫폼 수익화.", link: "https://recruit.navercorp.com" },
-
-    // 24. 한국타이어
-    { rank: 24, group: "한국타이어", name: "한국타이어앤테크", div: "전기차 전용 타이어", bonus: "기본급 400%", estBonus: "약 1,600만 ~ 2,200만 원", salary: "약 9,200만 원", note: "아이온(iON) 글로벌 전기차 타이어 1위 점유율 및 교체용 마진 확대.", link: "https://hankooktire.recruiter.co.kr" },
-    { rank: 24, group: "한국타이어", name: "한국앤컴퍼니", div: "사업형 지주/배터리", bonus: "기본급 350%", estBonus: "약 1,400만 ~ 1,900만 원", salary: "약 9,800만 원", note: "차량용 AGM 배터리 미국 수출 및 지주사 브랜드 로열티.", link: "https://hankooktire.recruiter.co.kr" },
-    { rank: 24, group: "한국타이어", name: "모델솔루션", div: "첨단 프로토타입/로봇", bonus: "기본급 250%", estBonus: "약 800만 ~ 1,200만 원", salary: "약 7,400만 원", note: "글로벌 IT 빅테크 신제품 프로토타입 정밀 목업 수주.", link: "https://hankooktire.recruiter.co.kr" },
-    { rank: 24, group: "한국타이어", name: "한국엔지니어링웍스", div: "타이어 제조설비", bonus: "기본급 250%", estBonus: "약 700만 ~ 1,100만 원", salary: "약 7,800만 원", note: "테네시·헝가리 스마트 팩토리 자동화 가류기 납품.", link: "https://hankooktire.recruiter.co.kr" },
-    { rank: 24, group: "한국타이어", name: "한국네트웍스", div: "물류 로봇/스마트SCM", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 600만 ~ 900만 원", salary: "약 7,500만 원", note: "타이어 물류 자동화 무인운반차(AGV) 솔루션 공급.", link: "https://hankooktire.recruiter.co.kr" },
-
-    // 25. 미래에셋
-    { rank: 25, group: "미래에셋", name: "미래에셋증권", div: "글로벌IB/WM", bonus: "개인별 성과급 (기본급 400~1000%)", estBonus: "약 3,500만 ~ 7,000만 원", salary: "약 1억 6,200만 원", note: "해외주식 예탁자산 1위 및 퇴직연금(IRP) 머니무브 유입.", link: "https://recruit.miraeasset.com" },
-    { rank: 25, group: "미래에셋", name: "미래에셋자산운용", div: "TIGER ETF/펀드", bonus: "개인별 성과급 (기본급 400~800%)", estBonus: "약 3,000만 ~ 6,500만 원", salary: "약 1억 7,500만 원", note: "TIGER 2차전지·미국테크 ETF 순자산 폭발적 증가.", link: "https://recruit.miraeasset.com" },
-    { rank: 25, group: "미래에셋", name: "미래에셋생명", div: "변액보험/연금", bonus: "기본급 300%", estBonus: "약 1,300만 ~ 1,800만 원", salary: "약 1억 500만 원", note: "변액보험 글로벌 MVP 펀드 수익률 선방에 따른 수탁고 증가.", link: "https://recruit.miraeasset.com" },
-    { rank: 25, group: "미래에셋", name: "미래에셋캐피탈", div: "여신금융/투자", bonus: "기본급 350%", estBonus: "약 1,500만 ~ 2,200만 원", salary: "약 1억 1,000만 원", note: "신성장 벤처 포트폴리오 회수 및 기업 대출 이자 마진.", link: "https://recruit.miraeasset.com" },
-    { rank: 25, group: "미래에셋", name: "미래에셋벤처투자", div: "VC 벤처투자", bonus: "성과급 미확인 (투자조합 회수)", estBonus: "약 2,000만 ~ 5,000만 원", salary: "약 1억 3,000만 원", note: "글로벌 AI 및 바이오 신약 포트폴리오 IPO 엑시트 달성.", link: "https://recruit.miraeasset.com" },
-
-    // 26. 에쓰오일
-    { rank: 26, group: "에쓰오일", name: "에쓰오일 (본사)", div: "정유/에너지", bonus: "기본급의 850%", estBonus: "약 4,200만 ~ 5,500만 원", salary: "약 1억 5,800만 원", note: "윤활기유(루브리컨츠) 부문 세계 최고 마진 및 정제 스프레드 호조.", link: "https://s-oil.recruiter.co.kr" },
-    { rank: 26, group: "에쓰오일", name: "에쓰오일 온산공장", div: "원유 정제/샤힌", bonus: "기본급의 850%", estBonus: "약 4,200만 ~ 5,500만 원", salary: "약 1억 5,200만 원", note: "9조원대 초대형 석유화학 샤힌 프로젝트 건설 및 정제설비 풀가동.", link: "https://s-oil.recruiter.co.kr" },
-    { rank: 26, group: "에쓰오일", name: "샤힌프로젝트기술단", div: "석유화학 플랜트", bonus: "기본급 700%", estBonus: "약 3,500만 ~ 4,500만 원", salary: "약 1억 4,000만 원", note: "세계 최대 스팀 크래커(TC2C) 공정 안정 시공 마일스톤 달성.", link: "https://s-oil.recruiter.co.kr" },
-    { rank: 26, group: "에쓰오일", name: "에쓰오일토탈윤활유", div: "자동차용 엔진오일", bonus: "기본급 400%", estBonus: "약 1,600만 ~ 2,200만 원", salary: "약 9,800만 원", note: "세븐(SEVEN) 프리미엄 합성엔진오일 해외 60개국 수출 확대.", link: "https://s-oil.recruiter.co.kr" },
-    { rank: 26, group: "에쓰오일", name: "동방특수석유", div: "아스팔트/특수유", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 700만 ~ 1,100만 원", salary: "약 8,200만 원", note: "고품질 개질 아스팔트 도로 포장용 특수 석유화학 납품.", link: "https://s-oil.recruiter.co.kr" },
-
-    // 27. 현대해상
-    { rank: 27, group: "현대해상", name: "현대해상화재보험", div: "손해보험/어린이보험", bonus: "기본급의 400%", estBonus: "약 1,800만 ~ 2,400만 원", salary: "약 1억 1,000만 원", note: "독보적 1위 굿앤굿어린이보험 및 자동차보험 손해율 안정화.", link: "https://www.hi.co.kr" },
-    { rank: 27, group: "현대해상", name: "현대하이카손해사정", div: "자동차 손해사정", bonus: "기본급 250%", estBonus: "약 800만 ~ 1,200만 원", salary: "약 7,500만 원", note: "전국 교통사고 현장출동 신속 보상 네트워크 운영.", link: "https://www.hi.co.kr" },
-    { rank: 27, group: "현대해상", name: "현대씨앤알", div: "사옥관리/IT지원", bonus: "기본급 200%", estBonus: "약 600만 ~ 900만 원", salary: "약 6,800만 원", note: "현대해상 금융 IT 인프라 유지보수 및 건물 관리.", link: "https://www.hi.co.kr" },
-    { rank: 27, group: "현대해상", name: "현대인베스트먼트자산운용", div: "대체투자/채권", bonus: "성과급 미확인 (운용 성과)", estBonus: "약 2,000만 ~ 4,000만 원", salary: "약 1억 2,500만 원", note: "국내외 인프라 및 신재생에너지 사모펀드 자산 운용.", link: "https://www.hi.co.kr" },
-    { rank: 27, group: "현대해상", name: "현대하이라이프손해사정", div: "인보험 질병/상해", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 700만 ~ 1,000만 원", salary: "약 7,200만 원", note: "실손의료비 허위청구 적발 및 공정 심사 체계 고도화.", link: "https://www.hi.co.kr" },
-
-    // 28. 영풍/고려아연
-    { rank: 28, group: "영풍/고려아연", name: "고려아연", div: "비철금속/제련", bonus: "기본급의 650%", estBonus: "약 2,800만 ~ 3,600만 원", salary: "약 1억 1,600만 원", note: "아연, 은, 금 등 국제 귀금속 시세 급등 및 신재생 트로이카 드라이브.", link: "https://koreazinc.recruiter.co.kr" },
-    { rank: 28, group: "영풍/고려아연", name: "(주)영풍", div: "석포제련소", bonus: "기본급 300%", estBonus: "약 1,100만 ~ 1,500만 원", salary: "약 9,200만 원", note: "무방류 공정 설비 안정화 및 아연 괴(Ingot) 글로벌 수출.", link: "https://koreazinc.recruiter.co.kr" },
-    { rank: 28, group: "영풍/고려아연", name: "코리아써키트", div: "반도체 PCB 기판", bonus: "기본급 250%", estBonus: "약 800만 ~ 1,200만 원", salary: "약 7,900만 원", note: "스마트폰용 HDI 및 반도체 패키지 서브스트레이트 기판 양산.", link: "https://koreazinc.recruiter.co.kr" },
-    { rank: 28, group: "영풍/고려아연", name: "영풍전자", div: "FPCB 연성기판", bonus: "기본급 200%", estBonus: "약 600만 ~ 900만 원", salary: "약 7,400만 원", note: "애플 아이폰 OLED 디스플레이용 FPCB 모듈 납품.", link: "https://koreazinc.recruiter.co.kr" },
-    { rank: 28, group: "영풍/고려아연", name: "인터플렉스", div: "연성회로기판", bonus: "기본급 200%", estBonus: "약 600만 ~ 900만 원", salary: "약 7,300만 원", note: "갤럭시 스마트링 및 디지타이저용 고다층 FPCB 생산.", link: "https://koreazinc.recruiter.co.kr" },
-
-    // 29. 셀트리온
-    { rank: 29, group: "셀트리온", name: "셀트리온", div: "바이오시밀러", bonus: "연봉의 25~35%", estBonus: "약 2,400만 ~ 3,300만 원", salary: "약 1억 1,200만 원", note: "짐펜트라(램시마SC) 미국 직판 성공 및 3사 합병 시너지 가시화.", link: "https://celltrion.recruiter.co.kr" },
-    { rank: 29, group: "셀트리온", name: "셀트리온제약", div: "케미컬 의약품", bonus: "기본급 350%", estBonus: "약 1,200만 ~ 1,700만 원", salary: "약 8,600만 원", note: "간질환 치료제 고덱스 매출 견조 및 바이오 완제 피하주사 라인 풀가동.", link: "https://celltrion.recruiter.co.kr" },
-    { rank: 29, group: "셀트리온", name: "셀트리온스킨큐어", div: "코스메슈티컬", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 400만 ~ 700만 원", salary: "약 6,200만 원", note: "기능성 바이오 화장품 한스킨 및 이너뷰티 제품 유통.", link: "https://celltrion.recruiter.co.kr" },
-    { rank: 29, group: "셀트리온", name: "셀트리온복지재단", div: "사회공헌/장학", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 300만 ~ 500만 원", salary: "약 5,800만 원", note: "소외계층 의료비 지원 및 바이오 인재 육성 장학 사업.", link: "https://celltrion.recruiter.co.kr" },
-    { rank: 29, group: "셀트리온", name: "셀트리온엔터테인먼트", div: "미디어 콘텐츠", bonus: "성과급 미확인 (프로젝트 성과)", estBonus: "약 400만 ~ 800만 원", salary: "약 6,000만 원", note: "글로벌 OTT K-드라마 및 영화 공동 기획/제작.", link: "https://celltrion.recruiter.co.kr" },
-
-    // 30. KT&G
-    { rank: 30, group: "KT&G", name: "KT&G (본사)", div: "궐련/전자담배(NGP)", bonus: "기본급 400%", estBonus: "약 1,800만 ~ 2,400만 원", salary: "약 9,800만 원", note: "전자담배 '릴' 글로벌 필립모리스 독점 수출 및 카자흐스탄 신공장 가동.", link: "https://ktng.recruiter.co.kr" },
-    { rank: 30, group: "KT&G", name: "KGC인삼공사 (정관장)", div: "건강기능식품", bonus: "기본급 350%", estBonus: "약 1,400만 ~ 1,900만 원", salary: "약 9,200만 원", note: "정관장 에브리타임 중화권·미국 수출 회복 및 신소재 건기식 확장.", link: "https://ktng.recruiter.co.kr" },
-    { rank: 30, group: "KT&G", name: "코스모코스", div: "화장품 ODM/OBM", bonus: "기본급 200%", estBonus: "약 600만 ~ 900만 원", salary: "약 6,700만 원", note: "꽃을든남자, 다나한 브랜드 및 올리브영 입점 인디 브랜드 ODM 수주.", link: "https://ktng.recruiter.co.kr" },
-    { rank: 30, group: "KT&G", name: "영진약품", div: "완제의약품/수출", bonus: "기본급 200%", estBonus: "약 600만 ~ 900만 원", salary: "약 7,500만 원", note: "세파계 항생제 일본 수출 정상화 및 만성질환 순환기 의약품 처방 증가.", link: "https://ktng.recruiter.co.kr" },
-    { rank: 30, group: "KT&G", name: "KGC라이프앤진", div: "홍삼화장품/건기식", bonus: "성과급 미확인 (사규 기준)", estBonus: "약 400만 ~ 700만 원", salary: "약 6,300만 원", note: "동인비 홍삼 오일 코스메틱 및 방문판매 네트워크 유통.", link: "https://ktng.recruiter.co.kr" }
-  ];
-
-  function initGroupDropdown() {
-    const sel = document.getElementById('bonus-group-dropdown');
-    top30Groups.forEach(g => {
-      const opt = document.createElement('option');
-      opt.value = g.name;
-      opt.innerText = `${g.rank}위 ${g.name}그룹`;
-      sel.appendChild(opt);
-    });
-  }
-
-  function renderBonusCards(data) {
-    const box = document.getElementById('bonus-card-list');
-    box.innerHTML = data.map(item => `
-      <div class="company-card">
-        <div class="card-top-row">
-          <div>
-            <div class="comp-title">${item.name}</div>
-            <div style="font-size:13px; color:var(--muted); margin-top:2px;">주력 사업: ${item.div}</div>
-          </div>
-          <div class="badge-wrap">
-            <span class="rank-tag">${item.rank}위</span>
-            <span class="group-tag">${item.group}그룹</span>
-            <a href="${item.link}" target="_blank" class="btn-recruit">공식 채용공고 ↗</a>
-          </div>
-        </div>
-        <div class="metric-grid">
-          <div class="m-item">성과급 공식: <b>${item.bonus}</b></div>
-          <div class="m-item val-bonus">예상 성과급액: <b>${item.estBonus}</b></div>
-          <div class="m-item val-salary">직원 평균 연봉: <b>${item.salary}</b></div>
-        </div>
-        <div class="reason-box"><b>💡 실적 및 산정 배경:</b> ${item.note}</div>
-      </div>
-    `).join('');
-  }
-
-  function filterBonuses() {
-    const q = document.getElementById('bonus-keyword').value.toLowerCase();
-    const g = document.getElementById('bonus-group-dropdown').value;
-    const filtered = fullAffiliates.filter(item => {
-      const matchText = item.name.toLowerCase().includes(q) || item.div.toLowerCase().includes(q) || item.note.toLowerCase().includes(q);
-      const matchGroup = (g === 'ALL') || (item.group === g);
-      return matchText && matchGroup;
-    });
-    renderBonusCards(filtered);
-  }
-
-  // 2. 기업규모 6단계 매트릭스 (7대 표준 직무 분류 일관 유지)
-  const standardizedRoles = [
-    { cat: "IT 개발 / 소프트웨어", desc: "웹·앱 풀스택, AI 엔지니어링, 클라우드 인프라, ERP" },
-    { cat: "R&D 연구 / 엔지니어링 설계", desc: "기계기구, 반도체 회로, 2차전지 배터리, 바이오 제약" },
-    { cat: "경영기획 / 전략 / 재무회계", desc: "경영전략 수립, 예산 기획, IR/공시, 원가 결산" },
-    { cat: "인사 / 총무 / 법무지원", desc: "인재개발(HRD), 인사운영(HRM), 총무, 노무관리" },
-    { cat: "국내외 영업 / 마케팅 / 무역", desc: "B2B 기술영업, 글로벌 SCM, 퍼포먼스 마케팅, 유통" },
-    { cat: "생산기술 / 현장 기술직", desc: "공정 오퍼레이터, PLC 설비제어, 라인 운전, 품질보증 QA" },
-    { cat: "물류 / 하역 / 운송 / 배송", desc: "창고 재고관리, 지게차 정밀운용, 항만 하역, 배차" }
-  ];
-
-  const scaleTierSalaries = {
-    S_LARGE: [
-      { entry: "6,000 ~ 7,000만", d: "7,800 ~ 9,500만", k: "1억 ~ 1.3억", c: "1.4억 ~ 2.2억" },
-      { entry: "5,800 ~ 6,500만", d: "7,500 ~ 9,000만", k: "9,800 ~ 1.25억", c: "1.3억 ~ 1.9억" },
-      { entry: "5,400 ~ 6,000만", d: "6,800 ~ 8,500만", k: "9,000 ~ 1.15억", c: "1.2억 ~ 1.6억" },
-      { entry: "5,000 ~ 5,600만", d: "6,200 ~ 7,800만", k: "8,200 ~ 1.0억", c: "1.1억 ~ 1.4억" },
-      { entry: "5,200 ~ 5,800만", d: "6,600 ~ 8,200만", k: "8,600 ~ 1.1억", c: "1.2억 ~ 1.55억" },
-      { entry: "5,000 ~ 5,800만", d: "7,200 ~ 9,000만", k: "9,200 ~ 1.2억", c: "1.25억 ~ 1.6억" },
-      { entry: "4,600 ~ 5,300만", d: "5,800 ~ 7,200만", k: "7,500 ~ 9,200만", c: "9,800 ~ 1.25억" }
-    ],
-    GEN_LARGE: [
-      { entry: "4,600 ~ 5,400만", d: "5,800 ~ 7,000만", k: "7,600 ~ 9,200만", c: "9,800 ~ 1.25억" },
-      { entry: "4,500 ~ 5,200만", d: "5,600 ~ 6,800만", k: "7,200 ~ 8,800만", c: "9,200 ~ 1.15억" },
-      { entry: "4,300 ~ 4,900만", d: "5,300 ~ 6,400만", k: "6,800 ~ 8,200만", c: "8,800 ~ 1.1억" },
-      { entry: "4,100 ~ 4,700만", d: "5,100 ~ 6,200만", k: "6,500 ~ 7,800만", c: "8,400 ~ 1.05억" },
-      { entry: "4,200 ~ 4,800만", d: "5,200 ~ 6,400만", k: "6,600 ~ 8,000만", c: "8,500 ~ 1.05억" },
-      { entry: "4,200 ~ 4,800만", d: "5,400 ~ 6,600만", k: "6,800 ~ 8,400만", c: "8,500 ~ 1.05억" },
-      { entry: "3,800 ~ 4,400만", d: "4,800 ~ 5,800만", k: "6,000 ~ 7,400만", c: "7,800 ~ 9,500만" }
-    ],
-    S_MID: [
-      { entry: "4,500 ~ 5,300만", d: "5,800 ~ 7,200만", k: "7,500 ~ 9,500만", c: "1.0억 ~ 1.3억" },
-      { entry: "4,300 ~ 5,000만", d: "5,500 ~ 6,800만", k: "7,000 ~ 8,800만", c: "9,500 ~ 1.2억" },
-      { entry: "4,000 ~ 4,600만", d: "5,000 ~ 6,200만", k: "6,500 ~ 7,800만", c: "8,500 ~ 1.05억" },
-      { entry: "3,800 ~ 4,400만", d: "4,700 ~ 5,800만", k: "6,200 ~ 7,400만", c: "8,000 ~ 9,800만" },
-      { entry: "4,000 ~ 4,700만", d: "5,200 ~ 6,500만", k: "6,800 ~ 8,500만", c: "9,000 ~ 1.15억" },
-      { entry: "4,000 ~ 4,600만", d: "5,200 ~ 6,500만", k: "6,600 ~ 8,200만", c: "8,500 ~ 1.05억" },
-      { entry: "3,600 ~ 4,200만", d: "4,500 ~ 5,500만", k: "5,600 ~ 6,800만", c: "7,200 ~ 8,800만" }
-    ],
-    GEN_MID: [
-      { entry: "3,800 ~ 4,400만", d: "4,800 ~ 5,800만", k: "6,200 ~ 7,600만", c: "8,000 ~ 9,800만" },
-      { entry: "3,700 ~ 4,300만", d: "4,600 ~ 5,600만", k: "6,000 ~ 7,400만", c: "7,800 ~ 9,400만" },
-      { entry: "3,500 ~ 4,000만", d: "4,400 ~ 5,200만", k: "5,500 ~ 6,800만", c: "7,200 ~ 8,800만" },
-      { entry: "3,400 ~ 3,900만", d: "4,200 ~ 5,000만", k: "5,300 ~ 6,400만", c: "6,800 ~ 8,200만" },
-      { entry: "3,500 ~ 4,100만", d: "4,400 ~ 5,400만", k: "5,600 ~ 7,000만", c: "7,400 ~ 9,000만" },
-      { entry: "3,800 ~ 4,400만", d: "4,800 ~ 6,000만", k: "6,000 ~ 7,500만", c: "7,600 ~ 9,200만" },
-      { entry: "3,400 ~ 3,900만", d: "4,200 ~ 5,000만", k: "5,200 ~ 6,400만", c: "6,600 ~ 8,000만" }
-    ],
-    S_SMALL: [
-      { entry: "4,200 ~ 5,200만", d: "5,500 ~ 7,200만", k: "7,500 ~ 9,800만", c: "1.0억 + 스톡" },
-      { entry: "4,000 ~ 4,800만", d: "5,200 ~ 6,500만", k: "6,800 ~ 8,500만", c: "9,000 ~ 1.1억" },
-      { entry: "3,600 ~ 4,300만", d: "4,600 ~ 5,800만", k: "6,000 ~ 7,500만", c: "8,000 ~ 9,800만" },
-      { entry: "3,400 ~ 4,000만", d: "4,200 ~ 5,200만", k: "5,500 ~ 6,800만", c: "7,200 ~ 8,800만" },
-      { entry: "3,600 ~ 4,400만", d: "4,800 ~ 6,500만", k: "6,500 ~ 8,500만", c: "9,000만 이상" },
-      { entry: "3,500 ~ 4,000만", d: "4,400 ~ 5,400만", k: "5,500 ~ 6,800만", c: "7,000 ~ 8,500만" },
-      { entry: "3,300 ~ 3,800만", d: "4,000 ~ 4,800만", k: "5,000 ~ 6,200만", c: "6,400 ~ 7,600만" }
-    ],
-    GEN_SMALL: [
-      { entry: "3,200 ~ 3,600만", d: "3,800 ~ 4,500만", k: "4,800 ~ 6,000만", c: "6,500 ~ 8,000만" },
-      { entry: "3,200 ~ 3,600만", d: "3,800 ~ 4,600만", k: "4,800 ~ 6,000만", c: "6,500 ~ 8,000만" },
-      { entry: "3,000 ~ 3,300만", d: "3,500 ~ 4,200만", k: "4,400 ~ 5,300만", c: "5,500 ~ 6,800만" },
-      { entry: "2,900 ~ 3,200만", d: "3,400 ~ 3,900만", k: "4,200 ~ 4,900만", c: "5,200 ~ 6,200만" },
-      { entry: "3,000 ~ 3,400만", d: "3,600 ~ 4,400만", k: "4,600 ~ 5,600만", c: "6,000 ~ 7,200만" },
-      { entry: "3,200 ~ 3,600만", d: "3,800 ~ 4,600만", k: "4,800 ~ 5,800만", c: "6,200 ~ 7,400만" },
-      { entry: "3,100 ~ 3,500만", d: "3,700 ~ 4,300만", k: "4,500 ~ 5,200만", c: "5,500 ~ 6,500만" }
-    ]
-  };
-
-  function renderScaleGrid() {
-    const tier = document.getElementById('scale-tier-dropdown').value;
-    const values = scaleTierSalaries[tier];
-    const tbody = document.getElementById('scale-grid-body');
-    tbody.innerHTML = standardizedRoles.map((role, idx) => `
-      <tr>
-        <td style="font-weight:800; color:var(--text);">${role.cat}</td>
-        <td style="color:var(--muted); font-size:13px;">${role.desc}</td>
-        <td><b>${values[idx].entry}</b></td>
-        <td>${values[idx].d}</td>
-        <td>${values[idx].k}</td>
-        <td><span style="color:var(--accent); font-weight:800;">${values[idx].c}</span></td>
-      </tr>
-    `).join('');
-  }
-
-  // 3. 전국 17개 시도 42개 권역 420개사 연봉 데이터베이스
-  const nationwideAtlas = {
-    seoul: {
-      name: "서울특별시",
-      sub: {
-        gangnam: { title: "강남구 & 서초구 (테헤란로·양재 R&D)", list: [
-          { rank: 1, name: "GS칼텍스 본사", biz: "정유/에너지", sal: "1억 5,300만 원", note: "역삼동 GS타워 본사" },
-          { rank: 2, name: "삼성전자 서초사옥", biz: "전자 전사지원/글로벌", sal: "1억 3,500만 원", note: "서초대로 삼성사옥" },
-          { rank: 3, name: "현대차 양재본사", biz: "완성차 기획/전략", sal: "1억 2,800만 원", note: "서초구 양재동 본사" },
-          { rank: 4, name: "두산에너빌리티 강남", biz: "원전/플랜트", sal: "1억 2,100만 원", note: "테헤란로 두산센터" },
-          { rank: 5, name: "쿠팡 (Coupang)", biz: "이커머스/테크", sal: "1억 1,800만 원", note: "잠실·강남 개발거점" },
-          { rank: 6, name: "한국씨티은행", biz: "외국계 금융", sal: "1억 1,500만 원", note: "테헤란로 금융센터" },
-          { rank: 7, name: "라인플러스", biz: "글로벌 모바일 IT", sal: "1억 400만 원", note: "서현/테헤란로 본사" },
-          { rank: 8, name: "현대건설 본사", biz: "건설엔지니어링", sal: "1억 600만 원", note: "계동 및 강남 거점" },
-          { rank: 9, name: "당근 (당근마켓)", biz: "지역기반 플랫폼", sal: "9,800만 원", note: "교보타워 거점" },
-          { rank: 10, name: "동서식품 본사", biz: "커피/식품제조", sal: "9,400만 원", note: "도곡동 본사" }
-        ]},
-        yeouido: { title: "영등포구 (여의도 금융특구)", list: [
-          { rank: 1, name: "NH투자증권", biz: "투자은행/IB", sal: "1억 6,800만 원", note: "여의도 파크원" },
-          { rank: 2, name: "미래에셋증권 본점", biz: "증권/WM", sal: "1억 6,200만 원", note: "여의도 본점" },
-          { rank: 3, name: "한국투자증권", biz: "증권/파생", sal: "1억 4,800만 원", note: "의사당대로 사옥" },
-          { rank: 4, name: "한국수출입은행", biz: "국책금융", sal: "1억 3,500만 원", note: "국회대로 본점" },
-          { rank: 5, name: "KDB산업은행", biz: "정책금융", sal: "1억 2,800만 원", note: "은행로 본점" },
-          { rank: 6, name: "KB국민은행 본점", biz: "시중은행", sal: "1억 2,400만 원", note: "여의도 신관" },
-          { rank: 7, name: "교보증권", biz: "금융투자", sal: "1억 1,900만 원", note: "여의도 사옥" },
-          { rank: 8, name: "LG디스플레이 본사", biz: "디스플레이", sal: "1억 200만 원", note: "LG트윈타워" },
-          { rank: 9, name: "현대캐피탈", biz: "여신금융", sal: "1억 1,000만 원", note: "국회의사당역 사옥" },
-          { rank: 10, name: "한화손해보험", biz: "손해보험", sal: "9,700만 원", note: "한화금융센터 여의도" }
-        ]},
-        jongno: { title: "종로구 & 중구 (도심 CBD 금융·본사)", list: [
-          { rank: 1, name: "SK주식회사 본사", biz: "그룹 지주/투자", sal: "1억 3,800만 원", note: "서린동 SK사옥" },
-          { rank: 2, name: "에쓰오일 본사", biz: "정유/에너지", sal: "1억 5,800만 원", note: "공덕/마포 경계 사옥" },
-          { rank: 3, name: "신한은행 본점", biz: "시중금융", sal: "1억 2,500만 원", note: "태평로 본점" },
-          { rank: 4, name: "하나은행 본점", biz: "시중금융", sal: "1억 2,200만 원", note: "을지로 사옥" },
-          { rank: 5, name: "현대제철 서울사옥", biz: "철강 기획/영업", sal: "1억 600만 원", note: "서초/중구 도심" },
-          { rank: 6, name: "한화 본사", biz: "화학/방산 지주", sal: "1억 1,200만 원", note: "청계천 장교빌딩" },
-          { rank: 7, name: "CJ제일제당 본사", biz: "식품/바이오", sal: "7,800만 원", note: "동호로 CJ센터" },
-          { rank: 8, name: "롯데쇼핑 본사", biz: "백화점 유통", sal: "7,800만 원", note: "소공동 롯데타운" },
-          { rank: 9, name: "대우건설 본사", biz: "종합건설", sal: "9,400만 원", note: "을지로 써밋타워" },
-          { rank: 10, name: "교보생명 본사", biz: "생명보험", sal: "1억 1,000만 원", note: "광화문 사옥" }
-        ]},
-        gasan: { title: "구로구 & 금천구 (G밸리 테크단지)", list: [
-          { rank: 1, name: "LG전자 가산R&D캠퍼스", biz: "전장/스마트가전", sal: "1억 800만 원", note: "가산디지털1로" },
-          { rank: 2, name: "넷마블 (G-Tower)", biz: "게임제작/퍼블리싱", sal: "9,600만 원", note: "구로동 지타워" },
-          { rank: 3, name: "컴투스 본사", biz: "모바일 게임", sal: "8,800만 원", note: "가산디지털단지" },
-          { rank: 4, name: "신세계아이앤씨", biz: "유통 IT솔루션", sal: "8,200만 원", note: "구로디지털단지" },
-          { rank: 5, name: "에이피알 (APR)", biz: "뷰티테크 디바이스", sal: "8,500만 원", note: "가산 R&D 센터" },
-          { rank: 6, name: "한일시멘트 본사", biz: "시멘트/소재", sal: "8,400만 원", note: "가산 테라타워" },
-          { rank: 7, name: "루멘스", biz: "LED 디스플레이 부품", sal: "7,400만 원", note: "가산디지털2로" },
-          { rank: 8, name: "케이아이엔엑스(KINX)", biz: "인터넷 IX/클라우드", sal: "7,800만 원", note: "구로디지털단지" },
-          { rank: 9, name: "바이오스마트", biz: "스마트카드 제조", sal: "6,700만 원", note: "구로디지털1단지" },
-          { rank: 10, name: "파수 (Fasoo)", biz: "데이터 보안 솔루션", sal: "6,900만 원", note: "상암/가산 거점" }
-        ]}
-      }
-    },
-    gyeonggi: {
-      name: "경기도",
-      sub: {
-        seongnam: { title: "성남시 (판교 테크노밸리 & 분당)", list: [
-          { rank: 1, name: "크래프톤 (KRAFTON)", biz: "게임제작/펍지", sal: "1억 4,200만 원", note: "판교역 센터" },
-          { rank: 2, name: "네이버 (NAVER 본사)", biz: "포털·AI 클라우드", sal: "1억 3,400만 원", note: "정자동 1784" },
-          { rank: 3, name: "엔씨소프트 (NCsoft)", biz: "게임제작/AI R&D", sal: "1억 2,800만 원", note: "판교 R&D 센터" },
-          { rank: 4, name: "SK C&C (SK주식회사)", biz: "엔터프라이즈 IT 솔루션", sal: "1억 1,400만 원", note: "정자동 SK u-타워" },
-          { rank: 5, name: "카카오 (Kakao 본사)", biz: "모바일 플랫폼", sal: "1억 1,100만 원", note: "판교 아지트" },
-          { rank: 6, name: "한화시스템 판교", biz: "방산 전자·도심항공(UAM)", sal: "1억 500만 원", note: "판교 연구소" },
-          { rank: 7, name: "두산 분당타워 계열사", biz: "두산에너빌리티/밥캣", sal: "1억 1,000만 원", note: "정자동 두산타워" },
-          { rank: 8, name: "포스코DX", biz: "스마트팩토리 IT", sal: "9,800만 원", note: "판교사옥" },
-          { rank: 9, name: "안랩 (AhnLab 본사)", biz: "사이버 보안 백신", sal: "9,200만 원", note: "판교 테크노밸리" },
-          { rank: 10, name: "HL만도 판교 R&D", biz: "자율주행 조향·제동", sal: "1억 200만 원", note: "판교 R&D 센터" }
-        ]},
-        suwon_hwaseong: { title: "수원시 & 화성시 (반도체·모빌리티)", list: [
-          { rank: 1, name: "삼성전자 본사", biz: "종합반도체 및 스마트폰", sal: "1억 3,500만 원", note: "수원 매탄동 디지털시티" },
-          { rank: 2, name: "삼성전자 화성캠퍼스", biz: "메모리/파운드리 반도체", sal: "1억 3,500만 원", note: "화성시 반월동 라인" },
-          { rank: 3, name: "기아 오토랜드 화성", biz: "완성차 주력 생산공장", sal: "1억 3,200만 원", note: "화성시 우정읍 (1천만대 돌파)" },
-          { rank: 4, name: "현대차 남양연구소", biz: "완성차 전분야 R&D 본원", sal: "1억 2,800만 원", note: "화성시 남양읍 연구소" },
-          { rank: 5, name: "ASML 코리아 화성캠퍼스", biz: "EUV 노광장비 기술지원", sal: "1억 1,200만 원", note: "화성 뉴캠퍼스 거점" },
-          { rank: 6, name: "삼성전기 본사", biz: "MLCC/반도체 패키지기판", sal: "1억 800만 원", note: "수원시 영통구 매탄동" },
-          { rank: 7, name: "동진쎄미켐 화성발안", biz: "포토레지스트 감광액", sal: "9,100만 원", note: "화성시 발안산단" },
-          { rank: 8, name: "유진테크 본사", biz: "반도체 박막형성 LPCVD", sal: "8,900만 원", note: "수원/용인 경계 거점" },
-          { rank: 9, name: "피에스케이 화성", biz: "PR 스트립 장비 1위", sal: "8,800만 원", note: "화성시 동탄 연구소" },
-          { rank: 10, name: "에스원 본사", biz: "시큐리티 보안서비스", sal: "8,900만 원", note: "수원 관제/통합센터" }
-        ]},
-        uiwang_anyang: { title: "의왕시 & 안양시 (철도방산·전장·스마트스퀘어)", list: [
-          { rank: 1, name: "펄어비스 (본사 사옥)", biz: "글로벌 게임제작(검은사막)", sal: "1억 1,200만 원", note: "안양/과천 스마트스퀘어" },
-          { rank: 2, name: "현대로템 (본사/연구소)", biz: "K2흑표·고속철도(KTX)", sal: "1억 800만 원", note: "의왕시 삼동 기술연구단지" },
-          { rank: 3, name: "현대케피코 (본사)", biz: "자동차 전자제어기/제어SW", sal: "1억 200만 원", note: "의왕시 고천동 연구소" },
-          { rank: 4, name: "유한양행 중앙연구소", biz: "렉라자 바이오 신약 R&D", sal: "1억 500만 원", note: "안양/군포 경계 첨단연구소" },
-          { rank: 5, name: "한국철도기술연구원", biz: "공공 연구기관 (출연연)", sal: "9,400만 원", note: "의왕시 월암동 철도특구" },
-          { rank: 6, name: "한림대학교 성심병원", biz: "대학병원 의료/연구", sal: "9,400만 원", note: "안양시 동안구 관양동" },
-          { rank: 7, name: "LS오토모티브", biz: "자동차 스위치/전장부품", sal: "8,900만 원", note: "안양시 호계동 사옥" },
-          { rank: 8, name: "효성 안양공장/기술원", biz: "첨단 신소재 섬유 R&D", sal: "8,700만 원", note: "안양시 호계동 효성타운" },
-          { rank: 9, name: "코스모신소재", biz: "이차전지 양극재/이형필름", sal: "8,100만 원", note: "의왕/충주 소재거점" },
-          { rank: 10, name: "코맥스 (COMMAX)", biz: "스마트홈 IoT 시스템", sal: "7,500만 원", note: "안양시 만안구 본사" }
-        ]},
-        pyeongtaek_icheon: { title: "평택시 & 이천시 (초대형 반도체 팹 벨트)", list: [
-          { rank: 1, name: "SK하이닉스 본사", biz: "HBM/DRAM 초격차 팹", sal: "1억 6,500만 원", note: "이천시 부발읍 본사/M16팹" },
-          { rank: 2, name: "삼성전자 평택캠퍼스", biz: "세계 최대 복합 반도체 팹", sal: "1억 3,500만 원", note: "평택시 고덕동 P1~P4팹" },
-          { rank: 3, name: "KLA 코리아 평택", biz: "반도체 수율 제어·검사장비", sal: "1억 1,000만 원", note: "평택 고덕 기술센터" },
-          { rank: 4, name: "램리서치 코리아", biz: "반도체 식각(Etch) 장비", sal: "1억 1,500만 원", note: "평택/판교 거점" },
-          { rank: 5, name: "원익IPS 평택", biz: "반도체 증착/박막 장비", sal: "8,900만 원", note: "평택 진위산단" },
-          { rank: 6, name: "KG모빌리티 본사", biz: "토레스 SUV 완성차", sal: "8,400만 원", note: "평택시 칠괴동 본사공장" },
-          { rank: 7, name: "동원F&B 평택공장", biz: "유가공/음료 제조", sal: "7,200만 원", note: "평택 포승공단" },
-          { rank: 8, name: "현대엘리베이터 이천", biz: "초고속 승강기 물류/AS", sal: "8,800만 원", note: "이천 물류센터" },
-          { rank: 9, name: "평택당진항만물류사", biz: "자동차 수출입 하역", sal: "7,400만 원", note: "평택항 포승지구" },
-          { rank: 10, name: "오비맥주 이천공장", biz: "카스 맥주 제조/발효", sal: "8,100만 원", note: "이천시 부발읍 공장" }
-        ]}
-      }
-    },
-    incheon: {
-      name: "인천광역시",
-      sub: {
-        songdo: { title: "연수구 (송도 바이오클러스터)", list: [
-          { rank: 1, name: "삼성바이오로직스", biz: "바이오 의약품 CDMO 생산", sal: "1억 2,800만 원", note: "송도 1·2·3·4공장" },
-          { rank: 2, name: "포스코인터내셔널", biz: "글로벌 종합무역/상사", sal: "1억 2,100만 원", note: "포스코타워 송도 본사" },
-          { rank: 3, name: "셀트리온 (Celltrion)", biz: "바이오시밀러 개발/생산", sal: "1억 1,200만 원", note: "송도 본사/글로벌 R&D" },
-          { rank: 4, name: "삼성바이오에피스", biz: "바이오시밀러 R&D", sal: "1억 900만 원", note: "송도 첨단연구단지" },
-          { rank: 5, name: "앰코테크놀로지 송도", biz: "반도체 패키징·테스트(OSAT)", sal: "9,500만 원", note: "송도 글로벌 R&D 캠퍼스" },
-          { rank: 6, name: "인천항만공사(IPA)", biz: "항만 운영 공기업", sal: "8,900만 원", note: "연수구 송도동 사옥" },
-          { rank: 7, name: "한국단자공업", biz: "차량용 초정밀 커넥터", sal: "8,600만 원", note: "송도 본사/연구소" },
-          { rank: 8, name: "베르나바이오텍", biz: "백신 바이오제약", sal: "8,400만 원", note: "송도 바이오연구단지" },
-          { rank: 9, name: "동아ST 송도캠퍼스", biz: "바이오의약품 공장", sal: "8,100만 원", note: "송도 지식정보산단" },
-          { rank: 10, name: "경신 (연수구 본사)", biz: "차량용 와이어링 하네스", sal: "7,800만 원", note: "송도 테크노파크" }
-        ]},
-        namdong_seo: { title: "남동구 & 서구 (남동공단·청라)", list: [
-          { rank: 1, name: "SK인천석유화학", biz: "초경질원유/파라자일렌(PX)", sal: "1억 2,800만 원", note: "서구 원창동 정제시설" },
-          { rank: 2, name: "현대제철 인천공장", biz: "특수강/형강 전기로 제강", sal: "1억 200만 원", note: "동구/서구 제강소" },
-          { rank: 3, name: "스태츠칩팩코리아", biz: "반도체 첨단 패키징(OSAT)", sal: "9,200만 원", note: "영종도/서구 거점" },
-          { rank: 4, name: "하나금융티아이", biz: "하나금융그룹 통합 IT", sal: "8,800만 원", note: "청라 하나드림타운" },
-          { rank: 5, name: "포스코모빌리티솔루션", biz: "전기차 구동모터코아", sal: "8,400만 원", note: "남동국가산업단지" },
-          { rank: 6, name: "삼기 (남동공단)", biz: "알루미늄 다이캐스팅", sal: "7,800만 원", note: "남동구 남촌동" },
-          { rank: 7, name: "심팩 (SIMPAC)", biz: "금속 성형 프레스 기계", sal: "7,500만 원", note: "남동공단 본사" },
-          { rank: 8, name: "동화기업 본사", biz: "목질판넬/이차전지 전해액", sal: "7,600만 원", note: "서구 가좌동 본사" },
-          { rank: 9, name: "이너트론", biz: "5G RF 무선통신 부품", sal: "6,900만 원", note: "남동구 고잔동" },
-          { rank: 10, name: "인천교통공사", biz: "지하철 대중교통 공기업", sal: "7,400만 원", note: "남동구 간석동" }
-        ]}
-      }
-    },
-    busan: {
-      name: "부산광역시",
-      sub: {
-        bifc_centum: { title: "남구(문현금융단지 BIFC) & 해운대 센텀", list: [
-          { rank: 1, name: "한국예탁결제원 본원", biz: "증권 예탁결제 공공기관", sal: "1억 3,200만 원", note: "문현금융단지 BIFC" },
-          { rank: 2, name: "한국거래소 (KRX 본사)", biz: "증권/파생 파생본부", sal: "1억 2,800만 원", note: "문현금융단지 BIFC" },
-          { rank: 3, name: "한국주택금융공사 본사", biz: "보금자리론 정책금융", sal: "1억 1,500만 원", note: "문현금융단지 사옥" },
-          { rank: 4, name: "한국자산관리공사(캠코)", biz: "국유재산/부실채권 정리", sal: "1억 800만 원", note: "BIFC 본원" },
-          { rank: 5, name: "BNK부산은행 본점", biz: "동남권 시중금융", sal: "1억 1,000만 원", note: "문현동 본점" },
-          { rank: 6, name: "한국남부발전 본사", biz: "전력생산 공기업", sal: "1억 200만 원", note: "BIFC 본사" },
-          { rank: 7, name: "기술보증기금 본부", biz: "기술금융 공공기관", sal: "1억 100만 원", note: "문현동 본점" },
-          { rank: 8, name: "부산항만공사(BPA)", biz: "동북아 1위 환적항만", sal: "8,900만 원", note: "초량동 본사" },
-          { rank: 9, name: "HUG 주택도시보증공사", biz: "주택 분양/전세보증", sal: "9,600만 원", note: "문현동 본사" },
-          { rank: 10, name: "펄어비스 부산스튜디오", biz: "게임 R&D/아트센터", sal: "9,200만 원", note: "센텀시티 테크밸리" }
-        ]},
-        noksan_sasang: { title: "강서구(녹산국가산단) & 사상공단", list: [
-          { rank: 1, name: "르노코리아 부산공장", biz: "그랑 콜레오스 하이브리드", sal: "9,600만 원", note: "강서구 신호공단" },
-          { rank: 2, name: "태광 (선박피팅)", biz: "산업용 배관 관이음쇠 1위", sal: "8,800만 원", note: "강서구 송정동 본사" },
-          { rank: 3, name: "성광벤드", biz: "조선/석유화학 엘보우 피팅", sal: "8,500만 원", note: "녹산국가산단" },
-          { rank: 4, name: "하이록코리아", biz: "계장용 밸브 및 초정밀 피팅", sal: "8,400만 원", note: "녹산공단 본사" },
-          { rank: 5, name: "SNT모티브 본사", biz: "전기차 모터 및 K시리즈 화기", sal: "8,900만 원", note: "기장/부산 거점" },
-          { rank: 6, name: "화승R&A 본사", biz: "자동차 고무호스/웨더스트립", sal: "7,800만 원", note: "사상/양산 거점" },
-          { rank: 7, name: "비엠티 (BMT)", biz: "반도체 초청정 가스 피팅", sal: "7,600만 원", note: "기장 정관/녹산" },
-          { rank: 8, name: "동화엔텍", biz: "선박용 열교환기 전문", sal: "7,500만 원", note: "녹산산단 본사" },
-          { rank: 9, name: "선보공업", biz: "선박 엔진룸 모듈유닛", sal: "7,200만 원", note: "사하구 다대포/녹산" },
-          { rank: 10, name: "윈스틸", biz: "포스코 열연/후판 가공유통", sal: "7,000만 원", note: "녹산산단" }
-        ]}
-      }
-    },
-    daegu: {
-      name: "대구광역시",
-      sub: {
-        dalseong_all: { title: "달성군(국가산단) & 북구·수성알파시티", list: [
-          { rank: 1, name: "엘앤에프 (L&F 본사)", biz: "하이니켈 양극재 소재", sal: "9,800만 원", note: "달성군 구지면 국가산단" },
-          { rank: 2, name: "대구텍 (유한회사)", biz: "초경절삭공구 (워런버핏 투자)", sal: "9,600만 원", note: "달성군 가창면 본사" },
-          { rank: 3, name: "현대로보틱스 본사", biz: "산업용 로봇 및 자동화", sal: "9,500만 원", note: "달성군 유가읍 테크노폴리스" },
-          { rank: 4, name: "iM뱅크(DGB대구은행)", biz: "시중금융 본점", sal: "1억 800만 원", note: "수성구 수성동 본점" },
-          { rank: 5, name: "에스엘 (SL 대구)", biz: "자동차 스마트 헤드램프", sal: "8,800만 원", note: "북구 칠곡 및 경산" },
-          { rank: 6, name: "평화정공 (본사)", biz: "차량용 도어 래치 모듈", sal: "8,400만 원", note: "달서구 성서산단" },
-          { rank: 7, name: "상신브레이크 본사", biz: "자동차 브레이크 패드 1위", sal: "8,100만 원", note: "달성군 논공읍" },
-          { rank: 8, name: "대동 (농기계)", biz: "트랙터/스마트모빌리티", sal: "7,900만 원", note: "달성군 논공읍 본사" },
-          { rank: 9, name: "삼보모터스", biz: "전기차 감속기 플레이트", sal: "7,800만 원", note: "달서구 성서산단" },
-          { rank: 10, name: "우경정보기술", biz: "AI 컴퓨터비전 보안", sal: "6,900만 원", note: "수성알파시티 테크밸리" }
-        ]}
-      }
-    },
-    daejeon: {
-      name: "대전광역시",
-      sub: {
-        daedeok_yuseong: { title: "유성구 (대덕R&D특구) & 서구(둔산)", list: [
-          { rank: 1, name: "한국전자통신연구원(ETRI)", biz: "ICT 국책연구원", sal: "1억 600만 원", note: "유성구 가정동 본원" },
-          { rank: 2, name: "한국항공우주연구원(KARI)", biz: "누리호/달탐사 국책연구", sal: "1억 400만 원", note: "유성구 어은동" },
-          { rank: 3, name: "국방과학연구소 (ADD)", biz: "첨단 무기체계 연구개발", sal: "1억 800만 원", note: "유성구 수남동" },
-          { rank: 4, name: "한국원자력연구원", biz: "원자력/SMR 기술개발", sal: "1억 200만 원", note: "유성구 덕진동" },
-          { rank: 5, name: "한화에어로스페이스 R&D", biz: "우주발사체 체계종합", sal: "1억 1,000만 원", note: "유성구 전민동 센터" },
-          { rank: 6, name: "한국수자원공사(K-water)", biz: "물관리 공기업 본사", sal: "9,600만 원", note: "대덕구 연축동 본사" },
-          { rank: 7, name: "한국조폐공사 본사", biz: "화폐/전자여권 제조", sal: "9,200만 원", note: "유성구 가정동 본원" },
-          { rank: 8, name: "계룡건설산업 본사", biz: "종합건설 시공능력 상위", sal: "8,500만 원", note: "서구 월평동 본사" },
-          { rank: 9, name: "LIG넥스원 대전하우스", biz: "정밀유도무기 센서 R&D", sal: "1억 200만 원", note: "유성구 용산동" },
-          { rank: 10, name: "골프존 본사", biz: "스크린골프 시뮬레이터", sal: "8,400만 원", note: "유성구 도룡동 사옥" }
-        ]}
-      }
-    },
-    gwangju: {
-      name: "광주광역시",
-      sub: {
-        gwangju_ind: { title: "광산구(하남·빛그린산단) & 첨단과학단지", list: [
-          { rank: 1, name: "기아 오토랜드 광주", biz: "스포티지/셀토스 주력기지", sal: "1억 2,800만 원", note: "서구 내방동/광산공장" },
-          { rank: 2, name: "삼성전자 광주사업장", biz: "비스포크 냉장고/에어컨", sal: "1억 2,500만 원", note: "광산구 오선동 하남산단" },
-          { rank: 3, name: "앰코테크놀로지 광주K4", biz: "반도체 첨단 패키징/웨이퍼", sal: "9,500만 원", note: "북구 대촌동 첨단산단" },
-          { rank: 4, name: "광주글로벌모터스(GGM)", biz: "캐스퍼 EV 위탁 생산", sal: "8,200만 원", note: "광산구 빛그린국가산단" },
-          { rank: 5, name: "오텍캐리어 본사", biz: "인버터 에어컨/냉난방", sal: "7,800만 원", note: "광산구 평동산단" },
-          { rank: 6, name: "세방전지 광주공장", biz: "로케트 배터리 납축전지", sal: "8,400만 원", note: "광산구 하남산단" },
-          { rank: 7, name: "한국광기술원 (KOPTI)", biz: "광통신/레이저 연구원", sal: "9,100만 원", note: "북구 첨단산단" },
-          { rank: 8, name: "오이솔루션 본사", biz: "광트랜시버 5G 광통신", sal: "7,600만 원", note: "북구 연제동 본사" },
-          { rank: 9, name: "호원 (광주본사)", biz: "차체 프레임 자동차부품", sal: "7,200만 원", note: "광산구 하남산단" },
-          { rank: 10, name: "남선알미늄", biz: "알루미늄 샷시/범퍼", sal: "7,100만 원", note: "광산구 하남산단" }
-        ]}
-      }
-    },
-    ulsan: {
-      name: "울산광역시",
-      sub: {
-        dong_buk: { title: "동구 & 북구 (조선해양 & 자동차)", list: [
-          { rank: 1, name: "현대자동차 울산공장", biz: "5개 주력 완성차 공장", sal: "1억 2,800만 원", note: "북구 양정동 5만명 근무" },
-          { rank: 2, name: "HD현대중공업 (본사)", biz: "세계 1위 조선·해양", sal: "1억 1,500만 원", note: "동구 전하동 조선소" },
-          { rank: 3, name: "HD현대일렉트릭", biz: "초고압 변압기 전력기기", sal: "1억 1,000만 원", note: "동구 일산동 본사" },
-          { rank: 4, name: "현대모비스 울산공장", biz: "샤시/운전석 전동화모듈", sal: "1억 800만 원", note: "북구 매곡/이화산단" },
-          { rank: 5, name: "현대글로비스 울산지사", biz: "완성차 해상 선적/물류", sal: "9,600만 원", note: "북구 염포부두" },
-          { rank: 6, name: "오토밸리 부품사 협의체", biz: "차체 섀시 프레스 가공", sal: "7,800만 원", note: "북구 매곡산단" },
-          { rank: 7, name: "현대종합금속 울산", biz: "용접 와이어/장비", sal: "8,100만 원", note: "북구 효문공단" },
-          { rank: 8, name: "동남정밀", biz: "엔진 변속기 다이캐스팅", sal: "7,200만 원", note: "북구 효문동" },
-          { rank: 9, name: "대원강업 울산공장", biz: "차량용 시트 스프링", sal: "7,600만 원", note: "북구 매곡산단" },
-          { rank: 10, name: "울산항만예선협의체", biz: "선박 접안 예인 서비스", sal: "7,400만 원", note: "동구 방어동" }
-        ]},
-        nam_ulju: { title: "남구 & 울주군 (온산석유화학·비철금속)", list: [
-          { rank: 1, name: "에쓰오일 온산공장", biz: "정유/석유화학 복합단지", sal: "1억 5,800만 원", note: "울주군 온산읍 샤힌프로젝트" },
-          { rank: 2, name: "SK에너지 울산CLX", biz: "원유 정제/석유화학", sal: "1억 5,200만 원", note: "남구 고사동 250만평 부지" },
-          { rank: 3, name: "고려아연 온산제련소", biz: "아연/은 비철금속 제련", sal: "1억 1,600만 원", note: "울주군 온산국가산단" },
-          { rank: 4, name: "대한유화 울산공장", biz: "에틸렌/프로필렌 기초화학", sal: "1억 1,200만 원", note: "온산공단 본사/공장" },
-          { rank: 5, name: "롯데케미칼 울산공장", biz: "고순도 테레프탈산 PIA", sal: "1억 400만 원", note: "남구 여천동 석유화학단지" },
-          { rank: 6, name: "한화솔루션 울산공장", biz: "CA/PVC 특수 화학소재", sal: "9,800만 원", note: "남구 상개동" },
-          { rank: 7, name: "한국동서발전 본사", biz: "발전 에너지 공기업", sal: "9,400만 원", note: "우정혁신도시 본사" },
-          { rank: 8, name: "풍산 울산사업장", biz: "신동 동판 및 탄약방산", sal: "9,200만 원", note: "울주군 온산읍" },
-          { rank: 9, name: "울산항만공사(UPA)", biz: "액체물류 허브 공기업", sal: "8,700만 원", note: "남구 매암동 본사" },
-          { rank: 10, name: "KPX케미칼 울산", biz: "우레탄 원료 폴리올", sal: "9,600만 원", note: "남구 용연공단" }
-        ]}
-      }
-    },
-    sejong: {
-      name: "세종특별자치시",
-      sub: {
-        central: { title: "세종 도심(정부청사·국책연구단지) & 전의산단", list: [
-          { rank: 1, name: "한국콜마 세종공장/연구소", biz: "화장품 ODM/OBM 1위", sal: "9,400만 원", note: "전의면 일반산단" },
-          { rank: 2, name: "한국개발연구원 (KDI)", biz: "국가 경제정책 싱크탱크", sal: "1억 200만 원", note: "반곡동 연구단지" },
-          { rank: 3, name: "한화첨단소재 세종본사", biz: "차량용 경량 복합소재", sal: "9,200만 원", note: "부강면 본사/공장" },
-          { rank: 4, name: "남양유업 세종공장", biz: "조제분유/발효유 주력공장", sal: "7,800만 원", note: "장군면 메가팩토리" },
-          { rank: 5, name: "콘티넨탈오토모티브 세종", biz: "차량 전자제어 모듈", sal: "8,800만 원", note: "연기면 세종공장" },
-          { rank: 6, name: "일진제강 세종공장", biz: "정밀 인발 탄소강관", sal: "8,200만 원", note: "전의일반산단" },
-          { rank: 7, name: "SK트리켐", biz: "반도체 프리커서 전구체", sal: "8,600만 원", note: "명학일반산업단지" },
-          { rank: 8, name: "축산물품질평가원 본원", biz: "축산유통 공공기관", sal: "8,400만 원", note: "아름동 본원" },
-          { rank: 9, name: "세종도시교통공사", biz: "BRT 대중교통 공기업", sal: "7,200만 원", note: "대평동 본사" },
-          { rank: 10, name: "미래생활 본사", biz: "잘풀리는집 화장지 제조", sal: "6,600만 원", note: "부강면 본사" }
-        ]}
-      }
-    },
-    chungnam: {
-      name: "충청남도",
-      sub: {
-        cheonan_asan: { title: "천안시 & 아산시 (디스플레이·반도체·완성차)", list: [
-          { rank: 1, name: "삼성전자 천안사업장", biz: "HBM 첨단 패키징(AVP)", sal: "1억 3,500만 원", note: "천안시 백석동 팹" },
-          { rank: 2, name: "삼성디스플레이 아산캠퍼스", biz: "OLED 디스플레이 패널", sal: "1억 1,500만 원", note: "탕정면 디스플레이시티" },
-          { rank: 3, name: "현대자동차 아산공장", biz: "쏘나타/그랜저/아이오닉6", sal: "1억 2,800만 원", note: "아산시 인주면 공장" },
-          { rank: 4, name: "삼성SDI 천안사업장", biz: "소형 전지 및 전자재료", sal: "1억 1,000만 원", note: "천안시 성성동 공장" },
-          { rank: 5, name: "세메스 (SEMES 본사)", biz: "반도체 세정장비 국내 1위", sal: "9,800만 원", note: "천안시 직산읍 본사" },
-          { rank: 6, name: "코닝정밀소재 아산", biz: "디스플레이 정밀유리 기판", sal: "1억 200만 원", note: "탕정면 코닝캠퍼스" },
-          { rank: 7, name: "현대모비스 아산공장", biz: "완성차 모듈 조립", sal: "1억 800만 원", note: "아산 인주공단" },
-          { rank: 8, name: "하나마이크론 아산본사", biz: "반도체 패키징 및 테스트", sal: "8,400만 원", note: "아산시 음봉면" },
-          { rank: 9, name: "SFA반도체", biz: "후공정 OSAT 조립/테스트", sal: "7,800만 원", note: "천안시 백석산단" },
-          { rank: 10, name: "한국기술교육대학교", biz: "국책 4년제 공학교육", sal: "8,600만 원", note: "천안 동남구 병천" }
-        ]},
-        seosan_dangjin: { title: "서산시 & 당진시 (대산석유화학 & 제철)", list: [
-          { rank: 1, name: "한화토탈에너지스 대산", biz: "에틸렌/합성수지/항공유", sal: "1억 4,200만 원", note: "서산시 대산석유화학단지" },
-          { rank: 2, name: "현대오일뱅크 대산공장", biz: "원유 정제 및 중질유 분해", sal: "1억 2,000만 원", note: "서산시 대산읍 공장" },
-          { rank: 3, name: "현대제철 당진제철소", biz: "일관제철 고로 열연/냉연", sal: "1억 600만 원", note: "당진시 송악읍 일관제철소" },
-          { rank: 4, name: "LG화학 대산공장", biz: "NCC 나프타분해/고기능수지", sal: "1억 1,000만 원", note: "서산시 대산읍" },
-          { rank: 5, name: "롯데케미칼 대산공장", biz: "기초유분 및 폴리머", sal: "1억 200만 원", note: "서산 대산단지" },
-          { rank: 6, name: "동국제강 당진공장", biz: "고급 열처리 후판 압연", sal: "9,200만 원", note: "당진시 송악읍" },
-          { rank: 7, name: "KCC 대산공장", biz: "유기 실리콘 및 실란트", sal: "8,900만 원", note: "서산 대산읍" },
-          { rank: 8, name: "현대글로비스 당진지사", biz: "철강 슬래브 및 코일 물류", sal: "8,800만 원", note: "당진항 철강부두" },
-          { rank: 9, name: "당진화력발전소", biz: "기저 화력발전 (동서발전)", sal: "9,300만 원", note: "당진시 석문면" },
-          { rank: 10, name: "삼우 당진공장", biz: "자동차 휠/철강 포장재", sal: "7,400만 원", note: "당진 송악공단" }
-        ]}
-      }
-    },
-    chungbuk: {
-      name: "충청북도",
-      sub: {
-        cheongju: { title: "청주시 (오창 이차전지 & 오송 바이오클러스터)", list: [
-          { rank: 1, name: "SK하이닉스 청주캠퍼스", biz: "NAND 낸드플래시 M15팹", sal: "1억 6,500만 원", note: "흥덕구 직지대로 M15" },
-          { rank: 2, name: "LG에너지솔루션 오창플랜트", biz: "원통형/파우치 마더팩토리", sal: "1억 500만 원", note: "청원구 오창과학단지" },
-          { rank: 3, name: "에코프로비엠 오창본사", biz: "하이니켈 양극재 소재", sal: "9,800만 원", note: "오창산단 본사" },
-          { rank: 4, name: "셀트리온제약 오송본사", biz: "케미컬 개량신약/생산", sal: "8,600만 원", note: "흥덕구 오송생명과학단지" },
-          { rank: 5, name: "유한양행 오창공장", biz: "정밀 합성의약품 생산", sal: "9,400만 원", note: "오창과학산업단지" },
-          { rank: 6, name: "대웅제약 오송공장", biz: "스마트 cGMP 바이오공장", sal: "8,800만 원", note: "오송생명산단" },
-          { rank: 7, name: "GC녹십자 오창공장", biz: "혈액분획제제/면역글로불린", sal: "8,900만 원", note: "오창읍 과학단지" },
-          { rank: 8, name: "네패스 오창캠퍼스", biz: "반도체 WLP/PLP 패키징", sal: "8,200만 원", note: "청원구 오창산단" },
-          { rank: 9, name: "에코프로에이치엔", biz: "온실가스 감축 친환경소재", sal: "8,400만 원", note: "오창 본사" },
-          { rank: 10, name: "식품의약품안전처/질병청", biz: "보건의료 국책행정기관", sal: "8,700만 원", note: "오송 보건의료행정타운" }
-        ]},
-        chungju_eumseong: { title: "충주시 & 음성군 (수소모빌리티 & 반도체)", list: [
-          { rank: 1, name: "DB하이텍 상우공장", biz: "8인치 아날로그 파운드리", sal: "9,800만 원", note: "음성군 감곡면 상우팹" },
-          { rank: 2, name: "현대모비스 충주공장", biz: "수소연료전지 및 하이브리드팩", sal: "1억 800만 원", note: "충주시 대소원면" },
-          { rank: 3, name: "현대엘리베이터 충주본사", biz: "초고속 스마트 승강기", sal: "8,800만 원", note: "충주 제5일반산단 본사" },
-          { rank: 4, name: "유한킴벌리 충주공장", biz: "기저귀/위생용품 주력공장", sal: "8,600만 원", note: "충주시 대소원면" },
-          { rank: 5, name: "코스모신소재 충주본사", biz: "이차전지 양극재 분말", sal: "8,100만 원", note: "충주시 목행동 본사" },
-          { rank: 6, name: "한화솔루션 음성공장", biz: "태양광 셀/모듈 생산라인", sal: "9,100만 원", note: "음성군 맹동면" },
-          { rank: 7, name: "롯데칠성 충주메가팩토리", biz: "클라우드 맥주 및 음료", sal: "7,400만 원", note: "충주시 대소원면" },
-          { rank: 8, name: "동화약품 충주공장", biz: "까스활명수/후시딘 cGMP", sal: "7,600만 원", note: "충주 첨단산단" },
-          { rank: 9, name: "풀무원 음성두부물류", biz: "신선식품 제조 및 풀필먼트", sal: "6,900만 원", note: "음성군 대소면" },
-          { rank: 10, name: "포스코퓨처엠 충주공장", biz: "실리콘 복합음극재 소재", sal: "8,500만 원", note: "충주 기업도시" }
-        ]}
-      }
-    },
-    gyeongbuk: {
-      name: "경상북도",
-      sub: {
-        pohang: { title: "포항시 (철강 본원 & 영일만 이차전지)", list: [
-          { rank: 1, name: "포스코 (POSCO 본사)", biz: "제철 제강 및 글로벌 본사", sal: "1억 500만 원", note: "포항시 남구 괴동동 본사" },
-          { rank: 2, name: "에코프로비엠 포항캠퍼스", biz: "하이니켈 양극재 대량양산", sal: "9,800만 원", note: "영일만 일반산단" },
-          { rank: 3, name: "포스코퓨처엠 본사", biz: "양·음극재 종합 배터리소재", sal: "9,200만 원", note: "남구 청암로 본사" },
-          { rank: 4, name: "현대제철 포항공장", biz: "철도레일/대형 H형강 압연", sal: "1억 200만 원", note: "남구 괴동동 제철소" },
-          { rank: 5, name: "포항공과대학교(POSTECH)", biz: "국내 1위 연구중심 공대", sal: "9,600만 원", note: "남구 효자동 지곡단지" },
-          { rank: 6, name: "포항산업과학연구원(RIST)", biz: "소재/에너지 국책연구원", sal: "9,400만 원", note: "효자동 RIST연구원" },
-          { rank: 7, name: "동국제강 포항공장", biz: "봉강/형강 전기로 제강", sal: "9,100만 원", note: "포항 철강공단" },
-          { rank: 8, name: "세아제강 포항공장", biz: "해상풍력 하부구조용 강관", sal: "8,600만 원", note: "남구 괴동공단" },
-          { rank: 9, name: "포스코플랜텍", biz: "제철 플랜트 엔지니어링", sal: "8,500만 원", note: "송도동 본사" },
-          { rank: 10, name: "조선내화 본사", biz: "제철소 고온 내화벽돌", sal: "8,200만 원", note: "형산강로 본사" }
-        ]},
-        gumi: { title: "구미시 (국가산단 1~5단지 방산·전자소재)", list: [
-          { rank: 1, name: "SK실트론 본사", biz: "반도체 12인치 실리콘웨이퍼", sal: "1억 400만 원", note: "구미 임수동 국가3산단" },
-          { rank: 2, name: "삼성전자 구미스마트시티", biz: "갤럭시 폴더블폰 마더팹", sal: "1억 3,500만 원", note: "구미시 공단동 2캠퍼스" },
-          { rank: 3, name: "한화시스템 구미사업장", biz: "AESA 레이다/통신체계", sal: "1억 600만 원", note: "구미 국가1산단" },
-          { rank: 4, name: "LIG넥스원 구미하우스", biz: "천궁-II 유도미사일 양산", sal: "1억 200만 원", note: "구미 임수동 방산팹" },
-          { rank: 5, name: "LG이노텍 구미사업장", biz: "스마트폰 카메라/반도체기판", sal: "9,800만 원", note: "구미 국가4산단 본원" },
-          { rank: 6, name: "도레이첨단소재 구미", biz: "탄소섬유/고기능 IT필름", sal: "9,200만 원", note: "국가3산단 본사" },
-          { rank: 7, name: "LG디스플레이 구미공장", biz: "차량용 OLED 패널 생산", sal: "9,600만 원", note: "구미 국가2산단" },
-          { rank: 8, name: "피엔티 (PNT 본사)", biz: "2차전지 전극 코팅 롤투롤", sal: "8,500만 원", note: "하이테크밸리 5산단" },
-          { rank: 9, name: "원익QnC 구미본사", biz: "반도체 쿼츠 석영유리", sal: "8,100만 원", note: "구미 옥계동" },
-          { rank: 10, name: "아주스틸 구미본사", biz: "프리미엄 컬러강판", sal: "7,400만 원", note: "구미 국가4산단" }
-        ]}
-      }
-    },
-    gyeongnam: {
-      name: "경상남도",
-      sub: {
-        changwon: { title: "창원시 (원자력·방위산업·공작기계 산단)", list: [
-          { rank: 1, name: "한화에어로스페이스 창원", biz: "K9 자주포/항공 가스터빈", sal: "1억 2,000만 원", note: "성산구 외동 1~3사업장" },
-          { rank: 2, name: "두산에너빌리티 본사", biz: "원전 주기기/대형 가스터빈", sal: "1억 1,200만 원", note: "성산구 귀곡동 대형 부지" },
-          { rank: 3, name: "현대로템 창원공장", biz: "KTX 고속철/K2 흑표전차", sal: "1억 800만 원", note: "대원동 50만평 생산공장" },
-          { rank: 4, name: "LG전자 창원스마트파크", biz: "LG 가전 글로벌 모공장", sal: "1억 1,200만 원", note: "성산구 성산동 1/2캠퍼스" },
-          { rank: 5, name: "효성중공업 창원공장", biz: "초고압 변압기 및 차단기", sal: "1억 200만 원", note: "성산구 내동 공장" },
-          { rank: 6, name: "현대위아 본사", biz: "차량 구동샤시/방산 함포", sal: "1억 400만 원", note: "성산구 가음정동 본사" },
-          { rank: 7, name: "DN솔루션즈 (구 두산공작)", biz: "글로벌 3위 머시닝센터", sal: "9,600만 원", note: "성산구 남서로 본사" },
-          { rank: 8, name: "세아창원특수강", biz: "원전/방산용 스테인리스봉강", sal: "9,400만 원", note: "성산구 적현동" },
-          { rank: 9, name: "한국GM 창원공장", biz: "트랙스 크로스오버 조립", sal: "8,800만 원", note: "성산구 성주동 공장" },
-          { rank: 10, name: "한국재료연구원(KIMS)", biz: "첨단소재 국책연구원", sal: "9,600만 원", note: "성산구 상남동 본원" }
-        ]},
-        geoje: { title: "거제시 & 통영시 (조선해양 클러스터)", list: [
-          { rank: 1, name: "한화오션 (구 대우조선)", biz: "LNG선/잠수함/해양플랜트", sal: "9,800만 원", note: "거제시 아주동 옥포조선소" },
-          { rank: 2, name: "삼성중공업 거제조선소", biz: "FLNG/초대형 컨테이너선", sal: "9,500만 원", note: "거제시 장평동 거제조선소" },
-          { rank: 3, name: "선박해양플랜트연구소(KRISO)", biz: "해양공학 심해시험수조", sal: "8,900만 원", note: "거제 장목면 해양연구센터" },
-          { rank: 4, name: "한화오션 협력연합", biz: "선체 대형블록 조립/의장", sal: "7,400만 원", note: "옥포국가산업단지" },
-          { rank: 5, name: "삼성중공업 사내기술단", biz: "자동화 로봇용접/특수도장", sal: "7,200만 원", note: "장평동 조선단지" },
-          { rank: 6, name: "삼녹 (SAMNOK)", biz: "선박 배관 파이프스풀 도금", sal: "6,900만 원", note: "연초면 한내공단" },
-          { rank: 7, name: "대성산업 거제사업소", biz: "조선소 고압가스/산소 공급", sal: "6,800만 원", note: "사등면 사곡" },
-          { rank: 8, name: "거제수협 본점", biz: "수산 금융/유통", sal: "6,700만 원", note: "고현동 본점" },
-          { rank: 9, name: "HSG성동조선 통영", biz: "해상풍력 하부구조물 건조", sal: "7,500만 원", note: "통영시 광도면 안정공단" },
-          { rank: 10, name: "거제해양개발공사", biz: "지방공기업", sal: "6,500만 원", note: "고현동 본사" }
-        ]}
-      }
-    },
-    jeonnam: {
-      name: "전라남도",
-      sub: {
-        yeosu_gwangyang: { title: "여수시(석유화학) & 광양시(광양제철소)", list: [
-          { rank: 1, name: "GS칼텍스 여수공장", biz: "정유/석유화학 컴플렉스", sal: "1억 5,300만 원", note: "여수시 월내동 여수산단" },
-          { rank: 2, name: "포스코 광양제철소", biz: "세계 최대 단일 제철소", sal: "1억 500만 원", note: "광양시 금호동 일관제철소" },
-          { rank: 3, name: "여천NCC", biz: "에틸렌 기초유분 전문", sal: "1억 2,000만 원", note: "여수산단로 에틸렌공장" },
-          { rank: 4, name: "LG화학 여수공장", biz: "기초소재 나프타분해 NCC", sal: "1억 1,000만 원", note: "여수국가산업단지" },
-          { rank: 5, name: "한화솔루션 여수공장", biz: "가성소다/폴리우레탄 원료", sal: "1억 500만 원", note: "여수시 화치동" },
-          { rank: 6, name: "롯데케미칼 여수공장", biz: "PP/폴리프로필렌 수지", sal: "1억 200만 원", note: "여수시 중흥동" },
-          { rank: 7, name: "포스코인터 광양LNG", biz: "민간 최초 대형 LNG터미널", sal: "1억 1,800만 원", note: "광양시 금호동 터미널" },
-          { rank: 8, name: "남해화학 본사/여수", biz: "국내 1위 농업 비료 제조", sal: "9,400만 원", note: "여수시 낙포동 본사" },
-          { rank: 9, name: "포스코퓨처엠 광양공장", biz: "단일 최대 하이니켈 양극재", sal: "9,200만 원", note: "광양시 율촌산단" },
-          { rank: 10, name: "여수광양항만공사(YGPA)", biz: "컨테이너 항만 공기업", sal: "8,900만 원", note: "광양시 황금동 사옥" }
-        ]},
-        naju: { title: "나주시 (빛가람 혁신도시 전력에너지밸리)", list: [
-          { rank: 1, name: "한국전력공사 (KEPCO 본사)", biz: "국가 전력망 총괄 공기업", sal: "9,800만 원", note: "빛가람동 한전본사" },
-          { rank: 2, name: "한전KPS 본사", biz: "발전/송변전 정밀정비", sal: "9,500만 원", note: "혁신도시 본사" },
-          { rank: 3, name: "전력거래소 (KPX 본원)", biz: "전력 도매시장 계통운영", sal: "9,600만 원", note: "빛가람동 사옥" },
-          { rank: 4, name: "한전KDN 본사", biz: "에너지 ICT 공기업", sal: "8,900만 원", note: "혁신도시 사옥" },
-          { rank: 5, name: "한국농어촌공사 본사", biz: "농업생산기반 정비", sal: "8,800만 원", note: "빛가람동 본사" },
-          { rank: 6, name: "한국인터넷진흥원(KISA)", biz: "정보보호/인터넷 공공기관", sal: "8,600만 원", note: "나주 청사" },
-          { rank: 7, name: "한국콘텐츠진흥원 본원", biz: "K-콘텐츠 진흥 공공기관", sal: "8,400만 원", note: "빛가람동 본원" },
-          { rank: 8, name: "사립학교교직원연금공단", biz: "사학연금 자산운용", sal: "9,200만 원", note: "나주 본부" },
-          { rank: 9, name: "우정사업정보센터", biz: "우체국 금융/물류 IT", sal: "8,100만 원", note: "혁신도시 정보센터" },
-          { rank: 10, name: "남양유업 나주공장", biz: "우유/커피믹스 대형공장", sal: "7,500만 원", note: "나주시 금천면" }
-        ]}
-      }
-    },
-    jeonbuk: {
-      name: "전라북도",
-      sub: {
-        jeonju_wanju: { title: "전주시 & 완주군 (수소·상용차 & 탄소소재)", list: [
-          { rank: 1, name: "현대자동차 전주공장", biz: "상용 버스/수소 트럭 거점", sal: "1억 2,000만 원", note: "완주군 봉동산단" },
-          { rank: 2, name: "효성첨단소재 전주공장", biz: "우주항공용 탄소섬유 1위", sal: "9,400만 원", note: "전주시 팔복동 탄소산단" },
-          { rank: 3, name: "KCC 전주공장", biz: "도료/실리콘 건축자재", sal: "9,200만 원", note: "완주군 봉동읍" },
-          { rank: 4, name: "국민연금공단 (NPS 본부)", biz: "기금운용본부 1,000조 운용", sal: "9,600만 원", note: "전주시 만성동 혁신도시" },
-          { rank: 5, name: "LS엠트론 전주공장", biz: "스마트 트랙터 주력공장", sal: "8,600만 원", note: "완주 봉동공단" },
-          { rank: 6, name: "한국국토정보공사(LX)", biz: "지적측량/공간정보 공기업", sal: "8,800만 원", note: "혁신도시 본사" },
-          { rank: 7, name: "농촌진흥청 본청", biz: "농업과학 국책행정기관", sal: "8,600만 원", note: "전주 농생명로 본청" },
-          { rank: 8, name: "휴비스 전주공장", biz: "차별화 폴리에스터 단섬유", sal: "8,100만 원", note: "전주시 팔복동" },
-          { rank: 9, name: "하림홀딩스 익산/전주", biz: "종합 축산식품 지주", sal: "8,500만 원", note: "익산 함열/전주" },
-          { rank: 10, name: "한국식품연구원", biz: "식품바이오 국책연구원", sal: "9,100만 원", note: "완주군 이서면" }
-        ]},
-        gunsan: { title: "군산시 (새만금 이차전지 & 항만산업단지)", list: [
-          { rank: 1, name: "HD현대중공업 군산조선소", biz: "대형 선박 블록 제작", sal: "9,800만 원", note: "군산국가산업단지" },
-          { rank: 2, name: "타타대우상용차 본사", biz: "대형 상용 트럭 완성차", sal: "8,900만 원", note: "군산시 소룡동 본사" },
-          { rank: 3, name: "세아베스틸 군산공장", biz: "특수강 봉강/원전 단조품", sal: "9,400만 원", note: "군산 외항로 제강소" },
-          { rank: 4, name: "천보BLS 새만금공장", biz: "이차전지 전해질 F전해질", sal: "8,600만 원", note: "새만금 국가산단 1공구" },
-          { rank: 5, name: "성일하이텍 군산본사", biz: "폐배터리 리사이클링 1위", sal: "8,400만 원", note: "군산2국가산단" },
-          { rank: 6, name: "OCI 군산공장", biz: "반도체용 폴리실리콘/과산화수소", sal: "8,800만 원", note: "군산시 소룡동" },
-          { rank: 7, name: "HD현대인프라코어 군산", biz: "대형 굴착기/엔진 제조", sal: "9,200만 원", note: "군산국가산단" },
-          { rank: 8, name: "대상 군산전분당공장", biz: "식품 당류 전분 가공", sal: "7,600만 원", note: "군산 조촌동 공장" },
-          { rank: 9, name: "대주전자재료 새만금", biz: "실리콘 복합음극재 기지", sal: "8,200만 원", note: "새만금 산단" },
-          { rank: 10, name: "군산항만물류운영사", biz: "사료곡물/자동차 복합하역", sal: "7,100만 원", note: "군산항 자유무역지역" }
-        ]}
-      }
-    },
-    gangwon: {
-      name: "강원특별자치도",
-      sub: {
-        wonju: { title: "원주시 (공공기관 혁신도시 & 디지털헬스)", list: [
-          { rank: 1, name: "국민건강보험공단 본부", biz: "전국민 건강보험 공공기관", sal: "9,400만 원", note: "혁신로 건보본부" },
-          { rank: 2, name: "건강보험심사평가원 본원", biz: "진료비 심사/적정성 평가", sal: "9,200만 원", note: "반곡동 심평원" },
-          { rank: 3, name: "한국관광공사 본사", biz: "글로벌 관광 진흥 공기업", sal: "8,900만 원", note: "원주 혁신도시 본사" },
-          { rank: 4, name: "한국광해광업공단", biz: "핵심 광물자원 안보 공기업", sal: "9,200만 원", note: "반곡동 사옥" },
-          { rank: 5, name: "도로교통공단 본부", biz: "교통안전/운전면허 공기업", sal: "8,600만 원", note: "혁신도시 본부" },
-          { rank: 6, name: "삼양식품 원주공장", biz: "불닭볶음면 글로벌 수출기지", sal: "7,600만 원", note: "우산일반산업단지" },
-          { rank: 7, name: "HL만도 원주공장", biz: "차량용 브레이크/자율주행", sal: "9,500만 원", note: "문막읍 문막산단" },
-          { rank: 8, name: "바디텍메드 원주R&D", biz: "체외진단 면역진단키트", sal: "7,800만 원", note: "원주 동화첨단의료산단" },
-          { rank: 9, name: "인성정보 원주센터", biz: "원격의료 헬스케어 IT", sal: "6,900만 원", note: "의료기기 테크노밸리" },
-          { rank: 10, name: "한국가스공사 강원지역본부", biz: "천연가스 배관망 공급", sal: "9,500만 원", note: "원주시 봉산동" }
-        ]},
-        chuncheon_gangneung: { title: "춘천시 & 강릉시 (바이오·데이터·신소재)", list: [
-          { rank: 1, name: "더존비즈온 (본사)", biz: "기업용 ERP/클라우드 플랫폼", sal: "8,800만 원", note: "춘천시 남산면 강촌캠퍼스" },
-          { rank: 2, name: "네이버 춘천데이터센터 '각'", biz: "자연냉각 친환경 메가IDC", sal: "1억 2,000만 원", note: "춘천시 동면 구봉산" },
-          { rank: 3, name: "휴젤 (HUGEL 본사)", biz: "보툴리눔 톡신 보톡스 1위", sal: "8,600만 원", note: "춘천시 신북읍 본사" },
-          { rank: 4, name: "바디텍메드 춘천본사", biz: "POCT 현장진단 바이오", sal: "7,800만 원", note: "춘천시 동내면 거두산단" },
-          { rank: 5, name: "일동후디스 춘천공장", biz: "하이뮨 프로틴 단백질 음료", sal: "6,900만 원", note: "춘천 동산면 공장" },
-          { rank: 6, name: "파마리서치 강릉본사", biz: "리쥬란 PDRN 스킨부스터", sal: "8,400만 원", note: "강릉시 과학단지로 본사" },
-          { rank: 7, name: "강릉에코파워", biz: "안인 화력 민자발전소", sal: "9,800만 원", note: "강릉시 강동면 안인리" },
-          { rank: 8, name: "한국과학기술연구원(KIST)", biz: "천연물 바이오 국책연구소", sal: "9,500만 원", note: "강릉 대전동 강릉분원" },
-          { rank: 9, name: "포스코마그네슘 강릉공장", biz: "초경량 마그네슘 판재", sal: "8,900만 원", note: "강릉시 옥계일반산단" },
-          { rank: 10, name: "한라시멘트 옥계공장", biz: "포틀랜드 시멘트 소성공장", sal: "8,200만 원", note: "강릉시 옥계면" }
-        ]}
-      }
-    },
-    jeju: {
-      name: "제주특별자치도",
-      sub: {
-        jeju_all: { title: "제주시(첨단과학단지) & 서귀포(혁신도시)", list: [
-          { rank: 1, name: "카카오 (Kakao 제주 본사)", biz: "모바일 플랫폼 본사", sal: "1억 1,100만 원", note: "제주시 첨단로 스페이스닷원" },
-          { rank: 2, name: "네오플 (Neople 본사)", biz: "던전앤파이터 넥슨 자회사", sal: "1억 2,500만 원", note: "제주시 노형동/스페이스" },
-          { rank: 3, name: "제주특별자치도개발공사", biz: "제주삼다수 제조/유통 공기업", sal: "8,200만 원", note: "제주시 첨단로 본사/조천공장" },
-          { rank: 4, name: "공무원연금공단 본사", biz: "공무원연금 기금운용", sal: "9,200만 원", note: "서귀포시 서호중로 혁신도시" },
-          { rank: 5, name: "제주항공 정비기지", biz: "국내 1위 LCC 정비/운항", sal: "8,400만 원", note: "제주국제공항 정비격납고" },
-          { rank: 6, name: "쏘카 (SOCAR 제주지사)", biz: "모빌리티 카셰어링 허브", sal: "8,200만 원", note: "제주시 오라동 거점" },
-          { rank: 7, name: "국립기상과학원", biz: "국가 기상연구 국책기관", sal: "8,600만 원", note: "서귀포시 서호동" },
-          { rank: 8, name: "제주은행 본점", biz: "신한금융계열 지방은행", sal: "8,800만 원", note: "제주시 이도일동 본점" },
-          { rank: 9, name: "한국국제교류재단(KF)", biz: "공공외교 공공기관", sal: "8,100만 원", note: "서귀포시 혁신도시 본부" },
-          { rank: 10, name: "넥슨컴퓨터박물관", biz: "IT 문화/전시 기획", sal: "6,800만 원", note: "제주시 1100로" }
-        ]}
-      }
-    }
-  };
-
-  function handleMetroChange() {
-    const m = document.getElementById('sel-metro').value;
-    const subSel = document.getElementById('sel-sub');
-    const subs = nationwideAtlas[m].sub;
-    subSel.innerHTML = Object.keys(subs).map(k => `
-      <option value="${k}">${subs[k].title}</option>
-    `).join('');
-    renderRegionRanking();
-  }
-
-  function renderRegionRanking() {
-    const m = document.getElementById('sel-metro').value;
-    const s = document.getElementById('sel-sub').value;
-    const tbody = document.getElementById('region-ranking-body');
-    const items = nationwideAtlas[m].sub[s].list;
-
-    tbody.innerHTML = items.map(item => `
-      <tr>
-        <td class="rank-td">${item.rank}</td>
-        <td style="font-weight:800; color:var(--text);">${item.name}</td>
-        <td><span class="badge-industry">${item.biz}</span></td>
-        <td style="font-weight:900; color:var(--accent); font-size:15px;">${item.sal}</td>
-        <td style="color:var(--muted); font-size:13px;">${item.note}</td>
-      </tr>
-    `).join('');
-  }
-
-  // 4. 연봉 실수령액 계산 로직
-  function calculateNetPay() {
-    const salary = (parseFloat(document.getElementById('inp-salary').value) || 0) * 10000;
-    const taxFree = (parseFloat(document.getElementById('inp-taxfree').value) || 0) * 10000;
-    const dependents = Math.max(1, parseInt(document.getElementById('inp-dependents').value) || 1);
-
-    const monthlyGross = salary / 12;
-    const monthlyTaxable = Math.max(0, monthlyGross - (taxFree / 12));
-
-    const pension = Math.min(monthlyTaxable * 0.045, 265500);
-    const health = monthlyTaxable * 0.03545;
-    const care = health * 0.1295;
-    const employ = monthlyTaxable * 0.009;
-
-    let baseIncomeTax = 0;
-    if (monthlyTaxable > 7000000) baseIncomeTax = monthlyTaxable * 0.18;
-    else if (monthlyTaxable > 4000000) baseIncomeTax = monthlyTaxable * 0.10;
-    else if (monthlyTaxable > 2000000) baseIncomeTax = monthlyTaxable * 0.04;
-    else baseIncomeTax = monthlyTaxable * 0.01;
-
-    // 부양가족 감면
-    if (dependents > 1) {
-      baseIncomeTax = Math.max(0, baseIncomeTax - ((dependents - 1) * 20000));
-    }
-    const localTax = baseIncomeTax * 0.1;
-
-    const totalDeduct = pension + health + care + employ + baseIncomeTax + localTax;
-    const monthlyNet = monthlyGross - totalDeduct;
-
-    document.getElementById('res-month-net').innerText = Math.round(monthlyNet).toLocaleString() + ' 원';
-    document.getElementById('res-year-net').innerText = Math.round(monthlyNet * 12).toLocaleString() + ' 원';
-    document.getElementById('res-month-gross').innerText = Math.round(monthlyGross).toLocaleString() + ' 원';
-    document.getElementById('res-pension').innerText = '-' + Math.round(pension).toLocaleString() + ' 원';
-    document.getElementById('res-health').innerText = '-' + Math.round(health).toLocaleString() + ' 원';
-    document.getElementById('res-care').innerText = '-' + Math.round(care).toLocaleString() + ' 원';
-    document.getElementById('res-employ').innerText = '-' + Math.round(employ).toLocaleString() + ' 원';
-    document.getElementById('res-incometax').innerText = '-' + Math.round(baseIncomeTax).toLocaleString() + ' 원';
-    document.getElementById('res-localtax').innerText = '-' + Math.round(localTax).toLocaleString() + ' 원';
-
-    document.getElementById('netpay-result-panel').style.display = 'block';
-  }
-
-  // 5. 연말정산 정밀 환급금 시뮬레이션
-  function calculateYearEndTax() {
-    const gross = (parseFloat(document.getElementById('tax-gross').value) || 0) * 10000;
-    const people = Math.max(1, parseInt(document.getElementById('tax-people').value) || 1);
-    const prepIncome = (parseFloat(document.getElementById('tax-prep-income').value) || 0) * 10000;
-    const prepLocal = (parseFloat(document.getElementById('tax-prep-local').value) || 0) * 10000;
-    const totalPrepaid = prepIncome + prepLocal;
-
-    const cc = (parseFloat(document.getElementById('tax-card-credit').value) || 0) * 10000;
-    const dc = (parseFloat(document.getElementById('tax-card-debit').value) || 0) * 10000;
-    const mk = (parseFloat(document.getElementById('tax-card-market').value) || 0) * 10000;
-
-    const rent = (parseFloat(document.getElementById('tax-rent-inp').value) || 0) * 10000;
-    const irp = Math.min((parseFloat(document.getElementById('tax-irp-inp').value) || 0) * 10000, 9000000);
-    const ins = Math.min((parseFloat(document.getElementById('tax-ins-inp').value) || 0) * 10000, 1000000);
-    const med = (parseFloat(document.getElementById('tax-med-inp').value) || 0) * 10000;
-
-    // 근로소득공제
-    let earnDed = 0;
-    if (gross <= 5000000) earnDed = gross * 0.7;
-    else if (gross <= 15000000) earnDed = 3500000 + (gross - 5000000) * 0.4;
-    else if (gross <= 45000000) earnDed = 7500000 + (gross - 15000000) * 0.15;
-    else if (gross <= 100000000) earnDed = 12000000 + (gross - 45000000) * 0.05;
-    else earnDed = 14750000 + (gross - 100000000) * 0.02;
-
-    const earnedIncome = gross - earnDed;
-
-    // 국민연금 & 건강/고용보험 소득공제 (연간 자동 추정)
-    const pensionDed = Math.min(gross * 0.045, 3186000);
-    const healthDed = gross * 0.03545;
-    const careDed = healthDed * 0.1295;
-    const employDed = gross * 0.009;
-    const socialInsDed = pensionDed + healthDed + careDed + employDed;
-
-    // 인적공제
-    const personalDed = people * 1500000;
-
-    // 신용카드 등 소득공제
-    const threshold = gross * 0.25;
-    const cardSpent = cc + dc + mk;
-    let cardDed = 0;
-    if (cardSpent > threshold) {
-      cardDed = Math.min((dc * 0.3) + (mk * 0.4) + (cc * 0.15), gross <= 70000000 ? 3000000 : 2500000);
-    }
-
-    // 과세표준
-    const taxBase = Math.max(0, earnedIncome - personalDed - socialInsDed - cardDed);
-
-    // 산출세액 (2026 소득세 기본세율)
-    let calcTax = 0;
-    if (taxBase <= 14000000) calcTax = taxBase * 0.06;
-    else if (taxBase <= 50000000) calcTax = 840000 + (taxBase - 14000000) * 0.15;
-    else if (taxBase <= 88000000) calcTax = 6240000 + (taxBase - 50000000) * 0.24;
-    else if (taxBase <= 150000000) calcTax = 15360000 + (taxBase - 88000000) * 0.35;
-    else if (taxBase <= 300000000) calcTax = 37060000 + (taxBase - 150000000) * 0.38;
-    else calcTax = 94060000 + (taxBase - 300000000) * 0.40;
-
-    // 세액공제
-    let earnCredit = 0;
-    if (calcTax <= 1300000) earnCredit = calcTax * 0.55;
-    else earnCredit = 715000 + (calcTax - 1300000) * 0.3;
-    const maxEarnCredit = gross <= 33000000 ? 740000 : (gross <= 70000000 ? 660000 : 500000);
-    earnCredit = Math.min(earnCredit, maxEarnCredit);
-
-    // 월세액 세액공제 (총급여 8,000만원 이하, 한도 1,000만원)
-    let rentCredit = 0;
-    if (gross <= 80000000) {
-      const rentCap = Math.min(rent, 10000000);
-      rentCredit = rentCap * (gross <= 55000000 ? 0.17 : 0.15);
-    }
-
-    const irpCredit = irp * (gross <= 55000000 ? 0.165 : 0.132);
-    const insCredit = ins * 0.12;
-
-    const medThreshold = gross * 0.03;
-    const medCredit = Math.max(0, med - medThreshold) * 0.15;
-
-    const totalCredits = earnCredit + rentCredit + irpCredit + insCredit + medCredit;
-    const finalIncomeTax = Math.max(0, calcTax - totalCredits);
-    const finalLocalTax = finalIncomeTax * 0.1;
-    const finalTotalTax = finalIncomeTax + finalLocalTax;
-
-    const diff = totalPrepaid - finalTotalTax;
-
-    const board = document.getElementById('refund-billboard');
-    const bStatus = document.getElementById('tax-board-status');
-    const bAmount = document.getElementById('tax-board-amount');
-    const bSumm = document.getElementById('tax-board-summary');
-
-    board.style.display = 'block';
-    if (diff >= 0) {
-      board.className = 'refund-board get';
-      bStatus.innerText = '🎉 13월의 보너스 환급 확정';
-      bAmount.innerText = '+' + Math.round(diff).toLocaleString() + ' 원';
-      bSumm.innerText = '미리 납부한 세금이 결정세액보다 많아 통장으로 돌려받습니다.';
-    } else {
-      board.className = 'refund-board pay';
-      bStatus.innerText = '🚨 세금 추가 납부 대상 (토해내기)';
-      bAmount.innerText = '-' + Math.round(Math.abs(diff)).toLocaleString() + ' 원';
-      bSumm.innerText = '소득 대비 지출 공제가 부족하여 연말정산 시 추가 납부가 발생합니다.';
-    }
-
-    document.getElementById('tr-sum-prepaid').innerText = Math.round(totalPrepaid).toLocaleString() + ' 원';
-    document.getElementById('tr-sum-final').innerText = Math.round(finalTotalTax).toLocaleString() + ' 원';
-    document.getElementById('tr-sum-ins-ded').innerText = Math.round(socialInsDed).toLocaleString() + ' 원 (전액 공제)';
-    document.getElementById('tr-sum-card-ded').innerText = Math.round(cardDed).toLocaleString() + ' 원 인정';
-    document.getElementById('tr-sum-credit-ded').innerText = Math.round(totalCredits * 1.1).toLocaleString() + ' 원 (지방세 포함 실감면)';
-    document.getElementById('tax-breakdown-panel').style.display = 'block';
-  }
-
-  // 초기 기동
-  window.onload = function() {
-    initGroupDropdown();
-    renderBonusCards(fullAffiliates);
-    renderScaleGrid();
-    handleMetroChange();
-  };
-</script>
-
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('appData', () => ({
+                currentTab: 'companies',
+                expandedGroup: null,
+                activeCalc: 'net',
+                isModalOpen: false,
+                modalData: { name: '', top10: [] },
+
+                // 계산기 상태
+                calcData: {
+                    net: { salary: '' },
+                    tax: { income: '', card: '', medical: '', pension: '' },
+                    sev: { salary: '', years: '', rate: '3.0' },
+                    pen: { age: '32', joinAge: '28', retireAge: '60', salary: '5000', growth: '3.5' }
+                },
+
+                formatWon(num) {
+                    if(!num || isNaN(num)) return 0;
+                    return new Intl.NumberFormat('ko-KR').format(num);
+                },
+
+                // 실수령액 (월 단위 상세 계산)
+                calculateNet() {
+                    let ann = parseInt(this.calcData.net.salary) * 10000 || 0;
+                    if(ann === 0) return { net:0, pension:0, health:0, care:0, emp:0, tax:0 };
+                    let mon = ann / 12;
+                    let pen = Math.min(mon * 0.045, 265500); // 국민연금 상한
+                    let hlt = mon * 0.03545; // 건보료
+                    let car = hlt * 0.1295;  // 요양보험
+                    let emp = mon * 0.009;   // 고용보험
+                    let tax = mon * 0.06;    // 소득세(단순 추정)
+                    let tot = pen + hlt + car + emp + tax;
+                    return { net: mon - tot, pension: pen, health: hlt, care: car, emp: emp, tax: tax };
+                },
+
+                // 연말정산 (소득공제/세액공제 시뮬레이터)
+                calculateTax() {
+                    let inc = parseInt(this.calcData.tax.income) * 10000 || 0;
+                    let card = parseInt(this.calcData.tax.card) * 10000 || 0;
+                    let med = parseInt(this.calcData.tax.medical) * 10000 || 0;
+                    let pen = parseInt(this.calcData.tax.pension) * 10000 || 0;
+                    if(inc === 0) return 0;
+                    
+                    // 단순 시뮬레이션: 기본공제 + 카드(총급여 25% 초과분의 15%) + 세액공제(의료비 15%, 연금 15%)
+                    let cardDeduct = Math.max(0, card - (inc * 0.25)) * 0.15;
+                    let taxCredit = (med * 0.15) + (Math.min(pen, 9000000) * 0.15);
+                    // 대략적 기납부세액 vs 결정세액 비교 (양수면 환급, 음수면 뱉어냄)
+                    let result = taxCredit + (cardDeduct * 0.15) - (inc * 0.01);
+                    return result;
+                },
+
+                // 퇴직금
+                calcDB() {
+                    let s = parseInt(this.calcData.sev.salary) * 10000 || 0;
+                    let y = parseInt(this.calcData.sev.years) || 0;
+                    return (s / 12) * y; // 퇴직 전 3개월 평균임금 * 근속연수 (간략화)
+                },
+                calcDC() {
+                    let s = parseInt(this.calcData.sev.salary) * 10000 || 0;
+                    let y = parseInt(this.calcData.sev.years) || 0;
+                    let r = parseFloat(this.calcData.sev.rate) / 100 || 0.03;
+                    let tot = 0;
+                    // 매년 급여가 동일했다고 가정하고 복리 계산 (실제로는 매년 납입)
+                    let annualPay = s / 12;
+                    for(let i=0; i<y; i++) tot += annualPay * Math.pow(1 + r, i);
+                    return tot;
+                },
+
+                // 국민연금 생애 시뮬레이터
+                calcFinalSalary() {
+                    let currentSal = parseInt(this.calcData.pen.salary) * 10000 || 0;
+                    let age = parseInt(this.calcData.pen.age) || 0;
+                    let retireAge = parseInt(this.calcData.pen.retireAge) || 0;
+                    let growth = parseFloat(this.calcData.pen.growth)/100 || 0;
+                    let yearsLeft = Math.max(0, retireAge - age);
+                    return currentSal * Math.pow(1 + growth, yearsLeft);
+                },
+                calcPension() {
+                    let currentSal = parseInt(this.calcData.pen.salary) * 10000 || 0;
+                    let age = parseInt(this.calcData.pen.age) || 0;
+                    let joinAge = parseInt(this.calcData.pen.joinAge) || 0;
+                    let retireAge = parseInt(this.calcData.pen.retireAge) || 0;
+                    let growth = parseFloat(this.calcData.pen.growth)/100 || 0;
+                    
+                    let pastYears = Math.max(0, age - joinAge);
+                    let futureYears = Math.max(0, retireAge - age);
+                    let totalYears = pastYears + futureYears;
+                    if(totalYears < 10) return 0; // 10년 미만 수령 불가
+
+                    // 생애 평균 소득 (B값) 추산
+                    let sum = 0;
+                    let baseSal = currentSal / Math.pow(1 + growth, pastYears); // 입사초봉 추정
+                    for(let i=0; i<totalYears; i++) {
+                        sum += baseSal * Math.pow(1 + growth, i);
+                    }
+                    let avgLifetimeSal = sum / totalYears;
+                    
+                    // 소득대체율 40% 기준 단순 환산 (월 단위)
+                    let monthlyPension = (avgLifetimeSal * 0.4 * (totalYears/40)) / 12;
+                    return monthlyPension;
+                },
+
+                openModal(region) { this.modalData = region; this.isModalOpen = true; },
+                closeModal() { this.isModalOpen = false; },
+
+                // 데이터: 대한민국 30대 그룹 (1~30위 전체 반영 + 정확한 URL 매핑)
+                top30Groups: [
+                    { rank: 1, name: '삼성그룹', subsidiaries: [
+                        { name: '삼성전자', biz: '반도체/모바일', bonus: 'OPI 50% + TAI 100%', salary: '1억 2,000만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성디스플레이', biz: 'OLED 패널', bonus: 'OPI 48%', salary: '1억 1,500만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성물산', biz: '건설/상사', bonus: '부문별 상이 (약 15%)', salary: '1억 1,000만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성바이오로직스', biz: '바이오 CDMO', bonus: 'OPI 45%', salary: '9,900만 원', url: 'https://samsungcareers.com' },
+                        { name: '삼성생명', biz: '금융/보험', bonus: 'OPI 20% 내외', salary: '1억 3,500만 원', url: 'https://samsungcareers.com' }
+                    ]},
+                    { rank: 2, name: 'SK그룹', subsidiaries: [
+                        { name: 'SK하이닉스', biz: '메모리 반도체', bonus: 'PI 100% + PS 1000%', salary: '1억 2,100만 원', url: 'https://talent.skhynix.com' },
+                        { name: 'SK텔레콤', biz: '통신/AI', bonus: '기본급 300% 이상', salary: '1억 5,200만 원', url: 'https://careers.sktelecom.com' },
+                        { name: 'SK이노베이션', biz: '정유/배터리', bonus: '기본급 800%', salary: '1억 5,200만 원', url: 'https://skcareers.com' },
+                        { name: 'SK온', biz: '2차 전지', bonus: '확인 불가(상황별)', salary: '8,500만 원', url: 'https://skcareers.com' },
+                        { name: 'SK에코플랜트', biz: '건설/환경', bonus: '기본급 150%', salary: '9,200만 원', url: 'https://skcareers.com' }
+                    ]},
+                    { rank: 3, name: '현대자동차그룹', subsidiaries: [
+                        { name: '현대자동차', biz: '완성차', bonus: '500% + 1500만원', salary: '1억 1,700만 원', url: 'https://talent.hyundai.com' },
+                        { name: '기아', biz: '완성차', bonus: '500% + 1500만원', salary: '1억 2,700만 원', url: 'https://career.kia.com' },
+                        { name: '현대모비스', biz: '자동차 부품', bonus: '400% + 1000만원', salary: '1억 1,800만 원', url: 'https://mobis.co.kr' },
+                        { name: '현대글로비스', biz: '물류/해운', bonus: '약 350%', salary: '9,800만 원', url: 'https://recruit.glovis.net' },
+                        { name: '현대건설', biz: '건설업', bonus: '약 200%', salary: '1억 500만 원', url: 'https://hdec.co.kr' }
+                    ]},
+                    { rank: 4, name: 'LG그룹', subsidiaries: [
+                        { name: 'LG전자', biz: '가전/전장', bonus: '조직별 200~660%', salary: '1억 600만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG에너지솔루션', biz: '2차 전지', bonus: '기본급 360%', salary: '1억 2,300만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG화학', biz: '석유화학/소재', bonus: '기본급 150~300%', salary: '1억 1,500만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG디스플레이', biz: '디스플레이 패널', bonus: '확인 불가(적자)', salary: '8,500만 원', url: 'https://careers.lg.com' },
+                        { name: 'LG CNS', biz: 'IT SI', bonus: '기본급 250%', salary: '1억 200만 원', url: 'https://careers.lg.com' }
+                    ]},
+                    { rank: 5, name: '포스코그룹', subsidiaries: [
+                        { name: '포스코', biz: '철강', bonus: '기본급 200%', salary: '1억 800만 원', url: 'https://recruit.posco.com' },
+                        { name: '포스코인터내셔널', biz: '상사/에너지', bonus: '약 300%', salary: '1억 1,400만 원', url: 'https://recruit.posco.com' },
+                        { name: '포스코퓨처엠', biz: '2차전지 소재', bonus: '약 150%', salary: '9,500만 원', url: 'https://recruit.posco.com' },
+                        { name: '포스코이앤씨', biz: '건설업', bonus: '약 100%', salary: '9,200만 원', url: 'https://recruit.posco.com' },
+                        { name: '포스코DX', biz: 'IT 서비스', bonus: '확인 불가', salary: '8,800만 원', url: 'https://recruit.posco.com' }
+                    ]},
+                    { rank: 6, name: '롯데그룹', subsidiaries: [
+                        { name: '롯데케미칼', biz: '석유화학', bonus: '확인 불가(적자)', salary: '1억 400만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데쇼핑', biz: '유통/백화점', bonus: '약 100%', salary: '6,200만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데웰푸드', biz: '식품', bonus: '약 150%', salary: '6,100만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데이노베이트', biz: 'IT 서비스', bonus: '약 200%', salary: '7,400만 원', url: 'https://recruit.lotte.co.kr' },
+                        { name: '롯데물산', biz: '부동산', bonus: '확인 불가', salary: '7,100만 원', url: 'https://recruit.lotte.co.kr' }
+                    ]},
+                    { rank: 7, name: '한화그룹', subsidiaries: [
+                        { name: '한화에어로스페이스', biz: '방산/우주', bonus: '연봉의 15% 이상', salary: '1억 1,100만 원', url: 'https://hanwhain.com' },
+                        { name: '한화솔루션', biz: '태양광/화학', bonus: '기본급 100~200%', salary: '1억 500만 원', url: 'https://hanwhain.com' },
+                        { name: '한화생명', biz: '금융/보험', bonus: '연봉의 10%', salary: '1억 1,000만 원', url: 'https://hanwhain.com' },
+                        { name: '한화시스템', biz: '방산 IT', bonus: '확인 불가', salary: '1억 400만 원', url: 'https://hanwhain.com' },
+                        { name: '한화오션', biz: '조선업', bonus: '약 200만 원 정액', salary: '8,800만 원', url: 'https://hanwhain.com' }
+                    ]},
+                    { rank: 8, name: 'HD현대', subsidiaries: [
+                        { name: 'HD현대오일뱅크', biz: '정유', bonus: '기본급 600%', salary: '1억 4,000만 원', url: 'https://recruit.hdoilbank.co.kr' },
+                        { name: 'HD한국조선해양', biz: '조선 중간지주', bonus: '약 150%', salary: '9,500만 원', url: 'https://recruit.hd.com' },
+                        { name: 'HD현대중공업', biz: '조선', bonus: '기본급 100%', salary: '8,900만 원', url: 'https://recruit.hd.com' },
+                        { name: 'HD현대일렉트릭', biz: '전력기기', bonus: '기본급 400%', salary: '1억 1,000만 원', url: 'https://recruit.hd.com' },
+                        { name: 'HD현대사이트솔루션', biz: '건설기계', bonus: '확인 불가', salary: '9,200만 원', url: 'https://recruit.hd.com' }
+                    ]},
+                    { rank: 9, name: 'GS그룹', subsidiaries: [
+                        { name: 'GS칼텍스', biz: '정유', bonus: '기본급 800%', salary: '1억 5,000만 원', url: 'https://gscaltex.com' },
+                        { name: 'GS리테일', biz: '유통/편의점', bonus: '약 150%', salary: '6,200만 원', url: 'https://gsretail.com' },
+                        { name: 'GS건설', biz: '건설', bonus: '확인 불가', salary: '1억 300만 원', url: 'https://gsenc.com' },
+                        { name: 'GS EPS', biz: '발전', bonus: '약 400%', salary: '1억 1,500만 원', url: 'https://gseps.com' },
+                        { name: 'GS글로벌', biz: '상사', bonus: '확인 불가', salary: '9,500만 원', url: 'https://gsg.co.kr' }
+                    ]},
+                    { rank: 10, name: '농협', subsidiaries: [
+                        { name: 'NH농협은행', biz: '금융', bonus: '약 300%', salary: '1억 1,800만 원', url: 'https://nhbank.com' },
+                        { name: 'NH투자증권', biz: '증권', bonus: '실적 비례', salary: '1억 4,500만 원', url: 'https://nhqv.com' },
+                        { name: '농협중앙회', biz: '공공/협동조합', bonus: '기본급 200%', salary: '1억 1,000만 원', url: 'https://nonghyup.com' },
+                        { name: 'NH농협생명', biz: '보험', bonus: '확인 불가', salary: '1억 500만 원', url: 'https://nhlife.co.kr' },
+                        { name: '농협경제지주', biz: '유통', bonus: '약 100%', salary: '8,200만 원', url: 'https://nonghyup.com' }
+                    ]},
+                    { rank: 11, name: '신세계', subsidiaries: [ { name: '이마트', biz: '대형마트', bonus: 'N/A', salary: '5,500만 원', url: 'https://emart.com' }, { name: '신세계백화점', biz: '백화점', bonus: '약 100%', salary: '6,800만 원', url: 'https://shinsegae.com' } ]},
+                    { rank: 12, name: 'KT', subsidiaries: [ { name: 'KT 본사', biz: '통신', bonus: '기본급 150%', salary: '1억 300만 원', url: 'https://recruit.kt.com' }, { name: 'KT DS', biz: 'IT', bonus: 'N/A', salary: '7,500만 원', url: 'https://ktds.com' } ]},
+                    { rank: 13, name: 'CJ', subsidiaries: [ { name: 'CJ제일제당', biz: '식품', bonus: '기본급 100~150%', salary: '7,500만 원', url: 'https://recruit.cj.net' }, { name: 'CJ ENM', biz: '미디어', bonus: '부문 상이', salary: '7,800만 원', url: 'https://recruit.cj.net' } ]},
+                    { rank: 14, name: '한진그룹', subsidiaries: [ { name: '대한항공', biz: '항공여객', bonus: '기본급 400%', salary: '1억 100만 원', url: 'https://koreanair.recruiter.co.kr' }, { name: '한진칼', biz: '지주사', bonus: 'N/A', salary: '8,500만 원', url: 'https://hanjinkal.co.kr' }, { name: '(주)한진', biz: '물류', bonus: '약 100%', salary: '6,800만 원', url: 'https://hanjin.co.kr' } ]},
+                    { rank: 15, name: '카카오', subsidiaries: [ { name: '카카오 본사', biz: '플랫폼', bonus: '연봉 10% 내외', salary: '1억 1,000만 원', url: 'https://careers.kakao.com' }, { name: '카카오뱅크', biz: '인터넷은행', bonus: '스톡옵션 별도', salary: '1억 3,500만 원', url: 'https://kakaobank.com' } ]},
+                    { rank: 16, name: 'LS', subsidiaries: [ { name: 'LS전선', biz: '전선/케이블', bonus: '기본급 300%', salary: '9,500만 원', url: 'https://lscable.co.kr' }, { name: 'LS일렉트릭', biz: '전력기기', bonus: '기본급 350%', salary: '1억 200만 원', url: 'https://ls-electric.com' } ]},
+                    { rank: 17, name: '두산', subsidiaries: [ { name: '두산에너빌리티', biz: '원전/플랜트', bonus: '약 150%', salary: '9,800만 원', url: 'https://doosan.com' }, { name: '두산밥캣', biz: '소형건설기계', bonus: '기본급 200%', salary: '1억 1,500만 원', url: 'https://doosanbobcat.com' } ]},
+                    { rank: 18, name: 'DL', subsidiaries: [ { name: 'DL이앤씨', biz: '건설', bonus: 'N/A', salary: '1억 300만 원', url: 'https://dlenc.co.kr' }, { name: 'DL케미칼', biz: '화학', bonus: '약 200%', salary: '1억 1,000만 원', url: 'https://dlchemical.co.kr' } ]},
+                    { rank: 19, name: 'HMM', subsidiaries: [ { name: 'HMM (구 현대상선)', biz: '해운', bonus: '기본급 400%', salary: '1억 2,000만 원', url: 'https://hmm21.com' } ]},
+                    { rank: 20, name: '중흥건설', subsidiaries: [ { name: '대우건설', biz: '건설', bonus: 'N/A', salary: '9,800만 원', url: 'https://daewooenc.com' }, { name: '중흥토건', biz: '건설', bonus: 'N/A', salary: '6,500만 원', url: 'https://jungheung.com' } ]},
+                    { rank: 21, name: '현대백화점', subsidiaries: [ { name: '현대백화점', biz: '유통', bonus: '약 100%', salary: '7,100만 원', url: 'https://ehyundai.com' } ]},
+                    { rank: 22, name: '부영', subsidiaries: [ { name: '부영주택', biz: '건설', bonus: '출산 장려금 1억', salary: '6,800만 원', url: 'https://booyoung.co.kr' } ]},
+                    { rank: 23, name: '네이버', subsidiaries: [ { name: '네이버 본사', biz: '포털 플랫폼', bonus: 'PI 별도', salary: '1억 2,000만 원', url: 'https://recruit.navercorp.com' }, { name: '네이버웹툰', biz: '콘텐츠', bonus: 'N/A', salary: '9,500만 원', url: 'https://webtooncorp.com' } ]},
+                    { rank: 24, name: '미래에셋', subsidiaries: [ { name: '미래에셋증권', biz: '증권', bonus: '실적 베이스', salary: '1억 4,000만 원', url: 'https://securities.miraeasset.com' } ]},
+                    { rank: 25, name: '에쓰오일', subsidiaries: [ { name: 'S-OIL', biz: '정유', bonus: '기본급 800%', salary: '1억 6,500만 원', url: 'https://s-oil.com' } ]},
+                    { rank: 26, name: '금호아시아나', subsidiaries: [ { name: '아시아나항공', biz: '항공 (합병 대기)', bonus: 'N/A', salary: '7,500만 원', url: 'https://flyasiana.com' }, { name: '금호건설', biz: '건설', bonus: 'N/A', salary: '7,800만 원', url: 'https://kumhoenc.com' } ]},
+                    { rank: 27, name: '하림', subsidiaries: [ { name: '팬오션', biz: '해운', bonus: '약 300%', salary: '1억 500만 원', url: 'https://panocean.com' }, { name: '하림지주', biz: '식품', bonus: 'N/A', salary: '6,200만 원', url: 'https://halim.com' } ]},
+                    { rank: 28, name: 'HDC', subsidiaries: [ { name: 'HDC현대산업개발', biz: '건설', bonus: 'N/A', salary: '9,200만 원', url: 'https://hdc-dvp.com' } ]},
+                    { rank: 29, name: '효성', subsidiaries: [ { name: '효성티앤씨', biz: '섬유', bonus: '약 200%', salary: '9,500만 원', url: 'https://hyosungtnc.com' }, { name: '효성중공업', biz: '전력/건설', bonus: '약 150%', salary: '9,200만 원', url: 'https://hyosungheavyindustries.com' } ]},
+                    { rank: 30, name: '영풍', subsidiaries: [ { name: '고려아연', biz: '비철금속', bonus: '기본급 300%', salary: '1억 1,500만 원', url: 'https://koreazinc.co.kr' } ]}
+                ],
+
+                // 데이터: 지역별 (서울/경기 세분화, 6대 광역시)
+                regions: [
+                    { id: 'seoul-gangnam', type: 'seoul', name: '강남/서초/송파', desc: '현대차, 네이버웹툰, GS 등', top10: [
+                        {name: '현대자동차(양재)', biz: '완성차', salary: '1억 1,700만 원'}, {name: '현대모비스(강남)', biz: '차부품', salary: '1억 1,800만 원'}, {name: 'GS칼텍스(역삼)', biz: '정유', salary: '1억 5,000만 원'}, {name: '네이버웹툰(판교->강남)', biz: 'IT', salary: '9,500만 원'}, {name: '당근마켓', biz: 'IT', salary: '9,200만 원'}, {name: 'NC소프트(삼성)', biz: '게임', salary: '1억 500만 원'}, {name: 'DB손해보험', biz: '금융', salary: '1억 1,000만 원'}, {name: '삼성물산(상사)', biz: '상사', salary: '1억 1,000만 원'}, {name: '메리츠증권', biz: '증권', salary: '1억 8,000만 원'}, {name: '두나무', biz: '핀테크', salary: '1억 5,000만 원'}
+                    ]},
+                    { id: 'seoul-yeouido', type: 'seoul', name: '여의도/영등포', desc: 'LG트윈타워, 증권가 등', top10: [
+                        {name: 'LG전자(여의도)', biz: '가전', salary: '1억 600만 원'}, {name: 'LG화학', biz: '화학', salary: '1억 1,500만 원'}, {name: 'NH투자증권', biz: '증권', salary: '1억 4,500만 원'}, {name: '한국투자증권', biz: '증권', salary: '1억 5,000만 원'}, {name: '한국거래소', biz: '공공/금융', salary: '1억 1,500만 원'}, {name: 'KB국민은행', biz: '은행', salary: '1억 1,800만 원'}, {name: '키움증권', biz: '증권', salary: '1억 3,000만 원'}, {name: 'SK증권', biz: '증권', salary: '1억 1,000만 원'}, {name: '한화생명', biz: '보험', salary: '1억 1,000만 원'}, {name: '미래에셋증권', biz: '증권', salary: '1억 4,000만 원'}
+                    ]},
+                    { id: 'seoul-jongno', type: 'seoul', name: '종로/중구', desc: 'SK본사, 한화, 은행권', top10: [
+                        {name: 'SK이노베이션', biz: '정유', salary: '1억 5,200만 원'}, {name: 'SK텔레콤', biz: '통신', salary: '1억 5,200만 원'}, {name: '신한은행', biz: '은행', salary: '1억 2,000만 원'}, {name: '하나은행', biz: '은행', salary: '1억 1,900만 원'}, {name: '한화(본사)', biz: '지주', salary: '1억 1,000만 원'}, {name: 'HD현대(계동)', biz: '조선', salary: '9,500만 원'}, {name: '대우건설', biz: '건설', salary: '9,800만 원'}, {name: 'CJ제일제당', biz: '식품', salary: '7,500만 원'}, {name: '롯데쇼핑', biz: '유통', salary: '6,200만 원'}, {name: '신세계', biz: '유통', salary: '6,800만 원'}
+                    ]},
+                    { id: 'seoul-magok', type: 'seoul', name: '마곡/구로/가산', desc: 'LG사이언스, IT벤처', top10: [
+                        {name: 'LG전자(마곡)', biz: '연구개발', salary: '1억 600만 원'}, {name: 'LG에너지솔루션', biz: '연구개발', salary: '1억 2,300만 원'}, {name: 'LG디스플레이', biz: '디스플레이', salary: '8,500만 원'}, {name: '코오롱인더스트리', biz: '화학', salary: '8,800만 원'}, {name: '넷마블(구로)', biz: '게임', salary: '8,500만 원'}, {name: '컴투스', biz: '게임', salary: '7,800만 원'}, {name: '원익IPS', biz: '반도체장비', salary: '8,200만 원'}, {name: 'SFA', biz: '자동화', salary: '7,500만 원'}, {name: '휴맥스', biz: '통신장비', salary: '7,200만 원'}, {name: '안랩', biz: '보안', salary: '7,000만 원'}
+                    ]},
+                    
+                    { id: 'gg-pangyo', type: 'gyeonggi', name: '성남/판교', desc: '네이버, 카카오, IT', top10: [
+                        {name: '네이버', biz: '포털', salary: '1억 2,000만 원'}, {name: '카카오', biz: 'IT', salary: '1억 1,000만 원'}, {name: '엔씨소프트', biz: '게임', salary: '1억 500만 원'}, {name: '넥슨', biz: '게임', salary: '1억 200만 원'}, {name: 'SK케미칼', biz: '화학', salary: '9,500만 원'}, {name: '안랩', biz: '보안', salary: '7,000만 원'}, {name: '크래프톤', biz: '게임', salary: '1억 1,000만 원'}, {name: '카카오뱅크', biz: '금융', salary: '1억 3,500만 원'}, {name: '스마일게이트', biz: '게임', salary: '9,800만 원'}, {name: '한화에어로스페이스', biz: '방산(R&D)', salary: '1억 1,100만 원'}
+                    ]},
+                    { id: 'gg-suwon', type: 'gyeonggi', name: '수원/용인/기흥', desc: '삼성전자 본진', top10: [
+                        {name: '삼성전자(수원/기흥)', biz: '전자/반도체', salary: '1억 2,000만 원'}, {name: '삼성디스플레이(기흥)', biz: '디스플레이', salary: '1억 1,500만 원'}, {name: '삼성전기(수원)', biz: '부품', salary: '9,800만 원'}, {name: '삼성SDI(기흥)', biz: '배터리', salary: '1억 500만 원'}, {name: '현대차마북연구소', biz: 'R&D', salary: '1억 1,000만 원'}, {name: 'KCC(용인)', biz: '연구소', salary: '8,500만 원'}, {name: '녹십자(용인)', biz: '제약', salary: '7,500만 원'}, {name: '일동제약(용인)', biz: '제약', salary: '7,200만 원'}, {name: '원익IPS(용인)', biz: '장비', salary: '8,200만 원'}, {name: '두산로보틱스(수원)', biz: '로봇', salary: '8,000만 원'}
+                    ]},
+                    { id: 'gg-hwaseong', type: 'gyeonggi', name: '화성/평택/이천', desc: 'SK하이닉스, 삼성 평택', top10: [
+                        {name: 'SK하이닉스(이천)', biz: '반도체', salary: '1억 2,100만 원'}, {name: '삼성전자(화성/평택)', biz: '반도체', salary: '1억 2,000만 원'}, {name: '현대차남양연구소', biz: 'R&D', salary: '1억 1,700만 원'}, {name: '기아(화성)', biz: '완성차', salary: '1억 2,700만 원'}, {name: 'HL만도(평택)', biz: '차부품', salary: '9,500만 원'}, {name: '도쿄일렉트론코리아', biz: '외국계장비', salary: '1억 1,000만 원'}, {name: 'ASML코리아', biz: '외국계장비', salary: '1억 1,500만 원'}, {name: '램리서치코리아', biz: '외국계장비', salary: '1억 1,000만 원'}, {name: '동진쎄미켐(화성)', biz: '소재', salary: '8,500만 원'}, {name: '솔브레인', biz: '소재', salary: '8,800만 원'}
+                    ]},
+                    { id: 'gg-paju', type: 'gyeonggi', name: '파주/고양/김포', desc: 'LG디스플레이 거점', top10: [
+                        {name: 'LG디스플레이(파주)', biz: '디스플레이', salary: '8,500만 원'}, {name: 'LG이노텍(파주)', biz: '부품', salary: '9,200만 원'}, {name: '현대모터스튜디오(고양)', biz: '판매/전시', salary: '8,000만 원'}, {name: '한국항공대산학', biz: '교육', salary: '6,500만 원'}, {name: 'EBS(고양)', biz: '방송', salary: '8,200만 원'}, {name: 'KINTEX', biz: '전시', salary: '7,000만 원'}, {name: '희성전자', biz: '부품', salary: '7,200만 원'}, {name: '파주전기초자', biz: '유리', salary: '7,500만 원'}, {name: '일산병원', biz: '의료', salary: '8,500만 원'}, {name: '김포공항(관련협력)', biz: '항공', salary: '6,800만 원'}
+                    ]},
+
+                    { id: 'metro-incheon', type: 'metro', name: '인천광역시', desc: '셀트리온, 송도바이오', top10: [
+                        {name: '셀트리온', biz: '바이오', salary: '8,500만 원'}, {name: '삼성바이오로직스', biz: '바이오', salary: '9,900만 원'}, {name: '현대제철(인천)', biz: '철강', salary: '1억 500만 원'}, {name: '현대두산인프라코어', biz: '건설기계', salary: '9,500만 원'}, {name: '인천국제공항공사', biz: '공기업', salary: '9,200만 원'}, {name: '포스코이앤씨(송도)', biz: '건설', salary: '9,200만 원'}, {name: 'GM한국사업장', biz: '자동차', salary: '8,800만 원'}, {name: 'SK인천석유화학', biz: '정유', salary: '1억 4,000만 원'}, {name: '엠코테크놀로지', biz: '반도체후공정', salary: '7,500만 원'}, {name: '만도(청라)', biz: 'R&D', salary: '9,000만 원'}
+                    ]},
+                    { id: 'metro-busan', type: 'metro', name: '부산광역시', desc: '르노, 한국거래소 등', top10: [
+                        {name: '한국거래소', biz: '금융', salary: '1억 1,500만 원'}, {name: '르노코리아자동차', biz: '완성차', salary: '8,500만 원'}, {name: '한국남부발전', biz: '공기업', salary: '9,200만 원'}, {name: '주택도시보증공사', biz: '공기업', salary: '8,800만 원'}, {name: '부산은행', biz: '금융', salary: '1억 500만 원'}, {name: '대한제강', biz: '철강', salary: '8,200만 원'}, {name: '동국제강(부산)', biz: '철강', salary: '8,500만 원'}, {name: '한진중공업(영도)', biz: '조선', salary: '7,500만 원'}, {name: '에어부산', biz: '항공여객', salary: '6,500만 원'}, {name: '성우하이텍', biz: '차부품', salary: '7,000만 원'}
+                    ]},
+                    { id: 'metro-ulsan', type: 'metro', name: '울산광역시', desc: '현대차, HD현대중공업', top10: [
+                        {name: 'S-OIL', biz: '정유', salary: '1억 6,500만 원'}, {name: '현대자동차(울산)', biz: '완성차', salary: '1억 1,700만 원'}, {name: 'HD현대중공업', biz: '조선', salary: '8,900만 원'}, {name: 'SK이노베이션(울산)', biz: '정유', salary: '1억 5,200만 원'}, {name: '고려아연(온산)', biz: '비철금속', salary: '1억 1,500만 원'}, {name: '롯데케미칼(울산)', biz: '화학', salary: '1억 400만 원'}, {name: '한화솔루션(울산)', biz: '화학', salary: '1억 500만 원'}, {name: '현대미포조선', biz: '조선', salary: '8,500만 원'}, {name: '한국석유공사', biz: '공기업', salary: '9,000만 원'}, {name: '한국동서발전', biz: '공기업', salary: '9,200만 원'}
+                    ]},
+                    { id: 'metro-daejeon', type: 'metro', name: '대전광역시', desc: '연구단지, 공기업 본사', top10: [
+                        {name: '한국수자원공사', biz: '공기업', salary: '8,500만 원'}, {name: '한국조폐공사', biz: '공기업', salary: '8,200만 원'}, {name: '한국철도공사(코레일)', biz: '공기업', salary: '7,500만 원'}, {name: '국방과학연구소(ADD)', biz: '연구원', salary: '9,800만 원'}, {name: '한국항공우주연구원', biz: '연구원', salary: '9,500만 원'}, {name: '한국전자통신연구원', biz: '연구원', salary: '1억 200만 원'}, {name: 'KT&G(신탄진)', biz: '제조', salary: '9,000만 원'}, {name: '한화(대전)', biz: '방산', salary: '9,500만 원'}, {name: 'LG화학기술연구원', biz: 'R&D', salary: '1억 1,000만 원'}, {name: 'LX세미콘(대전)', biz: '반도체설계', salary: '1억 500만 원'}
+                    ]},
+                    { id: 'metro-daegu', type: 'metro', name: '대구광역시', desc: '한국가스공사, 2차전지', top10: [
+                        {name: '한국가스공사', biz: '공기업', salary: '9,500만 원'}, {name: 'DGB대구은행', biz: '금융', salary: '1억 500만 원'}, {name: '엘앤에프', biz: '2차전지', salary: '8,500만 원'}, {name: '한국부동산원', biz: '공기업', salary: '8,800만 원'}, {name: '에스엘', biz: '차부품', salary: '8,000만 원'}, {name: '평화정공', biz: '차부품', salary: '7,500만 원'}, {name: '신용보증기금', biz: '공기업', salary: '9,200만 원'}, {name: '대동', biz: '농기계', salary: '7,200만 원'}, {name: '한국장학재단', biz: '공공기관', salary: '7,000만 원'}, {name: '이수페타시스', biz: 'PCB기판', salary: '7,800만 원'}
+                    ]},
+                    { id: 'metro-gwangju', type: 'metro', name: '광주광역시', desc: '한전, 기아차 광주공장', top10: [
+                        {name: '한국전력공사(나주)', biz: '공기업', salary: '8,800만 원'}, {name: '기아(광주)', biz: '완성차', salary: '1억 2,700만 원'}, {name: '금호타이어', biz: '타이어', salary: '8,000만 원'}, {name: '한전KDN', biz: '공기업', salary: '8,200만 원'}, {name: '한전KPS', biz: '공기업', salary: '8,500만 원'}, {name: '광주은행', biz: '금융', salary: '1억 200만 원'}, {name: '삼성전자(광주)', biz: '가전', salary: '9,500만 원'}, {name: '앰코테크놀로지(광주)', biz: '반도체', salary: '7,500만 원'}, {name: '대유에이텍', biz: '부품', salary: '6,800만 원'}, {name: '농어촌공사(나주)', biz: '공기업', salary: '8,000만 원'}
+                    ]}
+                ]
+            }));
+        });
+    </script>
 </body>
 </html>
